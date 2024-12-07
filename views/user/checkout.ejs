@@ -1,0 +1,561 @@
+
+<div class="bg-black text-white min-h-screen flex flex-col">
+  <%- include('../patch/topper') %>
+
+  <div class="container mx-auto py-8 px-4">
+    <div class="flex flex-col md:flex-row md:space-x-4">
+      <!-- Left Column: Order Summary and Address Section -->
+      <div class="flex-1 mb-6">
+        <!-- Order Summary -->
+        <h1 class="text-2xl font-bold mb-4">Order Summary</h1>
+        <div class="bg-black border-2 border-gray-800 shadow-lg rounded-lg p-4">
+          <% cart.items.forEach(item => { %>
+            <div class="flex justify-between border-b pb-4 mb-4">
+              <div class="flex">
+                <img src="<%= item.product.image[1] %>" class="w-20 h-20 mr-4">
+                <div>
+                  <p class="text-lg font-semibold text-yellow-500"><%= item.product.name %></p>
+                  <p class="text-md text-gray-400"><%= item.product.category.name %></p>
+                  <p class="text-red-400 ">Price: <span class="line-through">₹<%= item.price %></span></p>
+                  <p class="text-green-400">Discounted Price: ₹<%= item.discountPrice %> x <%= item.quantity %></p>
+                 
+                </div>
+              </div>
+              <p class="text-lg">₹<%= item.discountPrice * item.quantity %></p>
+            </div>
+          <% }) %>
+        </div>
+
+        <!-- Add New Address Button -->
+        <button id="newAddressBtn" class="mt-4 bg-gradient-to-r from-blue-600 to-white text-black  py-2 px-4 rounded-xl">Add New Address</button>
+
+        <!-- New Address Form (hidden by default) -->
+        <!-- New Address Form (hidden by default) -->
+        <form id="newAddressForm" class="bg-gray-900 p-4 mt-4 hidden shadow-lg rounded-lg" action="/checkout/add-address" method="POST">
+          <div class="mb-4">
+            <label class="block mb-1 font-bold">Name</label>
+            <input type="text" name="name" class="w-full border border-gray-600 p-2 rounded bg-gray-800 text-white" required>
+          </div>
+          <div class="mb-4">
+            <label class="block mb-1 font-bold">Building Name</label>
+            <input type="text" name="buildingName" class="w-full border border-gray-600 p-2 rounded bg-gray-800 text-white" required>
+          </div>
+          <div class="mb-4">
+            <label class="block mb-1 font-bold">Street</label>
+            <input type="text" name="street" class="w-full border border-gray-600 p-2 rounded bg-gray-800 text-white" required>
+          </div>
+          <div class="mb-4">
+            <label class="block mb-1 font-bold">City</label>
+            <input type="text" name="city" class="w-full border border-gray-600 p-2 rounded bg-gray-800 text-white" required>
+          </div>
+          <div class="mb-4">
+            <label class="block mb-1 font-bold">State</label>
+            <input type="text" name="state" class="w-full border border-gray-600 p-2 rounded bg-gray-800 text-white" required>
+          </div>
+          <div class="mb-4">
+            <label class="block mb-1 font-bold">Country</label>
+            <input type="text" name="country" class="w-full border border-gray-600 p-2 rounded bg-gray-800 text-white" required>
+          </div>
+          <div class="mb-4">
+            <label class="block mb-1 font-bold">Pincode</label>
+            <input type="text" name="pincode" class="w-full border border-gray-600 p-2 rounded bg-gray-800 text-white" required>
+          </div>
+          <div class="mb-4">
+            <label class="block mb-1 font-bold">Mobile</label>
+            <input type="text" name="mobile" class="w-full border border-gray-600 p-2 rounded bg-gray-800 text-white" required>
+          </div>
+          <div class="flex justify-between">
+            <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded">Save Address</button>
+            <button type="button" id="cancelAddressBtn" class="bg-red-600 text-white py-2 px-4 rounded">Cancel</button>
+          </div>
+        </form>
+
+        <!-- Checkout Form -->
+        
+          <!-- Address Section -->
+           
+          <div class="mb-6 mt-4">
+            <h2 class="text-2xl font-bold mb-4">Shipping Address</h2>
+            <form id="addressSelectionForm">
+              <div class="space-y-4">
+                <% addresses.forEach(address => { %>
+                <div class="p-4 bg-gray-900 shadow-lg rounded-lg">
+                  <input type="radio" name="addressId" value="<%= address._id %>" class="mr-2 accent-blue-600" >
+                  <p><%= address.name %>, <%= address.buildingName %>, <%= address.street %>, <%= address.city %>, <%= address.state %>, <%= address.country %>, <%= address.pincode %></p>
+                  <p class="text-gray-400"><%= address.mobile %></p>
+                </div>
+              <% }) %>
+              </div>
+              <div class="flex justify-center mt-4">
+                <button type="submit" class="bg-gradient-to-r from-blue-600 to-white text-black py-2 px-4 rounded-xl">Select Address</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Payment Methods -->
+          <div id="paymentSection" class="mb-6">
+            <h2 class="text-2xl font-bold mb-4">Payment Method</h2>
+            <form id="paymentMethodForm"> 
+              <div class="flex flex-wrap justify-between md:justify-around">
+                <div class="flex items-center mb-4 md:mb-0">
+                  <input type="radio" name="paymentMethod" value="COD" id="cod" class="hidden">
+                  <label for="cod" class="flex items-center bg-black border-2 border-gray-800 p-4 shadow-lg rounded-lg transition duration-300 ease-in-out  cursor-pointer">
+                    <span class="w-4 h-4 border border-gray-600 rounded mr-2 flex items-center justify-center">
+                      <span class="w-2 h-2 bg-blue-500 rounded hidden"></span>
+                    </span>
+                    Cash on Delivery
+                  </label>
+                </div>
+                <div class="flex items-center mb-4 md:mb-0">
+                  <input type="radio" name="paymentMethod" value="Razorpay" id="razorpay" class="hidden">
+                  <label for="razorpay" class="flex items-center bg-black border-2 border-gray-800 p-4 shadow-lg rounded-lg transition duration-300 ease-in-out  cursor-pointer">
+                    <span class="w-4 h-4 border border-gray-600 rounded mr-2 flex items-center justify-center">
+                      <span class="w-2 h-2 bg-blue-500 rounded hidden"></span>
+                    </span>
+                    Razorpay
+                  </label>
+                </div>
+                <div class="flex items-center mb-4 md:mb-0">
+                  <input type="radio" name="paymentMethod" value="Wallet" id="wallet" class="hidden">
+                  <label for="wallet" class="flex items-center bg-black border-2 border-gray-800 p-4 shadow-lg rounded-lg transition duration-300 ease-in-out  cursor-pointer">
+                    <span class="w-4 h-4 border border-gray-600 rounded mr-2 flex items-center justify-center">
+                      <span class="w-2 h-2 bg-blue-500 rounded hidden"></span>
+                    </span>
+                    Wallet
+                  </label>
+                </div>
+              </div>
+              <div class="flex justify-center mt-6">
+                <button type="submit" class="bg-gradient-to-r from-blue-600 to-white text-black py-2 px-4 rounded-xl">Select Payment Method</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Place Order Button -->
+          <button id="placeOrderBtn" type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg hidden">Place Order</button>
+        </form>
+      </div>
+
+      <!-- Right Column: Price Details Section -->
+      <div class="w-full md:w-1/3 mb-6 lg:sticky lg:self-start lg:top-4">
+        <h2 class="text-2xl font-bold mb-4">Price Details</h2>
+        <div class="bg-black border-2 border-gray-800 shadow-lg rounded-lg p-4 space-y-4">
+          <div class="flex justify-between">
+            <p>Items: <%= cart.items.length %></p>
+            <p>Price: ₹<%= originalPrice %></p>
+          </div>
+          <div class="flex justify-between">
+            <p>Discount:</p>
+            <p class="text-green-700">-₹<%= Math.floor(totalDiscount) %></p>
+          </div>
+          <div class="flex justify-between">
+            <p>Coupon Discount:</p>
+            <p class="text-red-700">-₹<%= cart.couponDiscount ? (cart.couponDiscount) : 0 %></p>
+          </div>
+          <div class="flex justify-between">
+            <p>Delivery Charges:</p>
+            <p class="text-green-700">FREE</p>
+          </div>
+          <div class="flex justify-between">
+            <p>Packaging Charge:</p>
+            <p class="text-green-700">FREE</p>
+          </div>
+          <hr class="my-2">
+          <div class="flex justify-between font-bold">
+            <p>Total Amount:</p>
+            <p class="total_Amount">₹<%= Math.floor(cart.total) %></p>
+          </div>
+
+          <!-- Coupon Code Section Inline -->
+            <div class="flex items-center space-x-4 mt-4">
+              <input type="text" id="couponCode" placeholder="Enter coupon code" class="w-full border border-gray-600 p-2 rounded bg-black text-white focus:outline-none focus:border-orange-500">
+              <button id="applyCouponBtn" class="bg-gradient-to-r from-blue-600 to-white text-black py-2 px-4 rounded-xl   font-semibold py-2 px-4 rounded">Apply</button>
+              <button id="removeCouponBtn" class="bg-red-600 text-white py-2 px-4 rounded hidden">Remove</button>
+          </div>
+          <p id="couponMessage" class="text-green-700 mt-2"></p>
+
+          <!-- Dropdown for Available Coupons -->
+          <div class="mt-6">
+            <button id="toggleCouponsBtn" class="bg-black border-2 border-gray-800 text-white py-2 px-4 rounded">Available Coupons</button>
+            <ul id="couponsList" class="hidden bg-black border-2 border-gray-800 p-4 rounded-lg mt-2 space-y-2">
+              <% coupons.forEach(coupon => { %>
+                <li class="flex flex-col p-2 border-b border-gray-700">
+                  <div class="flex justify-between items-center">
+                    <span class="font-semibold text-orange-400"><%= coupon.couponCode %></span>
+                    <span class="text-orange-400">
+                      <%= coupon.discountType === 'percentage' ? `${coupon.discountValue}% off` : `₹${coupon.discountValue} off` %>
+                    </span>
+                  </div>
+                  <p class="text-blue-500 text-sm">
+                    <%= coupon.applicableType === 'all' ? 'Applicable for all products' : 
+                        coupon.applicableProduct ? `Product: ${coupon.applicableProduct.name}` : '' %>
+                  </p>
+                  <% if (coupon.applicableType === 'category') { %>
+                    <p class="text-green-500 text-sm">
+                      Category: <%= coupon.applicableCategory ? coupon.applicableCategory.name : 'N/A' %>
+                    </p>
+                  <% } %>
+                </li>
+              <% }) %>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%- include('../patch/bottom') %>
+</div>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+  const razorpayKey = "<%= razorpayKey %>";
+  // Show/Hide new address form
+  const newAddressBtn = document.getElementById('newAddressBtn');
+  const newAddressForm = document.getElementById('newAddressForm');
+  const cancelAddressBtn = document.getElementById('cancelAddressBtn');
+  
+  newAddressBtn.addEventListener('click', () => {
+    newAddressForm.classList.toggle('hidden');
+  });
+
+  cancelAddressBtn.addEventListener('click', () => {
+    newAddressForm.classList.add('hidden');
+    newAddressForm.reset();
+  });
+
+  //handle Address selection
+  document.getElementById('addressSelectionForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const selectedAddressElement = document.querySelector('input[name="addressId"]:checked')
+     if(!selectedAddressElement) {
+      Swal.fire({
+        title:'warning',
+        icon:'warning',
+        text:'Please select an address before proceeding',
+       customClass:{
+        confirmButton:'bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600',
+        popup:'bg-black border-2 border-gray-800 text-white rounded-lg shadow-lg p-6',
+        text:'text-green-400 font-bold text-2xl',
+        title:'text-green-400 font-bold text-2xl'
+       },
+       buttonsStyling:false
+      })
+      return;
+     }
+
+     const selectedAddress = selectedAddressElement.value;
+    const response = await fetch('/checkout/address/update', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({addressId:selectedAddress})
+    })
+    const result = await response.json();
+    if(result.success) {
+     document.getElementById('paymentSection').classList.remove('hidden');
+
+     const totalAmount = "<%= Math.floor(cart.total) %>"; // Get total amount from server-side
+      if (totalAmount > 1000) {
+        document.querySelector('input[value="COD"]').disabled = true; // Disable COD option
+        Swal.fire({
+          title: 'Notice',
+          icon: 'info',
+          text: 'Cash on Delivery is not available for orders above ₹1000.',
+          confirmButtonText: 'OK',
+          customClass: {
+            confirmButton: 'bg-blue-600 text-white py-2 px-4 rounded',
+            popup: 'bg-black border-2 border-gray-800 text-white rounded-lg shadow-lg p-6',
+            text: 'text-green-400 font-bold text-2xl',
+            title: 'text-green-400 font-bold text-2xl'
+          },
+          buttonsStyling: false
+        });
+      }
+    } else {
+      Swal.fire({
+        title:'warning',
+        icon:'warning',
+        text:result.message,
+        confirmButtonText:'ok',
+        customClass:{
+          confirmButton:'bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600',
+          popup:'bg-black border-2 border-gray-800 text-white rounded-lg shadow-lg p-6',
+          text:'text-green-400 font-bold text-2xl',
+          title:'text-green-400 font-bold text-2xl'
+         },
+         buttonsStyling:false
+      })
+    }
+  })
+
+  //handle Payment Method selection
+  document.getElementById('paymentMethodForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const selectedPaymentMethodElement = document.querySelector('input[name="paymentMethod"]:checked')
+    if(!selectedPaymentMethodElement) {
+      Swal.fire({
+        title:'warning',
+        icon:'warning',
+        text:'Please select a payment method before proceeding',
+        confirmButtonText:'ok',
+          customClass:{
+            confirmButton:'bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600',
+            popup:'bg-black border-2 border-gray-800 text-white rounded-lg shadow-lg p-6',
+            text:'text-green-400 font-bold text-2xl',
+            title:'text-green-400 font-bold text-2xl'
+          },
+          buttonsStyling:false
+      })
+      return;
+    }
+    const selectedPaymentMethod = selectedPaymentMethodElement.value;
+    const response = await fetch('/checkout/payment-methods/update', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({paymentMethod:selectedPaymentMethod})
+    })
+    const result = await response.json();
+    if(result.success) {
+      document.getElementById('placeOrderBtn').classList.remove('hidden');
+    } else {
+      Swal.fire({
+        title:'warning',
+        icon:'warning',
+        text:result.message,
+        confirmButtonText:'ok',
+        customClass:{
+          confirmButton:'bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600',
+          popup:'bg-black border-2 border-gray-800 text-white rounded-lg shadow-lg p-6',
+          text:'text-green-400 font-bold text-2xl',
+          title:'text-green-400 font-bold text-2xl'
+         },
+         buttonsStyling:false
+      })
+    }
+  })
+
+
+  //Place Order Button
+  document.getElementById('placeOrderBtn').addEventListener('click', async () => {
+    const selectedAddress = document.querySelector('input[name="addressId"]:checked');
+    const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+    if(!selectedAddress) {
+      Swal.fire({
+        title:'warning',
+        icon:'warning',
+        text:'Please select an address before placing the order.',
+        confirmButtonText:'ok',
+        customClass:{
+          confirmButton:'bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600',
+          popup:'bg-black border-2 border-gray-800 text-white rounded-lg shadow-lg p-6',
+          text:'text-green-400 font-bold text-2xl',
+          title:'text-green-400 font-bold text-2xl'
+         },
+         buttonsStyling:false
+      })
+      return;
+    }
+    if(!selectedPaymentMethod) {
+      Swal.fire({
+        title:'warning',
+        icon:'warning',
+        text:'Please select a payment method before placing the order.',
+        confirmButtonText:'ok',
+        customClass:{
+          confirmButton:'bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600',
+          popup:'bg-black border-2 border-gray-800 text-white rounded-lg shadow-lg p-6',
+          text:'text-green-400 font-bold text-2xl',
+          title:'text-green-400 font-bold text-2xl'
+         },
+         buttonsStyling:false
+      })
+      return;
+    }
+
+    // Prepare data for the request
+    const orderData = {
+      addressId: selectedAddress.value,
+      paymentMethod: selectedPaymentMethod.value
+    };
+
+    try {
+      // Submit the form using Axios
+      const response = await axios.post('/checkout/place-order', orderData);
+      const data = response.data;
+
+      if (data.success && selectedPaymentMethod.value === 'Razorpay') {
+        const options = {
+          key: razorpayKey,
+          amount: data.amount,
+          currency: 'INR',
+          name: "PHOENIX WATCHES",
+          image: "images/home2.jpg",
+          description: "My test transaction......",
+          order_id: data.razorpayOrderId,
+          handler: async function (response) {
+            const paymentResponse = await axios.post('/checkout/payment/verify', {
+              razorpayOrderId: data.razorpayOrderId,
+              paymentId: response.razorpay_payment_id,
+              signature: response.razorpay_signature,
+              OrderId: data.OrderId,
+              address: selectedAddress.value,
+              paymentMethod: selectedPaymentMethod.value
+            });
+
+            const paymentData = paymentResponse.data;
+            if (paymentData.success) {
+              window.location.href = '/checkout/order-confirmation';
+            } else {
+              Swal.fire({
+                title:'warning',
+                icon:'warning',
+                text:paymentData.message,
+                confirmButtonText:'ok',
+                customClass:{
+                  confirmButton:'bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600',
+                  popup:'bg-black border-2 border-gray-800 text-white rounded-lg shadow-lg p-6',
+                  text:'text-green-400 font-bold text-2xl',
+                  title:'text-green-400 font-bold text-2xl'
+                 },
+                 buttonsStyling:false
+              })
+            }
+          },
+          prefill: {
+            name: "Ancy Peter",
+            email: "ancy123456@gmail.com",
+            contact: "5123456465"
+          },
+          theme: {
+            color: "#000000"
+          }
+        };
+        const razorpay = new Razorpay(options);
+        razorpay.open();
+        razorpay.on('payment.failed', function(response){
+          window.location.href = '/checkout/order-failed';
+        })
+      } else if (data.success) {
+        window.location.href = '/checkout/order-confirmation';
+      } else {
+        Swal.fire({
+          title:'warning',
+          icon:'warning',
+          text:data.message,
+          confirmButtonText:'ok',
+          customClass:{
+            confirmButton:'bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600',
+            popup:'bg-black border-2 border-gray-800 text-white rounded-lg shadow-lg p-6',
+            text:'text-green-400 font-bold text-2xl',
+            title:'text-green-400 font-bold text-2xl'
+           },
+           buttonsStyling:false
+        })
+      }
+    } catch (error) {
+      console.error('Error placing order:', error);
+      Swal.fire({
+        title:'warning',
+        icon:'warning',
+        text:error.response.data.message,
+        confirmButtonText:'ok',
+        customClass:{
+          confirmButton:'bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600',
+          popup:'bg-black border-2 border-gray-800 text-white rounded-lg shadow-lg p-6',
+          text:'text-green-400 font-bold text-2xl',
+          title:'text-green-400 font-bold text-2xl'
+         },
+         buttonsStyling:false
+      })
+    }
+  });
+
+  // apply coupon code
+  document.getElementById('applyCouponBtn').addEventListener('click', async () => {
+  const couponCode = document.getElementById('couponCode').value;
+  const response = await fetch('/checkout/coupons/apply', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ couponCode }),
+  });
+
+  const data = await response.json();
+  const couponMessageElement = document.getElementById('couponMessage');
+  couponMessageElement.innerText = data.message;
+
+  if (data.success) {
+    couponMessageElement.classList.remove('text-red-400');
+    couponMessageElement.classList.add('text-green-400');
+    document.getElementById('removeCouponBtn').classList.remove('hidden');
+    document.getElementById('applyCouponBtn').classList.add('hidden');
+
+    // Update coupon discount
+    document.querySelector('.text-red-700').innerText = `-₹${Math.floor(data.discountAmount)}`;
+
+    // Update total amount
+    const totalAmountElement = document.querySelector('.flex.justify-between.font-bold p:last-child');
+    totalAmountElement.innerText = `₹${Math.floor(data.newTotal)}`;
+  } else {
+    couponMessageElement.classList.remove('text-green-400');
+    couponMessageElement.classList.add('text-red-400');
+  }
+
+  // Show remove coupon button if there's a discount
+  if (data.discountAmount) {
+    document.getElementById('removeCouponBtn').classList.remove('hidden');
+  }
+});
+//Remove coupon
+document.getElementById('removeCouponBtn').addEventListener('click', async () => {
+  const response = await fetch('/checkout/coupons/remove', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const data = await response.json();
+  const couponMessageElement = document.getElementById('couponMessage');
+  couponMessageElement.innerText = data.message;
+
+  if (data.success) {
+    document.getElementById('applyCouponBtn').classList.remove('hidden');
+    document.getElementById('removeCouponBtn').classList.add('hidden');
+    couponMessageElement.classList.remove('text-green-400');
+    couponMessageElement.classList.add('text-red-400');
+
+    // Update coupon discount
+    document.querySelector('.text-red-700').innerText = '-₹0';
+
+    // Update total amount
+    const totalAmountElement = document.querySelector('.flex.justify-between.font-bold p:last-child');
+    totalAmountElement.innerText = `₹${Math.floor(data.newTotal)}`;
+  } else {
+    couponMessageElement.classList.add('text-red-400');
+  }
+});
+
+  // Toggle Coupons List
+  document.getElementById('toggleCouponsBtn').addEventListener('click', () => {
+    const couponsList = document.getElementById('couponsList');
+    couponsList.classList.toggle('hidden');
+  });
+
+  document.querySelectorAll('input[name="paymentMethod"]').forEach((input) => {
+    input.addEventListener('change', () => {
+      document.querySelectorAll('.flex.items-center span.w-2').forEach((dot) => {
+        dot.classList.add('hidden'); // Hide all dots
+      });
+      const selectedDot = document.querySelector(`input[name="paymentMethod"]:checked + label span.w-2`);
+      if (selectedDot) {
+        selectedDot.classList.remove('hidden'); // Show the selected dot
+      }
+    });
+  });
+</script>

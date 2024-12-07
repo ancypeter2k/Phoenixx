@@ -1,0 +1,250 @@
+<div class="bg-black text-white min-h-screen flex flex-col">
+  <%- include('../patch/topper.ejs') %>
+
+  <div class="container mx-auto py-8 px-4 md:px-8">
+    <h1 class="text-2xl md:text-3xl font-bold text-center mb-6">Shopping Cart</h1>
+
+    <% if (cart && cart.items.length > 0) { %>
+      <!-- Responsive Grid Layout -->
+      <div class="lg:grid lg:grid-cols-3 lg:gap-8">
+       
+        <div class="lg:col-span-2 space-y-6">
+          <% cart.items.forEach(item => { %>
+            <div id="cart-item-<%= item.product._id %>" class="bg-gray-900 p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center justify-between">
+              <div class="flex items-start md:items-center mb-4 md:mb-0  ">
+                <a href="/product/<%= item.product._id %>">
+                  <img src="<%= item.product.image[0] %>" alt="<%= item.product.name %>" class="mr-4" style="height: 4cm; width: 4cm; padding-right: 5mm;">
+                </a>
+                <div>
+                  <a href="/product/<%= item.product._id %>">
+                    <h3 class="text-lg font-semibold"><%= item.product.name %></h3>
+                  </a>
+                  <p class="text-gray-400"><%= item.product.category.name %></p>
+                  <p class="text-gray-400 line-through"><strong>Price:</strong> ₹<span class="item-original-price"><%= item.product.price %></span></p>
+
+                  <div class="flex items-center justify-between">
+                    <p class="text-green-500"><strong>Total:</strong> ₹<span class="item-total-price"><%= item.product.discountedPrice %></span></p>
+                    <% if (item.product.stock < item.quantity) { %>
+                      <p class="text-red-500 font-semibold ml-4">Currently out of stock</p>
+                    <% } %>
+                  </div>
+                  
+                </div>
+              </div>
+
+              <div class="flex items-center">
+                <div class="update-cart-form flex items-center" data-product-id="<%= item.product._id %>">
+                  <button type="button" class="bg-gray-600 text-white rounded-l px-3 decrement-quantity">-</button>
+                  <input type="number" name="quantity" value="<%= item.quantity %>" min="1" max="5" class="border border-gray-600 rounded p-1 w-16 bg-gray-700 text-white text-center mx-2 quantity-input" readonly>
+                  <button type="button" class="bg-gray-600 text-white rounded-r px-3 increment-quantity">+</button>
+                </div>
+                
+                <button type="button" class="text-red-500 hover:text-red-700 ml-4 delete-item" data-product-id="<%= item.product._id %>">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+
+        <div class="mt-8 lg:mt-0 bg-gray-900 shadow-md p-4 rounded-lg lg:sticky lg:top-4 lg:self-start">
+          <h2 class="text-xl font-bold mb-4">Order Summary</h2>
+          <p class="mb-2">Items: <span id="total-items"><%= cart.items.length %></span></p>
+          <p class="mb-2">Original Price: <span  id="original-price">₹<%= originalPrice.toFixed(2) %></span></p>
+          <p class="mb-2">Discount:<span class="text-green-500"> -₹ <span id="total-discount"><%= totalDiscount.toFixed(2) %></span>
+          <p class="mb-2">Total Amount: <span id="total-amount">₹<%= originalPrice - totalDiscount %></span></p>
+
+          <!-- checkout button -->
+          <button id="checkout-button" class="mt-2 bg-green-700 text-white rounded px-4 py-2 w-full block text-center">Proceed to Checkout</button>
+        </div>
+      </div>
+    <% } else { %>
+
+     <!-- Empty Cart State -->
+     <div class="flex flex-col items-center justify-center min-h-[400px] bg-gradient-to-r from-gray-800 to-gray-900 rounded-2xl p-8">
+      <div class="text-orange-400 mb-6">
+        <i class="fas fa-shopping-cart text-6xl"></i>
+      </div>
+      <h2 class="text-2xl md:text-3xl font-bold text-center mb-3">Your cart is empty!</h2>
+      <p class="text-gray-400 text-center mb-8">Time to fill it with amazing products</p>
+      <a href="/shop/allProducts" 
+      class="inline-flex items-center gap-2 bg-gradient-to-r from-orange-300 to-orange-500 text-black px-8 py-3 rounded-lg font-semibold hover:from-orange-400 hover:to-orange-600 transition-all duration-300 transform hover:scale-105 z-10">
+      <i class="fas fa-shopping-bag"></i>
+        Start Shopping
+      </a>
+    </div>
+  <% } %>
+</div>
+
+
+    <%- include('../patch/bottom.ejs') %>
+  </div>
+</div>
+
+<script>
+        // wait for the DOM to be fully loaded before executing the script
+        document.addEventListener('DOMContentLoaded', function() {
+        // get all the update cart form and delete button
+          const cartForms = document.querySelectorAll('.update-cart-form');
+          const deleteButtons = document.querySelectorAll('.delete-item');
+
+        // set event listener for increment and decrement button to update quantity of item in cart
+          cartForms.forEach(form => {
+            const decrementBtn = form.querySelector('.decrement-quantity');
+            const incrementBtn = form.querySelector('.increment-quantity');
+            const quantityInput = form.querySelector('.quantity-input');
+            const productId = form.dataset.productId;
+
+            decrementBtn.addEventListener('click', () => updateQuantity(productId, -1));
+            incrementBtn.addEventListener('click', () => updateQuantity(productId, 1));
+          });
+        // set event listener for delete button to delete item from cart
+          deleteButtons.forEach(button => {
+            button.addEventListener('click', () => deleteItem(button.dataset.productId));
+          });
+
+      // // function to update the quantity of item in cart
+          function updateQuantity(productId, change) {
+            const form = document.querySelector(`.update-cart-form[data-product-id="${productId}"]`);
+            const quantityInput = form.querySelector('.quantity-input');
+            let newQuantity = parseInt(quantityInput.value) + change;
+
+            if (newQuantity < 1) newQuantity = 1;
+            if (newQuantity > 5) {
+              showAlert('Warning', 'You can only add a maximum of 5 items.', 'warning');
+              return;
+            }
+
+            quantityInput.value = newQuantity;
+            
+            fetch(`/cart/${productId}/update`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ quantity: newQuantity ,productId:productId}),
+            })
+            .then(response => response.json())
+                window.location.reload();
+          }
+
+          function deleteItem(productId) {
+            Swal.fire({
+              title: 'Are you sure?',
+              text: "You want to remove this item from your cart",
+              iconHtml: '<i class="fas fa-trash-alt text-red-500"></i>',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Yes, remove it!',
+              customClass: {
+                popup:'bg-gray-900 text-white rounded-lg shadow-lg p-6',
+                title:'text-xl font-bold',
+                content:'text-base mb-4',
+                confirmButton:'bg-green-600 text-white rounded-lg px-4 py-2 hover:bg-green-700 transition duration-200 ease-in-out',
+                cancelButton:'bg-red-600 text-white rounded-lg px-4 py-2 hover:bg-red-700 transition duration-200 ease-in-out'
+              }
+            }).then((result) => {
+              if (result.isConfirmed) {
+                fetch(`/cart/delete/${productId}`, {
+                  method: 'POST',
+                })
+                .then(response => response.json())
+                .then(data => {
+                  if (data.error) {
+                    showAlert('Error', data.error, 'error');
+                  } else {
+                    const itemElement = document.getElementById(`cart-item-${productId}`);
+                    if (itemElement) {
+                      itemElement.remove(); // Remove the item from the DOM
+                    } else {
+                      console.warn(`Element with id cart-item-${productId} not found in the DOM`);
+                    }
+                    updateCartDisplay(data); // Update the cart display
+                  }
+                })
+                .catch(error => {
+                  console.error('Error:', error);
+                  showAlert('Error', 'An error occurred . Please try again.', 'error');
+                });
+              }
+            });
+          }
+
+          function updateCartDisplay(data) {
+            document.getElementById('total-items').textContent = data.itemCount;
+            document.getElementById('original-price').textContent = data.originalPrice;
+            document.getElementById('total-discount').textContent = data.totalDiscount;
+            // document.getElementById('total-amount').textContent = cart.total;
+
+            // Update individual item displays
+            data.items.forEach(item => {
+              const itemElement = document.getElementById(`cart-item-${item.productId}`);
+              if (itemElement) {
+                itemElement.querySelector('.quantity-input').value = item.quantity;
+                itemElement.querySelector('.item-total-price').textContent = item.total;
+              } else {
+                console.warn(`Element with id cart-item-${item.productId} not found in the DOM`);
+              }
+            });
+
+            // If cart is empty after deletion, refresh the page
+            if (data.itemCount === 0) {
+              location.reload();
+            }
+          }
+
+          function showAlert(title, text, icon) {
+          Swal.fire({
+            title: title,
+            text: text,
+            icon: icon,
+            confirmButtonColor: '#4CAF50', // Green color for the confirm button
+            customClass: {
+              popup: 'bg-gray-900 text-white rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105', // Dark background
+              title: 'text-2xl font-bold mb-2', // Larger title with margin
+              content: 'text-base mb-4', // Content with margin
+              confirmButton: 'bg-green-600 text-white rounded-lg px-6 py-2 hover:bg-green-700 transition duration-200 ease-in-out', // Button with hover effect
+            },
+          });
+        }
+
+        // New AJAX call for checkout
+        document.getElementById('checkout-button').addEventListener('click', function() {
+          fetch('/checkout', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+          .then(response => {
+            if (response.ok) {
+              window.location.href = '/checkout';
+            } else {
+              return response.json().then(data => {
+                if (data.error) {
+                  Toastify({
+                    text: data.error,
+                    duration: 10000,
+                    gravity: "top",
+                    position: 'right',
+                    backgroundColor: "red",
+                  }).showToast();
+                }
+              });
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            Toastify({
+              text: 'An error occurred. Please try again.',
+              duration: 3000,
+              gravity: "top",
+              position: 'right',
+              backgroundColor: "red",
+            }).showToast();
+          });
+        });
+        });
+
+</script>

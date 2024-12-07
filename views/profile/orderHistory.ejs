@@ -1,0 +1,244 @@
+<%- include('../patch/topper.ejs') %>
+
+<div class="flex bg-black text-white min-h-screen">
+  <%- include('./profileSidebar.ejs') %>
+
+  <style>
+    *{
+      background: #000;
+    }
+    .item-container {
+      display: flex;
+      flex-direction: column; 
+      padding: 15px;
+    }
+    .item-name {
+      flex-grow: 1; 
+      min-width: 0;
+      margin-right: 10px;
+    }
+    .item-price {
+      min-width: 100px;
+      text-align: right;
+    }
+    .item-status {
+      min-width: 200px;
+      text-align: right;
+    }
+  </style>
+  
+  <div class="flex bg-black text-white ">
+    <div class="container mx-auto p-4 md:p-6 flex-1">
+      <h1 class="text-2xl md:text-3xl font-bold mb-4">Your Order History</h1>
+  
+      <div class="flex mb-4">
+        <nav class="flex" aria-label="Breadcrumb">
+          <ol class="inline-flex items-center space-x-1 md:space-x-3">
+            <li class="inline-flex items-center">
+              <a href="/home" class="text-yellow-500 hover:text-blue-500">
+                <i class="fas fa-home mr-1"></i> Home
+              </a>
+            </li>
+            <li class="inline-flex items-center">
+              <span class="text-gray-400">/</span>
+            </li>
+            <li class="inline-flex items-center">
+              <a href="/profile/personal-info" class="text-yellow-500 hover:text-blue-500">
+                <i class="fas fa-user mr-1"></i> Profile
+              </a>
+            </li>
+          </ol>
+        </nav>
+      </div>
+  
+      <% if (orders.length === 0) { %>
+      <div class="flex flex-col items-center justify-center mt-10">
+        <i class="fas fa-shopping-cart fa-flip fa-5x text-white mb-2"></i>
+        <p class="text-gray-400 text-center mt-2">You have no orders yet.</p>
+        <a href="/shop/allProducts" class="mt-4 bg-gradient-to-r from-red-600 to-yellow-400 text-black px-4 py-2 rounded-lg hover:bg-blue-600 transform duration-200">
+          Shop Now
+        </a>
+      </div>
+      <% } else { %>
+      <ul class="space-y-4">
+        <% orders.forEach(order => { %>
+        <li class="border border-gray-700 rounded-lg p-4 shadow-md">
+          <h2 class="text-lg md:text-xl font-semibold flex justify-between items-center">
+            <span>Order ID: <%= order._id %></span>
+            <% if (order.paymentStatus === 'Pending' && order.paymentMethod === 'Razorpay') { %>
+              <button class="bg-gradient-to-r from-red-600 to-yellow-400 text-black px-2 py-1 text-sm rounded-lg hover:bg-blue-600" onclick="repayOrder(`<%= order._id %>`)">
+                Repay
+              </button>
+            <% } %>
+          </h2>
+          <p class="text-sm text-gray-400 mb-1">Payment Status: <%= order.paymentStatus %></p>
+          <div class="space-y-2">
+            <% order.items.forEach(item => { %>
+            <div class="border border-gray-600 rounded-lg item-container">
+              <div class="flex flex-col md:flex-row items-center">
+                <div class="flex items-center item-name w-full">
+                  <a href="/order/<%= order._id %>/details/<%= item._id %>" class="flex items-center w-full">
+                    <% if (item.product) { %>
+                    <img
+                      src="<%= item.product.image[1] %>"
+                      alt="<%= item.product.name %>"
+                      class="w-16 h-16 object-cover rounded mr-4"
+                    />
+                    <div class="flex flex-col">
+                      <h3 class="text-lg font-semibold truncate"><%= item.product.name %></h3>
+                      <p class="text-sm text-gray-400">Category: <%= item.product.category.name %></p>
+                    </div>
+                    <% } else { %>
+                    <p class="text-sm text-gray-400">Product not found</p>
+                    <% } %>
+                  </a>
+                </div>
+                <div class="item-price mt-2 md:mt-0 md:ml-auto">
+                  <p class="text-lg">Price: ₹<%= item.discountPrice %></p>
+                </div>
+                <div class="item-status mt-2 md:mt-0">
+                  <p class="text-sm text-gray-400">
+                    <% if (item.itemStatus === 'Pending') { %>
+                    <span class="text-yellow-500">Order is pending right now.</span>
+                    <% } else if (item.itemStatus === 'Shipped') { %>
+                    <span class="text-green-500">Shipped on <%= order.updatedAt.toLocaleDateString() %></span>
+                    <% } else if (item.itemStatus === 'Confirmed') { %>
+                    <span class="text-green-500">Confirmed on <%= order.updatedAt.toLocaleDateString() %></span>
+                    <% } else if (item.itemStatus === 'Delivered') { %>
+                    <span class="text-green-500">Delivered on <%= order.updatedAt.toLocaleDateString() %></span>
+                    <% } else if (item.itemStatus === 'Cancelled') { %>
+                    <span class="text-red-500">Cancelled on <%= order.updatedAt.toLocaleDateString() %></span>
+                    <% } else if (item.itemStatus === 'Returned') { %>
+                    <span class="text-red-500">Returned on <%= order.updatedAt.toLocaleDateString() %></span>
+                    <% } else if (item.itemStatus === 'Refunded') { %>
+                    <span class="text-orange-500">Your item has been refunded on <%= order.updatedAt.toLocaleDateString() %></span>
+                    <% } else if (item.itemStatus === 'Return Requested') { %>
+                    <span class="text-yellow-500">Return request sent</span>
+                    <% } else if (item.itemStatus === 'Rejected') { %>
+                    <span class="text-red-500">Return request rejected.</span>
+                    <% } %>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <% }) %>
+          </div>
+          <% if (order.items.every(item => item.itemStatus !== 'Cancelled')) { %>
+          <div class="flex justify-between mt-2">
+            <button class="bg-gradient-to-r from-red-600 to-yellow-400 text-black px-2 py-1 text-sm rounded-lg hover:bg-blue-600" onclick="downloadInvoice(`<%= order._id %>`)">
+              Download Invoice
+            </button>
+          </div>
+          <% } %>
+        </li>
+        <% }) %>
+      </ul>
+  
+      <!-- Pagination Controls -->
+      <div class="flex justify-center mt-4">
+        <nav aria-label="Pagination">
+          <ul class="inline-flex items-center space-x-2">
+            <% if (currentPage > 1) { %>
+              <li>
+                <a href="?page=<%= currentPage - 1 %>" class="flex items-center px-4 py-2 text-sm text-white bg-gradient-to-r from-red-600 to-yellow-400 rounded hover:bg-blue-700">
+                  <i class="fas fa-chevron-left"></i> <!-- Left arrow icon -->
+                </a>
+              </li>
+            <% } %>
+  
+            <% for (let i = 1; i <= totalPages; i++) { %>
+              <li>
+                <a href="?page=<%= i %>" class="px-4 py-2 text-sm <%= currentPage === i ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-white' : 'text-green-500 hover:bg-orange-500 hover:text-white' %> rounded">
+                  <%= i %>
+                </a>
+              </li>
+            <% } %>
+  
+            <% if (currentPage < totalPages) { %>
+              <li>
+                <a href="?page=<%= currentPage + 1 %>" class="flex items-center px-4 py-2 text-sm text-white bg-gradient-to-r from-red-600 to-yellow-400 rounded hover:bg-blue-700">
+                  <i class="fas fa-chevron-right"></i> <!-- Right arrow icon -->
+                </a>
+              </li>
+            <% } %>
+          </ul>
+        </nav>
+      </div>
+  
+      <% } %>
+      <%- include('../patch/bottom.ejs') %>
+
+    </div>
+  </div>
+  
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+     const razorpayKey = "<%= razorpayKey %>";
+    async function repayOrder(orderId) {
+  try{
+  const response = await axios.post(`/checkout/payment/repay/${orderId}`);
+  const data = response.data;
+  
+  if(data.success) {
+    const options = {
+      key: razorpayKey,
+      amount: data.amount,
+      currency: "INR",
+      name: "PHOENIX WATCHES",
+      image: "images/home2.jpg",
+      order_id: data.razorpayOrderId,
+      handler: async function(response) {
+        console.log("response", response);
+        await axios.post('/checkout/payment/verify', {
+          razorpayOrderId: data.razorpayOrderId,
+          paymentId: response.razorpay_payment_id,
+          signature: response.razorpay_signature,
+          OrderId: data.OrderId,
+          address: '',
+          paymentMethod: 'Razorpay'
+        });
+          window.location.href = '/checkout/order-confirmation';
+      },
+      theme: {
+        color: "#000000"
+      }
+    }
+    const razorpay = new Razorpay(options);
+    razorpay.open();
+  } else {
+    alert(data.message || 'Failed to initiate payment');
+  }
+  }catch(error) {
+    console.log("error in repay order", error);  
+  }
+    }
+  
+  
+    //download invoice
+    async function downloadInvoice(orderId) {
+    try {
+      // Using axios to make a GET request with responseType blob
+      const response = await axios.get(`/order/${orderId}/invoice`, {
+        responseType: 'blob'
+      });
+  
+      // Create a blob from the PDF stream
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      
+      // Create a link element and trigger download
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `invoice-${orderId}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      
+      // Cleanup
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Error downloading invoice:', error);
+      alert('Failed to download invoice. Please try again.');
+    }
+  }
+  </script>

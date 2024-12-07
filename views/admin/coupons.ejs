@@ -1,0 +1,93 @@
+<body class="bg-[#18191a] text-gray-200 m-0 p-0 flex flex-col md:flex-row min-h-screen">
+    <!-- Sidebar -->
+    <%- include("./sidebar.ejs") %>
+    <!-- Sidebar end -->
+
+    <!-- Main content -->
+    <div class="flex flex-col flex-grow w-full md:w-auto">
+        <!-- Navbar -->
+        <nav class="bg-[#18191a] h-11 shadow-md flex items-center justify-center px-6 sticky top-0 ">
+        <form action="/admin/Coupons" method="GET" class="relative w-2/5">
+            <input type="text" name="search" placeholder="Search orders" class="bg-[#242526] text-gray-200 text-sm px-4 py-2 rounded-full w-full pr-10 focus:outline-none focus:ring-2 focus:ring-gray-500">
+            <button class="absolute right-2 top-1/2 transform -translate-y-1/2" aria-label="Search">
+            <i class="fas fa-search text-gray-400"></i>
+            </button>
+        </form>
+        </nav>
+        <!-- Navbar end -->
+    
+    
+        <div class="flex-grow p-6 overflow-y-auto">
+        <div class="flex justify-end items-center">
+            <a href="/admin/addCoupon" class="bg-gradient-to-r from-red-500 to-orange-600 hover:from-yellow-600 hover:to-red-700 text-white font-bold py-1 px-2 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110">  
+                Add New Coupon      
+            </a>
+        </div>
+        <div class="mt-8">
+            <h2 class="text-2xl font-bold text-white mb-6">Coupons</h2>
+            <div class="bg-[#242526] rounded-lg shadow-lg overflow-x-auto">
+            <table class="min-w-full text-sm text-left text-gray-300">
+                <!-- table head -->
+                <thead class="text-xs bg-[#1f1f1f] text-orange-500 text-center">
+                <tr>
+                    <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">SI</th>
+                    <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Coupon Code</th>
+                    <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Discount Type</th>
+                    <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Discount Value</th>
+                    <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Min Spend</th>
+                    <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tacking-wider">Usage Limit</th>
+                    <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Usage Count</th>
+                    <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Start Date</th>
+                    <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Expiry Date</th>
+                    <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Applicable Type</th>
+                    
+                    <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- table body -->
+                <% couponList.forEach((coupons,index) => { %>
+                    <tr class="border-b border-[#3a3a3a] hover:bg-[#2a2a2a] transition-colors duration-200">
+                    <td class="px-6 py-4 whitespace-nowrap font-medium text-center text-gray-200"><%=startIndex + index%></td>
+                    <td class="px-6 py-4 whitespace-nowrap font-medium text-center text-gray-200"><%=coupons.couponCode%></td>
+                    <td class="px-6 py-4 whitespace-nowrap font-medium text-center text-gray-200"><%=coupons.discountType%></td>
+                    <td class="px-6 py-4 whitespace-nowrap font-medium text-center text-gray-200"><%=coupons.discountValue%></td>
+                    <td class="px-6 py-4 whitespace-nowrap font-medium text-center text-gray-200"><%=coupons.minSpend%></td>
+                    <td class="px-6 py-4 whitespace-nowrap font-medium text-center text-gray-200"><%=coupons.usageLimit%></td>
+                    <td class="px-6 py-4 whitespace-nowrap font-medium text-center text-gray-200"><%=coupons.usedCount%></td>
+                    <td class="px-6 py-4 whitespace-nowrap font-medium text-center text-gray-200"><%= new Date(coupons.startDate).toLocaleDateString() %></td>
+                    <td class="px-6 py-4 whitespace-nowrap font-medium text-center text-gray-200"><%=new Date(coupons.expiryDate).toLocaleDateString() %></td>
+                    <td class="px-6 py-4 whitespace-nowrap font-medium text-center truncate text-gray-200 <%= coupons.applicableType === 'category' ? 'text-orange-500' : '' %> <%= coupons.applicableType === 'all' ? 'text-green-500' : '' %>">
+                        <%= 
+                        coupons.applicableType === 'product' && coupons.applicableProduct ? coupons.applicableProduct.name : 
+                        coupons.applicableType === 'category' && coupons.applicableCategory ? coupons.applicableCategory.name : 
+                        coupons.applicableType === 'all' ? 'All Products' : 'N/A' 
+                        %>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap font-medium text-center flex items-center justify-center space-x-1">
+                        <a href="/admin/editCoupon/<%=coupons._id %>">
+                        <button class="bg-blue-700 hover:bg-blue-600 text-white px-2 py-1 rounded-lg" type="button">Edit</button>
+                        </a>
+                        <form action="/admin/deleteCoupon/<%=coupons._id %>" method="POST">
+                        <button class="bg-red-700 hover:bg-red-500 text-white px-2 py-1 rounded-lg">Delete</button>
+                        </form>
+                    </td>
+                    </tr>
+                <% }) %>
+                
+                </tbody>
+            </table>
+            </div>
+        </div>
+    
+        <!-- pagination -->
+        <div class="flex justify-center items-center space-x-2 mt-6">
+            <% for (let i=1; i<=totalPages; i++) { %>
+            <a href="?page=<%= i %>" class="px-4 py-2 <%= currentPage === i ? 'bg-blue-500 text-white' : 'bg-[#1f1f1f] text-gray-300' %> rounded-md hover:bg-[#2f2f2f] transition duration-200"><%= i %></a>
+            <% } %>
+        </div>
+        </div>
+    
+    </div>
+  <!-- last body ended -->
+  </div>

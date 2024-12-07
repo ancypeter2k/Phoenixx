@@ -1,0 +1,92 @@
+<!-- main Container/body -->
+<div class="bg-[#18191a] text-gray-200 m-0 p-0 flex flex-col md:flex-row min-h-screen">
+  <!-- Sidebar -->
+  <%- include("./sidebar.ejs")%>
+ <!-- Sidebar end --> 
+   <!-- Main Content -->
+     <!-- Navbar end -->      
+     <div class="flex-grow p-6 overflow-y-auto">
+      <h1 class="text-2xl font-semibold mb-4 text-gray-200">Add Category</h1>
+       
+       <div class="mt-8">
+         <form id="Categoryform"action="/admin/addCategory" method="POST" enctype="multipart/form-data" class="bg-[#242526] p-6 rounded-lg shadow-md">
+           <label for="name" class="block text-sm font-medium text-gray-300 mb-2">Category Name</label>
+           <input type="text" name="name" id="name" required class="input bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-gray-500" />
+          
+           <p id="categoryError" class="text-red-500 text-sm"aria-live="assertive"></p>
+ 
+           <%- include('../patch/messages.ejs') %>
+ 
+           <label for="image" class="block text-sm font-medium text-gray-300 mb-2">Upload Image</label>
+           <input type="file" name="image" id="image" accept="image/*" class="input bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-gray-500" onchange="previewImage(event)" />
+           
+           <div id="imagePreview" class="mt-4 mb-4 relative">
+             <img id="preview" src="" alt="Image Preview" class="hidden max-w-full max-h-96 object-contain rounded-md" />
+             <button id="removeImage" type="button" class="hidden absolute top-2 right-2 bg-red-500 text-white rounded-full p-1" onclick="removePreviewImage()">×</button>
+           </div>
+         
+           <div class="clear-both">
+             <button type="submit" onclick="sweet()" class="btn-primary mt-4 w-42 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Add Category</button>
+           </div>
+         </form>
+       </div>
+     </div>
+    
+ </div>
+ 
+ <script>
+   function previewImage(event) {
+     const preview = document.getElementById('preview');
+     const removeButton = document.getElementById('removeImage');
+     const file = event.target.files[0];
+     const reader = new FileReader();
+     
+     reader.onload = function(e) {
+       preview.src = e.target.result;
+       preview.classList.remove('hidden'); // Show the image
+       removeButton.classList.remove('hidden'); // Show the remove button
+     }
+     
+     if (file) {
+       reader.readAsDataURL(file);
+     }
+   }
+ 
+   function removePreviewImage() {
+     const preview = document.getElementById('preview');
+     const removeButton = document.getElementById('removeImage');
+     const fileInput = document.getElementById('image');
+ 
+     preview.src = '';
+     preview.classList.add('hidden');
+     removeButton.classList.add('hidden');
+     fileInput.value = ''; // Clear the file input
+   }
+ 
+   document.getElementById('Categoryform').addEventListener('submit', function(event) {
+     const name=document.getElementById('name').value;
+     const categoryError=document.getElementById('categoryError');
+ 
+     categoryError.textContent="";
+ 
+     
+ 
+     if(name.length<2){
+       categoryError.textContent="Category name must be at least 2 characters";
+       event.preventDefault();
+       return false;
+     }
+     return 
+ 
+   })
+
+   function sweet() {
+    Swal.fire({
+      title: 'Category Added!',
+      text: 'Your category has been successfully added.',
+      icon: 'success',
+      confirmButtonText: 'Okay'
+    });
+  }
+ </script>
+ 

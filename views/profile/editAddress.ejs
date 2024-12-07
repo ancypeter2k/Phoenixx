@@ -1,0 +1,195 @@
+<%- include('../patch/topper.ejs') %>
+<div class="bg-black text-white flex">
+  <%- include('./profileSidebar.ejs') %>
+  <div class="flex flex-col items-center justify-center p-6 w-full max-w-md mx-auto">
+    <h2 class="text-lg font-bold mb-4">Edit Address</h2>
+    <form class="w-full space-y-4" action="/profile/edit-address/<%=address._id%>" method="POST" id="add-address-form">
+    
+      <div class="flex flex-col space-y-1"> <!-- Grouping Name and Error Message -->
+        <input type="text" placeholder="Name" id="name" value="<%= address.name %>" name="name" class="p-2 rounded bg-[#1f1f1f] text-white" required />
+        <p id="nameError" class="text-red-500 text-sm" aria-live="assertive"></p>
+      </div>
+
+      <div class="flex flex-col space-y-1"> <!-- Grouping Mobile and Error Message -->
+        <input type="tel" placeholder="10-digit mobile number" id="mobile" value="<%= address.mobile %>" name="mobile" class="p-2 rounded bg-[#1f1f1f] text-white" required />
+        <p id="mobileError" class="text-red-500 text-sm" aria-live="assertive"></p>
+      </div>
+
+      <div class="flex flex-col space-y-1"> <!-- Grouping Building Name and Error Message -->
+        <input type="text" placeholder="Building Name" id="building" value="<%= address.buildingName %>" name="buildingName" class="p-2 rounded bg-[#1f1f1f] text-white" required />
+        <p id="buildingNameError" class="text-red-500 text-sm" aria-live="assertive"></p>
+      </div>
+
+      <div class="flex flex-col space-y-1"> <!-- Grouping Street and Error Message -->
+        <input type="text" placeholder="Street" id="street" value="<%= address.street %>" name="street" class="p-2 rounded bg-[#1f1f1f] text-white" required />
+        <p id="streetError" class="text-red-500 text-sm" aria-live="assertive"></p>
+      </div>
+
+      <div class="flex space-x-4"> <!-- Keeping City and State in a row -->
+        <div class="flex flex-col space-y-1 flex-1"> <!-- Grouping City and Error Message -->
+          <input type="text" placeholder="City" id="city" value="<%= address.city %>" name="city" class="p-2 rounded bg-[#1f1f1f] text-white" required />
+          <p id="cityError" class="text-red-500 text-sm" aria-live="assertive"></p>
+        </div>
+        <div class="flex flex-col space-y-1 flex-1"> <!-- Grouping State and Error Message -->
+          <input type="text" placeholder="State" id="state" value="<%= address.state %>" name="state" class="p-2 rounded bg-[#1f1f1f] text-white" required />
+          <p id="stateError" class="text-red-500 text-sm" aria-live="assertive"></p>
+        </div>
+      </div>
+
+      <div class="flex flex-col space-y-1"> <!-- Grouping Country and Error Message -->
+        <input type="text" placeholder="Country" id="country" value="<%= address.country %>"  name="country" class="p-2 rounded bg-[#1f1f1f] text-white" required />
+        <p id="countryError" class="text-red-500 text-sm" aria-live="assertive"></p>
+      </div>
+
+      <div class="flex flex-col space-y-1"> <!-- Grouping Pincode and Error Message -->
+        <input type="text" placeholder="Pincode" id="pincode" value="<%= address.pincode %>" name="pincode" pattern="[0-9]{6}" class="p-2 rounded bg-[#1f1f1f] text-white" required />
+        <p id="pincodeError" class="text-red-500 text-sm" aria-live="assertive"></p>
+      </div>
+
+      <label class="flex items-center">
+        <input type="checkbox" name="isDefault" class="mr-2" <%= address.isDefault ? 'checked' : '' %> />
+        <span class="text-white">Set as Default</span>
+      </label>
+      <div class="flex justify-between">
+        <button type="submit" onclick="sweet()" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition">
+          Save Changes
+        </button>
+        <a href="/profile/address" class="bg-red-500 text-white py-2 px-4 rounded">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+<%- include('../patch/bottom.ejs') %>
+<script>
+  const form = document.getElementById('add-address-form');
+  const nameInput = document.getElementById('name');
+  const mobileInput = document.getElementById('mobile');
+  const buildingNameInput = document.getElementById('building'); // Corrected ID
+  const streetInput = document.getElementById('street');
+  const cityInput = document.getElementById('city');
+  const stateInput = document.getElementById('state');
+  const countryInput = document.getElementById('country');
+  const pincodeInput = document.getElementById('pincode');
+
+  const nameError = document.getElementById('nameError');
+  const mobileError = document.getElementById('mobileError');
+  const buildingNameError = document.getElementById('buildingNameError');
+  const streetError = document.getElementById('streetError');
+  const cityError = document.getElementById('cityError');
+  const stateError = document.getElementById('stateError');
+  const countryError = document.getElementById('countryError');
+  const pincodeError = document.getElementById('pincodeError');
+
+  document.addEventListener('DOMContentLoaded', () => {
+    nameInput.addEventListener('input', validatename);
+    mobileInput.addEventListener('input', validatemobile); // Corrected function name
+    buildingNameInput.addEventListener('input', validatebuildingName);
+    streetInput.addEventListener('input', validatestreet);
+    cityInput.addEventListener('input', validatecity);
+    stateInput.addEventListener('input', validatestate);
+    countryInput.addEventListener('input', validatecountry);
+    pincodeInput.addEventListener('input', validatepincode);
+
+    function validatename() {
+      const name = nameInput.value.trim();
+      const regex = /^(?! )[A-Za-z ]{4,}$/;
+      if (name.length < 3 || name.length > 30 || !regex.test(name)) {
+        nameError.textContent = "Name must be at least 4 characters long and contain only alphabets.";
+      } else {
+        nameError.textContent = '';
+      }
+    }
+
+    function validatemobile() {
+      const mobile = mobileInput.value.trim();
+      if (mobile.length !== 10 || !/^\d+$/.test(mobile)) {
+        mobileError.textContent = 'Mobile number must be 10 digits.';
+      } else {
+        mobileError.textContent = '';
+      }
+    }
+
+    function validatebuildingName() {
+      const buildingName = buildingNameInput.value.trim();
+      if (buildingName.length < 3 || buildingName.length > 30 || !/^[A-Za-z\s]+$/.test(buildingName)) {
+        buildingNameError.textContent = "Building name must be between 3 and 30 characters and can only contain letters.";
+      } else {
+        buildingNameError.textContent = '';
+      }
+    }
+
+    function validatestreet() {
+      const street = streetInput.value.trim();
+      if (street.length < 3 || street.length > 30) {
+        streetError.textContent = 'Street must be between 3 and 30 characters.';
+      } else {
+        streetError.textContent = '';
+      }
+    }
+
+    function validatecity() {
+      const city = cityInput.value.trim();
+      if (city.length < 3 || city.length > 30 || !/^[A-Za-z\s]+$/.test(city)) {
+        cityError.textContent = 'City must be between 3 and 30 characters and can only contain letters.';
+      } else {
+        cityError.textContent = '';
+      }
+    }
+
+    function validatestate() {
+      const state = stateInput.value.trim();
+      if (state.length < 3 || state.length > 30 || !/^[A-Za-z\s]+$/.test(state)) {
+        stateError.textContent = 'State must be between 3 and 30 characters and can only contain letters.';
+      } else {
+        stateError.textContent = '';
+      }
+    }
+
+    function validatecountry() {
+      const country = countryInput.value.trim();
+      if (country.length < 3 || country.length > 30 || !/^[A-Za-z\s]+$/.test(country)) {
+        countryError.textContent = 'Country must be between 3 and 30 characters and can only contain letters.';
+      } else {
+        countryError.textContent = '';
+      }
+    }
+
+    function validatepincode() {
+      const pincode = pincodeInput.value.trim();
+      if (pincode.length !== 6 || !/^\d+$/.test(pincode)) {
+        pincodeError.textContent = 'Pincode must be 6 digits.';
+      } else {
+        pincodeError.textContent = '';
+      }
+    }
+
+    form.addEventListener('submit', function(event) {
+      validatename();
+      validatemobile(); // Ensure this matches the corrected function name
+      validatebuildingName();
+      validatestreet();
+      validatecity();
+      validatestate();
+      validatecountry();
+      validatepincode();
+
+      const hasErrors = nameError.textContent || mobileError.textContent || buildingNameError.textContent || streetError.textContent || cityError.textContent || stateError.textContent || countryError.textContent || pincodeError.textContent;
+      console.log('Validation Errors:', hasErrors);
+
+      if (hasErrors) {
+        event.preventDefault();
+        console.log('Form submission prevented due to validation errors.');
+      }
+    });
+  });
+
+  function sweet() {
+    Swal.fire({
+      title: 'Save Changes!',
+      text: 'Your address changes has been successfully added.',
+      icon: 'success',
+      confirmButtonText: 'Okay'
+    });
+  }
+
+</script>

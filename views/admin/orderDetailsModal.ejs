@@ -1,0 +1,73 @@
+<div class="max-w-2xl mx-auto bg-gray-800 text-white rounded-lg shadow-lg p-6">
+    <!-- Order Details Header -->
+    <h2 class="text-2xl font-bold mb-6 text-orange-500 border-b border-gray-600 pb-4">Order Details</h2>
+  
+    <!-- Order Information -->
+    <div class="mb-6 space-y-2">
+      <p><strong>Order ID:</strong> <%= order._id %></p>
+      <p><strong>Customer Name:</strong> <%= order.user.name %></p>
+      <p><strong>Customer Email:</strong> <%= order.user.email %></p>
+      <p><strong>Order Date:</strong> <%= order.orderedAt.toLocaleDateString() %></p>
+      <p><strong>Payment Method:</strong> <%= order.paymentMethod %></p>
+      <p><strong>Payment Status:</strong> <span class="font-semibold text-green-500"><%= order.paymentStatus %></span></p>
+    </div>
+  
+    <!-- Shipping Address -->
+    <% if (order.orderStatus === 'Cancelled') { %>
+      <h3 class="text-xl font-bold mt-6 mb-4 text-orange-500 border-b border-gray-600 pb-2">Shipping Address</h3>
+      <div class="bg-gray-700 rounded-md p-4 mb-6">
+        <p>Address is not available because the order is cancelled.</p>
+      </div>
+    <% } else if (order.address) { %>
+      <h3 class="text-xl font-bold mt-6 mb-4 text-orange-500 border-b border-gray-600 pb-2">Shipping Address</h3>
+      <div class="bg-gray-700 rounded-md p-4 mb-6">
+        <p><%= order.address.name%></p>
+        <p><%= order.address.buildingName %>, <%= order.address.street %></p>
+        <p><%= order.address.city %>, <%= order.address.state %>, <%= order.address.country %></p>
+        <p><%= order.address.pincode %></p>
+        <p>Phone: <%= order.address.mobile %></p>
+      </div>
+    <% } else { %>
+      <h3 class="text-xl font-bold mt-6 mb-4 text-orange-500 border-b border-gray-600 pb-2">Shipping Address</h3>
+      <div class="bg-gray-700 rounded-md p-4 mb-6">
+        <p>Address information is not available.</p>
+      </div>
+    <% } %>
+
+  
+    <!-- Items Table -->
+    <h3 class="text-xl font-bold mt-6 mb-4 text-orange-500 border-b border-gray-600 pb-2">Items</h3>
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-gray-700 rounded-lg divide-y divide-gray-600">
+        <thead>
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-orange-500 uppercase tracking-wider">Product</th>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-orange-500 uppercase tracking-wider">Quantity</th>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-orange-500 uppercase tracking-wider">Price</th>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-orange-500 uppercase tracking-wider">Status</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-600">
+          <% order.items.forEach(item => { %>
+            <tr class="hover:bg-gray-600">
+              <td class="px-6 py-4 whitespace-nowrap flex items-center">
+                <% if (item.product) { %>
+                  <img src="<%= item.product.image[1] %>" alt="<%= item.product.name %>" class="w-16 h-16 object-cover rounded-md mr-4">
+                  <p class="truncate text-sm font-medium"><%= item.product.name %></p>
+                <% } else { %>
+                  <p>Product not found</p>
+                <% } %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm"><%= item.quantity %></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm">₹<%= item.itemTotal %></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm"><%= item.itemStatus %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  
+    <!-- Total Amount -->
+    <p class="mt-6 text-xl font-bold text-orange-500"><strong>Total Amount:</strong> ₹<%= order.total %></p>
+  </div>
+  

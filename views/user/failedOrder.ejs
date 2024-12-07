@@ -1,0 +1,17 @@
+<div class="bg-black text-white min-h-screen flex flex-col"> 
+    <%- include('../patch/topper.ejs') %>
+    
+    <div class="flex-grow flex items-center justify-center">
+      <div class="text-center max-w-lg mx-4">
+        <h1 class="text-5xl font-bold mb-4">Order Failed</h1>
+        <p class="text-lg text-red-500 mb-6">Unfortunately, your order could not be processed. Please try again.</p>
+        
+        <div class="flex flex-col sm:flex-row justify-center mt-6 space-y-4 sm:space-y-0 sm:space-x-4">
+          <a href="/profile/orders" class="bg-gradient-to-r from-red-600 to-yellow-400 text-white py-3 px-8 rounded-xl hover:opacity-80 transition">Go to Order History</a>
+          <a href="/" class="bg-green-600 text-white py-3 px-8 rounded-xl hover:opacity-80 transition">Go to Home</a>
+        </div>
+      </div>
+    </div>
+  
+    <%- include('../patch/bottom.ejs') %>
+  </div>

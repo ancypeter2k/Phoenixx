@@ -1,0 +1,40 @@
+<body class="bg-cover bg-center bg-no-repeat flex items-center justify-center min-h-screen p-10 border" style="background-image: url('/images/Titan1.jpg'); background-size: cover; background-position: center;">
+
+    <!-- Sign In Card -->
+    <div class="w-full max-w-md p-8 space-y-8 bg-[#1f2d397b] rounded-lg shadow-lg text-gray-200">
+
+      <!-- Title -->
+      <h2 class="text-3xl font-extrabold text-center text-white drop-shadow-lg">
+        Admin Sign in
+    </h2>
+    
+      <!-- Form -->
+      <form action="/admin/login" method="POST" class="space-y-6">
+        
+        <!-- Email Input -->
+        <div>
+          <label for="email" class="block text-sm font-medium text-white-400">Email Address</label>
+          <input id="email" name="email" type="email"  class="w-full px-4 py-2 mt-1 bg-[#3a3b3c] text-gray-200 placeholder-white-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+        </div>
+        
+        <!-- Password Input -->
+        <div>
+          <label for="password" class="block text-sm font-medium text-white-400">Password</label>
+          <input id="password" name="password" type="password"  class="w-full px-4 py-2 mt-1 bg-[#3a3b3c] text-gray-200 placeholder-[linear-gradient-black-500] rounded-lg focus:outline-none focus:ring-2  focus:ring-red-500">
+        </div>
+
+        <% if (typeof message !== 'undefined') { %>
+          <div class="bg-red-500 shadow-md rounded-lg p-6 max-w-md mx-auto">
+              <p class="text-lg font-semibold"><%= message %></p>
+          </div>
+      <% } %>
+  
+        <!-- Sign In Button -->
+        <div>
+          <button type="submit" class="w-full py-2 bg-gradient-to-r from-red-600 to-black-700 hover:from-black-700 hover:to-red-600 text-white font-bold rounded-lg transition duration-100 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-500 focus:ring-opacity-50">
+            Sign In
+          </button>
+        </div>
+      </form>
+  </div>
+</body>

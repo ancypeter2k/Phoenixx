@@ -1,0 +1,83 @@
+<!-- Main container/body -->
+<div class="bg-black text-white">
+    <%- include ('../patch/topper.ejs') %>
+
+    <!-- Category name -->
+    <div class="bg-gradient-to-r flex justify-center items-center h-24 md:h-28 lg:h-28">
+        <h1 class="text-4xl md:text-4xl lg:text-5xl font-bold bg-orange-500 text-orange py-2 px-4 rounded-lg hover:bg-orange-700 transition text-center almendra-sc-regular">
+            <%= category.name %>
+        </h1>
+    </div>
+
+    <!-- Sort by option-->
+    <div class="flex justify-end mb-4 p-4">
+        <!-- Sorting option -->
+        <div class="flex items-center">
+            <label for="sort" class="text-white mr-2 font-semibold">Sort by:</label>
+            <select id="sort" class="bg-gray-800 text-white rounded-md p-2 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="sortProducts()">
+                <option value="latest" <%= sortOption === 'latest' ? 'selected' : '' %>>Latest</option>
+                <option value="asc" <%= sortOption === 'asc' ? 'selected' : '' %>>Price: Low to High</option>
+                <option value="desc" <%= sortOption === 'desc' ? 'selected' : '' %>>Price: High to Low</option>
+                <option value="a-z" <%= sortOption === 'a-z' ? 'selected' : '' %>>A-Z</option>
+                <option value="z-a" <%= sortOption === 'z-a' ? 'selected' : '' %>>Z-A</option>
+                <option value="discount" <%= sortOption === 'discount' ? 'selected' : '' %>>Discount</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Product cards -->
+    <section class="flex flex-wrap justify-center gap-14 mt-10 mb-5">
+        <% products.forEach(product => { %>
+            <div class="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
+                <a href="/product/<%= product._id %>">
+                    <img src="<%= product.image[0] %>" alt="<%= product.name %>" class="h-80 w-72 object-cover rounded-t-xl" />
+                </a>
+                <div class="px-4 py-3 w-72">
+                    <span class="text-gray-400 mr-3 uppercase text-xs">
+                        <%= product.category.name %>
+                    </span>
+                    <p class="text-lg font-bold text-black truncate block capitalize">
+                        <%= product.name %>
+                    </p>
+                    <div class="flex items-center">
+                        <% if (product.discountedPrice < product.price) { %>
+                            <span class="text-lg text-black font-bold cursor-auto mr-2">₹<%= product.discountedPrice.toFixed(0) %></span>
+                            <p class="text-sm font-semibold text-black cursor-auto my-3 line-through">₹<%= product.price %></p>
+                            <span class="text-sm text-yellow-500 ml-2 font-bold">
+                                <%= Math.round(((product.price - product.discountedPrice) / product.price) * 100) %>% OFF
+                            </span>
+                        <% } else { %>
+                            <p class="text-lg font-semibold text-black cursor-auto my-3">₹<%= product.price %></p>
+                        <% } %>
+                        <div class="ml-auto flex items-center gap-3">
+                            <button onclick="addToCart('<%= product._id %>')" class="text-black">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% }) %>
+    </section>
+
+    <!-- Pagination -->
+    <div class="flex justify-center items-center space-x-2 mt-6">
+        <% for (let i = 1; i <= totalPages; i++) { %>
+            <a href="?page=<%= i %>&sort=<%= sortOption %>"
+               class="px-4 py-2 <%= currentPage === i ? 'bg-blue-500 text-white' : 'bg-[#1f1f1f] text-gray-300' %> rounded-md hover:bg-[#2f2f2f] transition duration-200">
+                <%= i %>
+            </a>
+        <% } %>
+    </div>
+
+    <%- include ('../patch/bottom.ejs') %>
+</div>
+
+<script>
+    function sortProducts() {
+        const sortOption = document.getElementById('sort').value;
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set('sort', sortOption);
+        window.location.href = currentUrl.href;
+    }
+</script>

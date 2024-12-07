@@ -1,0 +1,234 @@
+<div class="bg-gradient-to-b from-gray-900 to-black text-white min-h-screen flex flex-col">
+  <%- include('../patch/topper.ejs') %>
+
+  <div class="container mx-auto py-12 px-4 md:px-8">
+    <!-- Header Section -->
+    <div class="text-center mb-12">
+      <h1 class="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-600 inline-block">
+        My Wishlist
+      </h1>
+      <% if (wishlist && wishlist.items.length > 0) { %>
+        <p class="text-gray-400 mt-2">Items you love, all in one place</p>
+      <% } %>
+    </div>
+
+    <% if (wishlist && wishlist.items.length > 0) { %>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
+        <% wishlist.items.forEach(item => { %>
+          <div id="wishlist-item-<%= item.product._id %>" 
+               class="group relative bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl p-4 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+            
+            <!-- Product Card Content -->
+            <div class="flex flex-col lg:flex-row items-center lg:items-start gap-6">
+              <!-- Image Container -->
+              <a href="/product/<%= item.product._id %>" 
+                 class="relative overflow-hidden rounded-lg w-full lg:w-48 h-48">
+                <img src="<%= item.product.image[0] %>" 
+                     alt="<%= item.product.name %>" 
+                     class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-300">
+                <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+              </a>
+
+              <!-- Product Details -->
+              <div class="flex-1 flex flex-col lg:flex-row justify-between items-center lg:items-start w-full">
+                <div class="text-center lg:text-left">
+                  <a href="/product/<%= item.product._id %>" 
+                     class="block mb-2 hover:text-yellow-400 transition-colors duration-200">
+                    <h3 class="text-xl font-bold"><%= item.product.name %></h3>
+                  </a>
+                  <span class="inline-block px-3 py-1 mb-2 text-sm bg-gray-700 text-gray-300 rounded-full">
+                    <%= item.product.category.name %>
+                  </span>
+                  <div class="mt-2">
+                    <span class="text-2xl font-bold text-yellow-400">₹<%= item.product.discountedPrice %></span>
+                    <% if (item.product.price > item.product.discountedPrice) { %>
+                      <span class="ml-2 text-sm text-gray-400 line-through">₹<%= item.product.price %></span>
+                    <% } %>
+                  </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-3 mt-4 lg:mt-0">
+                  <button type="button" 
+                          class="move-to-cart flex items-center justify-center gap-2 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black px-6 py-2 rounded-lg font-semibold hover:from-yellow-500 hover:to-yellow-700 transition-all duration-300 transform hover:scale-105"
+                          data-product-id="<%= item.product._id %>">
+                    <i class="fas fa-cart-plus"></i>
+                    <span>Add to Cart</span>
+                  </button>
+                  <button type="button" 
+                          class="delete-wishlist-item flex items-center justify-center gap-2 bg-transparent border border-red-500 text-red-500 px-6 py-2 rounded-lg font-semibold hover:bg-red-500 hover:text-white transition-all duration-300"
+                          data-product-id="<%= item.product._id %>">
+                    <i class="fas fa-trash"></i>
+                    <span>Remove</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } else { %>
+    <!-- Empty State -->
+      <div class="flex flex-col items-center justify-center min-h-[400px] bg-gradient-to-r from-gray-800 to-gray-700 rounded-2xl p-8">
+        <div class="text-orange-400 mb-6">
+          <i class="fas fa-heart text-6xl"></i>
+        </div>        
+        <h2 class="text-2xl md:text-3xl font-bold text-center mb-3">Your wishlist is waiting to be filled!</h2>
+        <p class="text-gray-400 text-center mb-8">Save items you love for later!</p>
+        <a href="/shop/allProducts" 
+           class="inline-flex items-center gap-2 bg-gradient-to-r from-orange-300 to-orange-500 text-black px-8 py-3 rounded-lg font-semibold hover:from-orange-400 hover:to-orange-600 transition-all duration-300 transform hover:scale-105">
+          <i class="fas fa-shopping-bag"></i>
+          <span>Start Shopping</span>
+        </a>
+      </div>
+    <% } %>
+  </div>
+
+  <%- include('../patch/bottom.ejs') %>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // Get all delete and move-to-cart buttons
+  const deleteButtons = document.querySelectorAll('.delete-wishlist-item');
+  const moveToCartButtons = document.querySelectorAll('.move-to-cart');
+
+  // Event listener for deleting wishlist items
+  deleteButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const productId = button.dataset.productId;
+      deleteWishlistItem(productId);
+    });
+  });
+
+  // Event listener for moving items to cart
+  moveToCartButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const productId = button.dataset.productId;
+      moveToCart(productId);
+    });
+  });
+
+  function deleteWishlistItem(productId) {
+    Swal.fire({
+      title: 'Remove from Wishlist?',
+      text: "This item will be removed from your wishlist",
+      icon: 'warning',
+      iconColor: '#EF4444',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, remove it',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#EF4444',
+      cancelButtonColor: '#4B5563',
+      background: '#1F2937',
+      color: '#fff',
+      customClass: {
+        popup: 'rounded-xl border border-gray-700',
+      }
+    }).then(result => {
+      if (result.isConfirmed) {
+        fetch(`/wishlist/delete/${productId}`, {
+          method: 'POST',
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.error) {
+              showAlert('Error', data.error, 'error');
+            } else {
+              const itemElement = document.getElementById(`wishlist-item-${productId}`);
+              if (itemElement) {
+                itemElement.classList.add('opacity-0', 'transform', 'scale-95');
+                setTimeout(() => {
+                  itemElement.remove();
+                }, 300);
+              }
+              updateWishlistDisplay(data);
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            showAlert('Error', 'An error occurred. Please try again.', 'error');
+          });
+      }
+    });
+  }
+
+  function moveToCart(productId) {
+    const button = document.querySelector(`.move-to-cart[data-product-id="${productId}"]`);
+    button.disabled = true;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+
+    fetch(`/wishlist/move-to-cart/${productId}`, {
+      method: 'POST',
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          showAlert('Error', data.error, 'error');
+          button.disabled = false;
+          button.innerHTML = '<i class="fas fa-cart-plus"></i> Add to Cart';
+        } else {
+          const itemElement = document.getElementById(`wishlist-item-${productId}`);
+          if (itemElement) {
+            itemElement.classList.add('opacity-0', 'transform', 'scale-95');
+            setTimeout(() => {
+              itemElement.remove();
+            }, 300);
+          }
+          showSuccessToast('Item moved to cart successfully!');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showAlert('Error', 'An error occurred. Please try again.', 'error');
+        button.disabled = false;
+        button.innerHTML = '<i class="fas fa-cart-plus"></i> Add to Cart';
+      });
+  }
+
+  function updateWishlistDisplay(data) {
+    const countElement = document.getElementById('wishlist-count');
+    if (countElement) {
+      countElement.textContent = data.itemCount;
+    }
+    if (data.itemCount === 0) {
+      setTimeout(() => {
+        location.reload();
+      }, 300);
+    }
+  }
+
+  function showSuccessToast(message) {
+    Swal.fire({
+      icon: 'success',
+      title: 'Success!',
+      text: message,
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      background: '#1F2937',
+      color: '#fff',
+      iconColor: '#10B981',
+      customClass: {
+        popup: 'rounded-lg border border-gray-700',
+      }
+    });
+  }
+
+  function showAlert(title, text, icon) {
+    Swal.fire({
+      title: title,
+      text: text,
+      icon: icon,
+      background: '#1F2937',
+      color: '#fff',
+      confirmButtonColor: '#10B981',
+      customClass: {
+        popup: 'rounded-lg border border-gray-700',
+      }
+    });
+  }
+});
+</script>

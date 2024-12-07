@@ -1,0 +1,214 @@
+<div class="bg-[#18191a] text-gray-200 m-0 p-0 flex flex-col md:flex-row min-h-screen">
+    <!-- Sidebar -->
+    <%- include("./sidebar.ejs") %>
+    <!-- Sidebar end -->
+
+    <!-- Products Adding forms -->
+    <div class="container mx-auto py-6">
+        <h1 class="text-2xl font-semibold mb-4 text-gray-200">Add Product</h1>
+
+        <form action="/admin/addProducts" method="POST" enctype="multipart/form-data" id="product-form"
+            class="bg-[#242526] p-6 rounded shadow-md">
+            <%- include('../patch/messages.ejs') %>
+            <div class="mb-4">
+                <label class="block text-gray-300">Product Name</label>
+                <input type="text" id="productName" name="productName" required
+                    class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" />
+                    <p id="productNameError" class="text-red-500 text-sm"aria-live="assertive"></p>
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-300">Description</label>
+                <textarea id="description" name="description" required placeholder="Description here"
+                    class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4"></textarea>
+                    <p id="descriptionError" class="text-red-500 text-sm"aria-live="assertive"></p>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-300">Category</label>
+                <select id="category" name="category"
+                    class="input w-full bg-[#1f1f1f] text-white border border-gray-600 rounded-md p-2 mb-4">
+                    <option value="">Select Category</option>
+                    <% categorylist.forEach((category) => { %>
+                    <option value="<%= category._id %>"><%= category.name %></option>
+                    <% }); %>
+                </select>
+                <p id="categoryError" class="text-red-500 text-sm"aria-live="assertive"></p>
+            </div>
+            
+    <!-- Price and Discount -->
+          <div class="mb-4">
+            <label class="block text-gray-300">Price</label>
+            <input type="text" id="price" name="price"  required class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" oninput="calculateDiscountedPrice()" />
+            <p id="priceError" class="text-red-500 text-sm" aria-live="assertive"></p>
+          </div>
+  
+          <div class="mb-4">
+            <label class="block text-gray-300">Discount (%)</label>
+            <input type="text" id="discount" name="discount"  required class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" oninput="calculateDiscountedPrice()" />
+            <p id="discountError" class="text-red-500 text-sm" aria-live="assertive"></p>
+          </div>
+  
+          <div class="mb-4">
+            <label class="block text-gray-300">Discounted Price</label>
+            <input type="text" id="discountedPrice" name="discountedPrice" readonly class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" />
+          </div>
+  
+            
+            <div class="mb-4">
+                <label class="block text-gray-300">Stock</label>
+                <input type="text" id="stock" name="stock" required
+                    class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" />
+                    <p id="stockError" class="text-red-500 text-sm"aria-live="assertive"></p>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-300">SKU</label>
+                <input type="text" id="SKU" name="SKU" required
+                    class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" />
+                    <p id="SKUError" class="text-red-500 text-sm"aria-live="assertive"></p>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-300">Images</label>
+                <input type="file" id="imageInput" name="image" accept="image/*" multiple required
+                    class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4"
+                    onchange="previewImages(event)" />
+                <div class="mt-2 flex flex-wrap " id="imagePreviewContainer"></div> <!-- Container for multiple previews -->
+                <p id="imageError" class="text-red-500 text-sm"aria-live="assertive"></p>
+            </div>
+
+            <!-- Cropper modal -->
+            <div id="cropperModal"
+                class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+                <div class="bg-white p-4 rounded">
+                    <div class="w-full h-96">
+                        <img id="croppingImage" src="" alt="Image to Crop" class="w-full h-full object-cover" />
+                    </div>
+                    <button id="cropConfirm" class="bg-green-500 text-white px-4 py-2 mt-2 rounded"type="button"
+                        onclick="cropImage()">
+                        Confirm Crop
+                    </button>
+                    <button id="cropCancel" class="bg-red-500 text-white px-4 py-2 mt-2 rounded"
+                        onclick="closeCropModal()">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+
+            
+
+            <button type="submit" onclick="sweet()" class="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition">
+                Add Product
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Validate SKU
+    function validateSKU() {
+        const skuInput = document.getElementById('SKU');
+        const skuError = document.getElementById('SKUError');
+        const skuRegex = /^[a-zA-Z0-9\-]+$/;
+  
+        if (!skuRegex.test(skuInput.value)) {
+            skuError.textContent = 'Invalid SKU format. Only letters, numbers, and dashes are allowed.';
+        } else {
+            skuError.textContent = '';
+        }
+    }
+  
+    // Preview Images
+    function previewImages(event) {
+              const files = event.target.files;
+              const previewContainer = document.getElementById('imagePreviewContainer');
+              previewContainer.innerHTML = ''; // Clear previous previews
+              const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp', 'image/svg+xml'];
+              const maxSize = 10 * 1024 * 1024; // 10 MB
+  
+              for (let file of files) {
+                  if (!allowedTypes.includes(file.type)) {
+                      document.getElementById('imageError').textContent = `Invalid file type ${file.name}. Only jpeg, png, jpg, gif, webp, and svg are allowed.`;
+                      return;
+                  }
+  
+                  if (file.size > maxSize) {
+                      document.getElementById('imageError').textContent = `File ${file.name} is too large. Maximum size is 10 MB.`;
+                      return;
+                  }
+  
+                  const reader = new FileReader();
+                  reader.onload = function (e) {
+                      const img = document.createElement('img');
+                      img.src = e.target.result;
+                      img.alt = file.name;
+                      img.classList.add('h-32', 'w-32', 'object-cover', 'm-2', 'border', 'border-gray-600');
+                      previewContainer.appendChild(img);
+                  };
+                  reader.readAsDataURL(file);
+              }
+              document.getElementById('imageError').textContent = '';
+          }
+  
+  
+    // Calculate Discounted Price
+    function calculateDiscountedPrice() {
+        const price = parseFloat(document.getElementById('price').value);
+        const discount = parseFloat(document.getElementById('discount').value);
+        const discountedPriceField = document.getElementById('discountedPrice');
+  
+        if (!isNaN(price) && !isNaN(discount) && price > 0 && discount >= 0 && discount <= 100) {
+            const discountedPrice = price - (price * discount / 100);
+            discountedPriceField.value = discountedPrice.toFixed(2);
+        } else {
+            discountedPriceField.value = '';
+        }
+    }
+  
+    // Validate Form before submission
+    function validateForm() {
+        let isValid = true;
+  
+        // Check if the price is a valid number
+        const price = document.getElementById('price');
+        const priceError = document.getElementById('priceError');
+        if (isNaN(price.value) || parseFloat(price.value) <= 0) {
+            priceError.textContent = 'Please enter a valid price.';
+            isValid = false;
+        } else {
+            priceError.textContent = '';
+        }
+  
+        // Check if the discount is a valid number
+        const discount = document.getElementById('discount');
+        const discountError = document.getElementById('discountError');
+        if (isNaN(discount.value) || parseFloat(discount.value) < 0 || parseFloat(discount.value) > 100) {
+            discountError.textContent = 'Please enter a valid discount between 0 and 100.';
+            isValid = false;
+        } else {
+            discountError.textContent = '';
+        }
+  
+        // Check if the SKU format is valid
+        const skuError = document.getElementById('SKUError');
+        const skuValue = document.getElementById('SKU').value;
+        const skuRegex = /^[a-zA-Z0-9\-]+$/;
+        if (!skuRegex.test(skuValue)) {
+            skuError.textContent = 'Invalid SKU format. Only letters, numbers, and dashes are allowed.';
+            isValid = false;
+        } else {
+            skuError.textContent = '';
+        }
+  
+        return isValid;
+    }
+
+    function sweet() {
+    Swal.fire({
+      title: 'Product Added!',
+      text: 'Your product has been successfully added.',
+      icon: 'success',
+      confirmButtonText: 'Okay'
+    });
+  }
+  </script>

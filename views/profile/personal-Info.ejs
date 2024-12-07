@@ -1,0 +1,127 @@
+<%- include('../patch/topper.ejs') %>
+<div class="bg-black text-white flex">
+
+   <!-- Sidebar for profile -->
+   <%- include('./profileSidebar.ejs')%>
+   <!-- Sidebar end -->
+
+   <!-- Personal Info -->
+ <main class="flex-1 p-4 ">
+    <form id="profileForm" action="/profile/personal-info" method="post" class="flex flex-col mb-4">
+        <h2 class="text-lg font-bold">Personal Information</h2>
+
+        <!-- flash message  -->
+        <%- include('../patch/messages.ejs') %>
+        
+        <div class="mb-4 w-1/2 mt-2"> 
+            <label for="nameInput">Name:</label>
+            <input type="text"  name="name" id="nameInput" placeholder="Name" value="<%= user.name %>" class="bg-[#1f1f1f] text-white p-2 rounded-lg w-full" disabled />
+            <p id="nameError" class="text-red-200 text-sm aria-live="assertive"></p>
+        </div>
+       
+        <div class="mb-4 w-1/2"> 
+            <label for="mobileInput">Mobile No:</label>
+            <input type="tel" id="mobileInput" name="mobile" placeholder="Mobile No" value="<%= user.mobile %>" class="bg-[#1f1f1f] text-white p-2 rounded-lg w-full" disabled />
+            <p id="mobileError" class="text-red-200 text-sm aria-live="assertive"></p>
+        </div>
+
+        <div class="mb-4 w-1/2"> 
+            <label for="emailInput" class="opacity-20">Email:</label>
+            <input type="email" id="emailInput" name="email" placeholder="Email" value="<%= user.email %>" class="bg-[#2a2a2a] text-white p-2 rounded-lg w-full cursor-not-allowed opacity-20" disabled />
+            <p id="emailError" class="text-red-200 text-sm aria-live="assertive"></p>
+        </div>
+    
+    <button id="editButton" type="button"  class="bg-yellow-400 text-black py-2 px-4 rounded-lg hover:bg-yellow-500 transition duration-200 w-32">
+        Edit
+    </button>
+    <button id="submitButton" type="submit" class="bg-yellow-400 text-black py-2 px-4 rounded-lg hover:bg-yellow-500 transition duration-200 w-32 hidden">
+        Submit
+    </button>
+    </form>
+ </main>
+ <!-- Personal Info end -->
+</div>
+  
+  
+<script>
+    const editButton = document.getElementById('editButton');
+    const submitButton = document.getElementById('submitButton');
+    
+    editButton.addEventListener('click', () => {
+        const inputs = [document.getElementById('nameInput'), document.getElementById('mobileInput')];
+        inputs.forEach(input => {
+            input.disabled = !input.disabled; // Toggle disabled state
+        });
+        editButton.classList.toggle('hidden');
+        submitButton.classList.toggle('hidden');
+    });
+
+
+    const form = document.getElementById('profileForm')
+    const nameInput = document.getElementById('nameInput')
+    const emailInput = document.getElementById('emailInput')
+    const mobileInput = document.getElementById('mobileInput')
+    const nameError = document.getElementById('nameError')
+    const emailError = document.getElementById('emailError')
+    const mobileError = document.getElementById('mobileError')
+
+    const namePattern = /^(?! )[A-Za-z ]{4,}$/;
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const mobilePattern = /^[0-9]{10}$/;
+
+    // Real-time name validation
+    nameInput.addEventListener('input', function () {
+        if (!namePattern.test(nameInput.value)) {
+            nameError.textContent = "Name must be at least 4 characters long and contain only alphabets.";
+        } else {
+            nameError.textContent = "";
+        }
+    })
+
+    // Real-time email validation
+    emailInput.addEventListener('input',function () {
+        if (!emailPattern.test(emailInput.value)) {
+            emailError.textContent = "Please enter a valid email address.";
+        } else {
+            emailError.textContent = "";
+        }
+    })
+
+    // Real-time mobile validation
+    mobileInput.addEventListener('input',function () {
+        if (!mobilePattern.test(mobileInput.value)) {
+            mobileError.textContent = "Please enter a valid mobile number.";
+        } else {
+            mobileError.textContent = "";
+        }
+    })
+
+    // Final validation on form submit
+    form.addEventListener('submit',function (event) {
+        let valid = true;
+
+        if (!namePattern.test(nameInput.value)) {
+            nameError.textContent = "Name must be at least 4 characters long and contain only alphabets.";
+            valid = false;
+        }
+
+        if (!emailPattern.test(emailInput.value)) {
+            emailError.textContent = "Please enter a valid email address.";
+            valid = false;
+        }
+
+        if (!mobilePattern.test(mobileInput.value)) {
+            mobileError.textContent = "Please enter a valid mobile number.";
+            valid = false;
+        }
+
+        // Prevent form submission if validation fails
+        if(!valid) {
+            event.preventDefault();
+        }
+    })
+
+
+
+</script>
+<%- include('../patch/bottom.ejs') %>

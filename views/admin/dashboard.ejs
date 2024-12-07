@@ -1,0 +1,294 @@
+<!-- Main Container/Body -->
+<div class="bg-[#18191a] text-gray-200 m-0 p-0 flex max-h-screen">
+    <!-- Sidebar -->
+    <%- include("./sidebar.ejs") %>
+    <!-- Sidebar end -->
+  
+  <!-- Main Content -->
+  <div class="bg-[#18191a] text-gray-200 m-0 p-0 flex flex-col min-h-screen">
+    <div class="flex-grow flex-shrink-0 overflow-hidden">
+    <!-- Navbar -->
+    <nav class="bg-[#18191a] h-11 shadow-md flex items-center justify-center px-6">
+      <div class="relative w-2/5">
+        <input type="text" placeholder="Search" class="bg-[#242526] text-gray-200 text-sm px-4 py-2 rounded-full w-full pr-10 focus:outline-none focus:ring-2 focus:ring-gray-500">
+        <button class="absolute right-2 top-1/2 transform -translate-y-1/2" aria-label="Search">
+          <i class="fas fa-search text-gray-400"></i>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="flex-grow p-6 overflow-y-auto bg-[#18191a] text-gray-200">
+      <h1 class="text-xl font-bold text-white mb-4">Sales Summary</h1>
+
+      <!-- Filter Options -->
+      <div class="mb-4">
+        <label class="text-white mr-2">Filter by:</label>
+        <select id="filterType" class="bg-[#242526] text-gray-200" onchange="updateFilter()">
+          <option value="daily" <%= filterType === 'daily' ? 'selected' : '' %>>Daily</option>
+          <option value="weekly" <%= filterType === 'weekly' ? 'selected' : '' %>>Weekly</option>
+          <option value="monthly" <%= filterType === 'monthly' ? 'selected' : '' %>>Monthly</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Card 1 -->
+        <div class="bg-[#242526] rounded-lg shadow-md p-6">
+          <h2 class="text-xl font-bold text-white mb-4">Total Revenue</h2>
+          <p class="text-3xl font-bold">₹<%= totalRevenue %></p>
+          <p class="text-sm text-gray-400">Last <%= filterType %></p>
+        </div>
+        <!-- Card 2 -->
+        <div class="bg-[#242526] rounded-lg shadow-md p-6">
+          <h2 class="text-xl font-bold text-white mb-4">Total Orders</h2>
+          <p class="text-3xl font-bold"><%= totalOrders %></p>
+          <p class="text-sm text-gray-400">Last <%= filterType %></p>
+        </div>
+        <!-- Card 3 -->
+        <div class="bg-[#242526] rounded-lg shadow-md p-6">
+          <h2 class="text-xl font-bold text-white mb-4">Total Products Sold</h2>
+          <p class="text-3xl font-bold"><%= totalProductsSold %></p>
+          <p class="text-sm text-gray-400">Last <%= filterType %></p>
+        </div>
+        <!-- Card 4 -->
+        <div class="bg-[#242526] rounded-lg shadow-md p-6">
+          <h2 class="text-xl font-bold text-white mb-4">Total Customers</h2>
+          <p class="text-3xl font-bold"><%= totalCustomers %></p>
+          <p class="text-sm text-gray-400">Last <%= filterType %></p>
+        </div>
+      </div>
+    
+    <!-- Item sold Chart -->
+<div class="bg-[#242526] grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6 p-6 rounded-lg">
+    <!-- First Chart -->
+    <div>
+        <h2 class="text-xl font-bold text-white mb-4">Items Sold</h2>
+        <canvas id="ordersChart" class="w-full h-auto"></canvas>
+    </div>
+
+    <!-- Second Chart -->
+    <div>
+        <h2 class="text-xl font-bold text-white mb-4">Orders Sold</h2>
+        <canvas id="ordersChart1" class="w-full h-auto"></canvas>
+    </div>
+</div>
+
+
+  <!-- Chart Section -->
+      <div class="bg-[#242526] rounded-lg shadow-md p-6">
+        <!-- Revenue Chart -->
+        <div class="bg-[#242526] rounded-lg shadow-md p-6">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold text-white">Revenue Timeline</h2>
+          </div>
+          <canvas id="revenueChart"></canvas>
+        </div>
+
+    <!-- Best Selling Products -->
+    <div class="bg-[#242526] rounded-lg shadow-md p-6 mt-6">
+      <h2 class="text-xl font-bold text-white mb-4">Best Selling Products</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+        <% bestSellingProducts.forEach(product => { %>
+          <div class="bg-[#2a2a2a] rounded-lg p-4">
+            <img src="<%= product.productImage[1] %>" alt="<%= product.productName %>" 
+                class="w-full h-48 object-cover rounded-lg mb-3">
+            <div class="space-y-2">
+              <h3 class="text-lg font-semibold text-white line-clamp-2"><%= product.productName %></h3>
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-400">Sold:</span>
+                <span class="text-green-400 font-semibold"><%= product.totalSold %></span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-400">Revenue:</span>
+                <span class="text-green-400 font-semibold">₹<%= product.totalRevenue.toLocaleString() %></span>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <!-- Best Selling Categories -->
+    <div class="bg-[#242526] rounded-lg shadow-md p-6 mt-6">
+      <h2 class="text-xl font-bold text-white mb-4">Best Selling Categories</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+        <% bestSellingCategories.forEach(category => { %>
+          <div class="bg-[#2a2a2a] rounded-lg p-4">
+            <img src="<%= category.categoryImage %>" alt="<%= category.categoryName %>" 
+                class="w-full h-48 object-cover rounded-lg mb-3">
+            <div class="space-y-2">
+              <h3 class="text-lg font-semibold text-white"><%= category.categoryName %></h3>
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-400">Sold:</span>
+                <span class="text-green-400 font-semibold"><%= category.totalSold %></span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-400">Revenue:</span>
+                <span class="text-green-400 font-semibold">₹<%= category.totalRevenue.toLocaleString() %></span>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  
+  const salesData = JSON.parse('<%- JSON.stringify(salesDataChart || []) %>');
+   // Prepare chart data
+   const labels = Array.isArray(salesData) ? salesData.map(item => item._id) : [];
+   const revenueData = Array.isArray(salesData) ? salesData.map(item => item.revenue) : [];
+   const ordersData = Array.isArray(salesData) ? salesData.map(item => item.orders) : [];
+   const itemsSoldData = Array.isArray(salesData) ? salesData.map(item => item.itemsSold) : [];
+
+   // Set up color scheme
+   const colors = {
+     revenue: {
+       primary: 'rgba(52, 211, 153, 0.2)',
+       border: 'rgba(52, 211, 153, 1)'
+     },
+     orders: {
+       primary: 'rgba(99, 102, 241, 0.2)',
+       border: 'rgba(99, 102, 241, 1)'
+     },
+     items: {
+       primary: 'rgba(251, 146, 60, 0.2)',
+       border: 'rgba(251, 146, 60, 1)'
+     }
+   };
+
+   // Revenue Chart
+   new Chart(document.getElementById('revenueChart').getContext('2d'), {
+     type: 'line',
+     data: {
+       labels,
+       datasets: [{
+         label: 'Revenue (₹)',
+         data: revenueData,
+         backgroundColor: colors.revenue.primary,
+         borderColor: colors.revenue.border,
+         borderWidth: 2,
+         tension: 0.3,
+         fill: true
+       }]
+     },
+     options: {
+       responsive: true,
+       plugins: {
+         legend: {
+           position: 'top',
+           labels: { color: '#e5e7eb' }
+         },
+         title: {
+           display: true,
+           text: `Revenue Timeline`,
+           color: '#e5e7eb'
+         }
+       },
+       scales: {
+         y: {
+           beginAtZero: true,
+           grid: {
+             color: 'rgba(255, 255, 255, 0.1)'
+           },
+           ticks: { color: '#e5e7eb' }
+         },
+         x: {
+           grid: {
+             color: 'rgba(255, 255, 255, 0.1)'
+           },
+           ticks: { color: '#e5e7eb' }
+         }
+       }
+     }
+   });
+
+   // Items Chart
+   new Chart(document.getElementById('ordersChart').getContext('2d'), {
+     type: 'bar',
+     data: {
+       labels,
+       datasets: [
+         {
+           label: 'Items Sold',
+           data: itemsSoldData,
+           backgroundColor: colors.items.primary,
+           borderColor: colors.items.border,
+           borderWidth: 2
+         }
+       ]
+     },
+     options: {
+       responsive: true,
+       plugins: {
+         legend: {
+           position: 'top',
+           labels: { color: '#e5e7eb' }
+         }
+       },
+       scales: {
+         y: {
+           beginAtZero: true,
+           grid: {
+             color: 'rgba(255, 255, 255, 0.1)'
+           },
+           ticks: { color: '#e5e7eb' }
+         },
+         x: {
+           grid: {
+             color: 'rgba(255, 255, 255, 0.1)'
+           },
+           ticks: { color: '#e5e7eb' }
+         }
+       }
+     }
+   });
+   // Orders Chart
+   new Chart(document.getElementById('ordersChart1').getContext('2d'), {
+     type: 'bar',
+     data: {
+       labels,
+       datasets: [
+         {
+           label: 'Orders',
+           data: ordersData,
+           backgroundColor: colors.orders.primary,
+           borderColor: colors.orders.border,
+           borderWidth: 2
+         }
+       ]
+     },
+     options: {
+       responsive: true,
+       plugins: {
+         legend: {
+           position: 'top',
+           labels: { color: '#e5e7eb' }
+         }
+       },
+       scales: {
+         y: {
+           beginAtZero: true,
+           grid: {
+             color: 'rgba(255, 255, 255, 0.1)'
+           },
+           ticks: { color: '#e5e7eb' }
+         },
+         x: {
+           grid: {
+             color: 'rgba(255, 255, 255, 0.1)'
+           },
+           ticks: { color: '#e5e7eb' }
+         }
+       }
+     }
+   });
+
+function updateFilter() {
+  const filterType = document.getElementById('filterType').value;
+  window.location.href = `?filterType=${filterType}`;
+}
+</script>

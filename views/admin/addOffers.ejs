@@ -1,0 +1,129 @@
+<div class="bg-[#18191a] text-gray-200 m-0 p-0 flex flex-col md:flex-row min-h-screen">
+    <!-- Sidebar -->
+    <%- include("./sidebar.ejs") %>
+    <!-- Sidebar end -->
+
+    <!-- Offer Adding Form -->
+    <div class="container mx-auto py-6">
+        <form action="/admin/addOffers" method="POST" id="offer-form" class="bg-[#242526] p-6 rounded shadow-md">
+            <%- include('../patch/messages.ejs') %>
+            <!-- Page Header -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-200">Add Offer</h1>
+            </div>
+
+            <!-- Add Offer Form -->
+            <div class="mb-8 bg-[#3a3b3c] rounded-xl shadow-md">
+                <div class="p-6">
+                    <h2 class="text-xl font-semibold text-gray-200 mb-6">Add New Offer</h2>
+                    <form id="offerForm" class="space-y-6" action="/admin/addOffers" method="POST">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <!-- Offer Name -->
+                            <div>
+                                <label for="offerName" class="block text-sm font-medium text-gray-300 mb-2">
+                                    Offer Name
+                                </label>
+                                <input type="text" id="offerName" name="offerName" required
+                                    class="text-lg rounded-lg border border-gray-600 bg-[#242526] text-gray-200 px-4 py-2 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors duration-200"
+                                    placeholder="Enter offer name" />
+                                <p id="offerNameError" class="mt-2 text-sm text-red-500 hidden"></p>
+                            </div>
+
+                            <!-- Category Selection -->
+                            <div>
+                                <label for="category" class="block text-sm font-medium text-gray-300 mb-2">
+                                    Category
+                                </label>
+                                <select id="category" name="category"
+                                    class="w-20 text-lg rounded-lg border border-gray-600 bg-[#242526] text-gray-200 px-4 py-2 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors duration-200">
+                                    <option value="">Select Category</option>
+                                    <% offerCategory.forEach((category) => { %>
+                                    <option value="<%= category._id %>"><%= category.name %></option>
+                                    <% }); %>
+                                </select>
+                                <p id="categoryError" class="mt-2 text-sm text-red-500 hidden"></p>
+                            </div>
+
+                            <!-- Discount Percentage -->
+                            <div>
+                                <label for="offerDiscount" class="block text-sm font-medium text-gray-300 mb-2">
+                                    Discount Percentage (%)
+                                </label>
+                                <div class="relative">
+                                    <input type="number" id="offerDiscount" name="offerDiscount" required
+                                        class="w-20 text-lg rounded-lg border border-gray-600 bg-[#242526] text-gray-200 px-4 py-2 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors duration-200"
+                                        placeholder="Enter percentage" min="0" max="100" />
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                                        <span class="text-gray-400"></span>
+                                    </div>
+                                </div>
+                                <p id="discountError" class="mt-2 text-sm text-red-500 hidden"></p>
+                            </div>
+
+                            <!-- Status -->
+                            <div>
+                                <label for="status" class="block text-sm font-medium text-gray-300 mb-2">
+                                    Status
+                                </label>
+                                <select id="status" name="status"
+                                    class="w-20 text-lg rounded-lg border border-gray-600 bg-[#242526] text-gray-200 px-4 py-2 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors duration-200">
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                </select>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="flex justify-start space-y-6">
+                                <button type="submit"
+                                    class="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition duration-200 ease-in-out">
+                                    Add Offer
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById("offer-form").addEventListener("submit", function (event) {
+        let isValid = true;
+
+        // Validate Offer Name
+        const offerName = document.getElementById("offerName").value.trim();
+        if (offerName === "") {
+            isValid = false;
+            document.getElementById("offerNameError").textContent = "Offer Name is required!";
+            document.getElementById("offerNameError").classList.remove("hidden");
+        } else {
+            document.getElementById("offerNameError").classList.add("hidden");
+        }
+
+        // Validate Category
+        const category = document.getElementById("category").value;
+        if (category === "") {
+            isValid = false;
+            document.getElementById("categoryError").textContent = "Category is required!";
+            document.getElementById("categoryError").classList.remove("hidden");
+        } else {
+            document.getElementById("categoryError").classList.add("hidden");
+        }
+
+        // Validate Discount Percentage
+        const discount = document.getElementById("offerDiscount").value.trim();
+        if (discount === "" || isNaN(discount) || discount < 0 || discount > 100) {
+            isValid = false;
+            document.getElementById("discountError").textContent = "Enter a valid percentage between 0 and 100!";
+            document.getElementById("discountError").classList.remove("hidden");
+        } else {
+            document.getElementById("discountError").classList.add("hidden");
+        }
+
+        // Prevent form submission if validation fails
+        if (!isValid) {
+            event.preventDefault();
+        }
+    });
+</script>

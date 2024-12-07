@@ -1,0 +1,92 @@
+<div class="bg-[#18191a] text-gray-200 m-0 p-0 flex flex-col md:flex-row min-h-screen">
+    <!-- Sidebar -->
+    <%- include("./sidebar.ejs") %>
+    <!-- Sidebar end -->
+  
+    <div class="container mx-auto py-6">
+     <h1 class="text-2xl font-semibold mb-4 text-gray-200">Edit Coupon</h1>
+     <form action="/admin/editCoupon/<%=coupon._id%>" method="POST" class="bg-[#242526] p-6 rounded shadow-md" id="coupon-form">
+       <%- include('../patch/messages.ejs') %>
+  
+       <div class="mb-4">
+         <label class="block text-gray-300">Coupon Code</label>
+         <input type="text" id="couponCode" name="couponCode" value="<%=coupon.couponCode %>"  class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4">
+         <p id="couponCodeError" class="text-red-500 text-sm"aria-live="assertive"></p>
+       </div>
+  
+       <div class="mb-4">
+         <label class="block text-gray-300">Discount Type</label>
+         <select id="discountType" name="discountType"  class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4">
+           <option value="">Select Discount Type</option>
+           <option value="fixed" <%= coupon.discountType === 'fixed' ? 'selected' : '' %>>Fixed</option>
+           <option value="percentage" <%= coupon.discountType === 'percentage' ? 'selected' : '' %>>Percentage</option>
+         </select>
+         <p id="discountTypeError" class="text-red-500 text-sm"aria-live="assertive"></p>
+       </div>
+  
+       <div class="mb-4">
+         <label class="block text-gray-300">Discount Value</label>
+         <input type="number" id="discountValue" name="discountValue" value="<%=coupon.discountValue %>"  class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4">
+         <p id="discountValueError" class="text-red-500 text-sm"aria-live="assertive"></p>
+       </div>
+  
+       <div class="mb-4">
+         <label class="block text-gray-300">Min Spend</label>
+         <input type="number" id="minSpend" name="minSpend" value="<%=coupon.minSpend %>"  class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4">
+         <p id="minSpendError" class="text-red-500 text-sm"aria-live="assertive"></p>
+       </div>
+  
+       <div class="mb-4">
+         <label class="block text-gray-300">Usage Limit</label>
+         <input type="number" id="usageLimit" name="usageLimit" value="<%=coupon.usageLimit %>"  class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4">
+         <p id="usageLimitError" class="text-red-500 text-sm"aria-live="assertive"></p>
+       </div>
+  
+       <div class="mb-4">
+         <label class="block text-gray-300">Start Date</label>
+           <input type="date" id="startDate" name="startDate" value="<%=coupon.startDate %>"  class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4">
+         <p id="startDateError" class="text-red-500 text-sm"aria-live="assertive"></p>
+       </div>
+  
+       <div class="mb-4">
+         <label class="block text-gray-300">Expiry Date</label>
+           <input type="date" id="expiryDate" name="expiryDate" value="<%= coupon.expiryDate %>"  class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4">
+         <p id="expiryDateError" class="text-red-500 text-sm"aria-live="assertive"></p>
+       </div>
+  
+       <div class="mb-4">
+         <label class="block text-gray-300">Applicable To</label>
+         <select id="applicableType" name="applicableType"  class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4">
+           <option value="">Select Applicable Type</option>
+           <option value="all" <%= coupon.applicableType === 'all' ? 'selected' : '' %>>All</option>
+           <option value="product" <%= coupon.applicableType === 'product' ? 'selected' : '' %>>Product</option>
+           <option value="category" <%= coupon.applicableType === 'category' ? 'selected' : '' %>>Category</option>
+         </select>
+         <p id="applicableTypeError" class="text-red-500 text-sm" aria-live="assertive"></p>
+       </div>
+  
+       <div id="productSelect" class="mb-4 <%= coupon.applicableType === 'product' ? '' : 'hidden' %>">
+         <label class="block text-gray-300">Product:</label>
+         <select id="product" name="product" class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4">
+           <option value="">Select Product</option>
+           <% products.forEach(product => { %>
+             <option value="<%= product._id %>" <%= coupon.applicableProduct && coupon.applicableProduct._id.toString() === product._id.toString() ? 'selected' : '' %>><%= product.name %></option>
+           <% }) %>
+         </select>
+       </div>
+  
+       <div id="categorySelect" class="mb-4 <%= coupon.applicableType === 'category' ? '' : 'hidden' %>">
+         <label class="block text-gray-300">Category:</label>
+         <select id="category" name="category" class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4">
+           <option value="">Select Category</option>
+           <% categories.forEach(category => { %>
+             <option value="<%= category._id %>" <%= coupon.applicableCategory && coupon.applicableCategory._id.toString() === category._id.toString() ? 'selected' : '' %>><%= category.name %></option>
+           <% }) %>
+         </select>
+       </div>
+       <button type="submit" class="bg-gradient-to-r from-blue-500 to-orange-600 hover:from-blue-600 hover:to-orange-700 text-white font-bold py-1 px-2 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110">Update Changes</button>
+  
+     </form>
+    </div>
+  </div>
+ 

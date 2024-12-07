@@ -1,0 +1,247 @@
+<body class="bg-[#18191a] text-gray-200 m-0 p-0 flex flex-col md:flex-row min-h-screen">
+    <!-- Sidebar -->
+    <%- include("./sidebar.ejs") %>
+    <!-- Sidebar end -->
+
+    <!-- Main Content -->
+    <div class="flex-grow flex flex-col w-full md:w-auto">
+        <!-- Navbar -->
+        <nav class="bg-[#18191a] h-11 shadow-md flex items-center justify-center px-6 sticky top-0 z-10">
+            <div class="relative w-2/5">
+                <input type="text" placeholder="Search Coupons" 
+                       class="bg-[#242526] text-gray-200 text-sm px-4 py-2 rounded-full w-full pr-10 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                <button class="absolute right-2 top-1/2 transform -translate-y-1/2" aria-label="Search">
+                    <i class="fas fa-search text-gray-400"></i>
+                </button>
+            </div>
+        </nav>
+        <!-- Navbar end -->
+
+        <!-- Form -->
+        <div class="flex-grow p-4">
+            <!-- Add Coupon Form -->
+            <h2 class="text-xl font-semibold text-center mb-6">Add New Coupon</h2>
+            <form id="couponForm" action="/admin/coupons" method="POST" class="space-y-4">                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Coupon Code -->
+                        <div class="flex flex-col space-y-2">
+                            <label for="code" class="text-gray-300 text-lg">
+                                Coupon Code
+                                <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" 
+                                id="code" 
+                                name="code" 
+                                class="bg-[#242526] text-gray-200 text-sm px-4 py-2 rounded-full w-full focus:outline-none focus:ring-2 focus:ring-gray-500"
+                                required 
+                                minlength="4" 
+                                maxlength="12" 
+                                pattern="[A-Za-z0-9]+"
+                                placeholder="Enter code (letters and numbers only)"
+                            >
+                            <p id="codeError" class="hidden text-red-500 text-sm">Invalid coupon code</p>
+                        </div>
+
+                        <!-- Discount Type -->
+                        <div class="space-y-2">
+                            <label for="discountType" class="text-gray-300 text-lg">
+                                Discount Type
+                                <span class="text-red-500">*</span>
+                            </label>
+                            <select id="discountType" 
+                                name="discountType" 
+                                class="bg-[#242526] text-gray-200 text-sm px-4 py-2 rounded-full w-full focus:outline-none focus:ring-2 focus:ring-gray-500"
+                                required
+                            >
+                                <option value="">Select Discount Type</option>
+                                <option value="percentage">Percentage</option>
+                                <option value="fixed">Fixed Amount</option>
+                            </select>
+                            <p id="discountTypeError" class="hidden text-red-500 text-sm">Please select a discount type</p>
+                        </div>
+
+                        <!-- Discount Amount -->
+                        <div class="space-y-2">
+                            <label for="discountAmount" class="text-gray-300 text-lg">
+                                Discount Amount
+                                <span class="text-red-500">*</span>
+                            </label>
+                            <input type="number" 
+                                id="discountAmount" 
+                                name="discountAmount" 
+                                class="bg-[#242526] text-gray-200 text-sm px-4 py-2 rounded-full w-full focus:outline-none focus:ring-2 focus:ring-gray-500"
+                                required 
+                                min="1" 
+                                step="0.01"
+                                placeholder="Enter amount"
+                            >
+                            <p id="discountAmountError" class="hidden text-red-500 text-sm">Invalid discount amount</p>
+                        </div>
+
+                        <!-- Minimum Purchase -->
+                        <div class="space-y-2">
+                            <label for="minimumPurchase" class="text-gray-300 text-lg">
+                                Minimum Purchase
+                            </label>
+                            <input type="number" 
+                                id="minimumPurchase" 
+                                name="minimumPurchase" 
+                                class="bg-[#242526] text-gray-200 text-sm px-4 py-2 rounded-full w-full focus:outline-none focus:ring-2 focus:ring-gray-500"
+                                min="0" 
+                                step="0.01"
+                                placeholder="Optional"
+                            >
+                            <p id="minimumPurchaseError" class="hidden text-red-500 text-sm">Must be non-negative</p>
+                        </div>
+
+                        <!-- Valid From -->
+                        <div class="space-y-2">
+                            <label for="validFrom" class="text-gray-300 text-lg">
+                                Valid From
+                                <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" 
+                                id="validFrom" 
+                                name="validFrom" 
+                                class="bg-[#242526] text-gray-200 text-sm px-4 py-2 rounded-full w-full focus:outline-none focus:ring-2 focus:ring-gray-500"
+                            >
+                            <p id="validFromError" class="hidden text-red-500 text-sm">Select a valid start date</p>
+                        </div>
+
+                        <!-- Valid Until -->
+                        <div class="space-y-2">
+                            <label for="validUntil" class="text-gray-300 text-lg">
+                                Valid Until
+                                <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" 
+                                id="validUntil" 
+                                name="validUntil" 
+                                class="bg-[#242526] text-gray-200 text-sm px-4 py-2 rounded-full w-full focus:outline-none focus:ring-2 focus:ring-gray-500"
+                                required
+                            >
+                            <p id="validUntilError" class="hidden text-red-500 text-sm">Select a valid end date</p>
+                        </div>
+
+                        <!-- Usage Limit -->
+                        <div class="space-y-2">
+                            <label for="usageLimit" class="text-gray-300 text-lg">
+                                Usage Limit
+                            </label>
+                            <input type="number" 
+                                id="usageLimit" 
+                                name="usageLimit" 
+                                class="bg-[#242526] text-gray-200 text-sm px-4 py-2 rounded-full w-full focus:outline-none focus:ring-2 focus:ring-gray-500"
+                                min="1"
+                                placeholder="Optional"
+                            >
+                            <p id="usageLimitError" class="hidden text-red-500 text-sm">Must be at least 1</p>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="flex justify-end mt-6">
+                        <button type="submit" 
+                            class="px-6 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-colors"
+                        >
+                            Add Coupon
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('couponForm');
+            const inputs = form.querySelectorAll('input, select');
+
+            function showError(input, show) {
+                const errorElement = document.getElementById(`${input.id}Error`);
+                if (errorElement) {
+                    errorElement.classList.toggle('hidden', !show);
+                }
+                input.classList.toggle('border-red-500', show);
+            }
+
+            function validateField(input) {
+                let isValid = true;
+
+                switch(input.id) {
+                    case 'code':
+                        isValid = /^[A-Za-z0-9]{4,12}$/.test(input.value);
+                        break;
+                    case 'discountAmount':
+                        const type = document.getElementById('discountType').value;
+                        if (type === 'percentage') {
+                            isValid = input.value > 0 && input.value <= 99;
+                        } else {
+                            isValid = input.value > 0;
+                        }
+                        break;
+                    case 'validUntil':
+                        const validFrom = document.getElementById('validFrom').value;
+                        if (validFrom && input.value) {
+                            isValid = new Date(input.value) >= new Date(validFrom);
+                        }
+                        break;
+                    default:
+                        isValid = input.checkValidity();
+                }
+
+                showError(input, !isValid);
+                return isValid;
+            }
+
+            // Set up date constraints
+            const validFrom = document.getElementById('validFrom');
+            const validUntil = document.getElementById('validUntil');
+
+            validFrom.addEventListener('change', function() {
+                validUntil.min = this.value;
+                validateField(validUntil);
+            });
+
+            validUntil.addEventListener('change', function() {
+                validFrom.max = this.value;
+                validateField(validFrom);
+            });
+
+            // Set up discount type constraints
+            const discountType = document.getElementById('discountType');
+            const discountAmount = document.getElementById('discountAmount');
+
+            discountType.addEventListener('change', function() {
+                if (this.value === 'percentage') {
+                    discountAmount.max = '99';
+                    discountAmount.setAttribute('title', 'Percentage must be between 1-99');
+                } else {
+                    discountAmount.removeAttribute('max');
+                    discountAmount.setAttribute('title', 'Enter a positive discount amount');
+                }
+                validateField(discountAmount);
+            });
+
+            // Real-time validation
+            inputs.forEach(input => {
+                input.addEventListener('input', () => validateField(input));
+                input.addEventListener('blur', () => validateField(input));
+            });
+
+            // Form submission validation
+            form.addEventListener('submit', function(event) {
+                let isValid = true;
+                
+                inputs.forEach(input => {
+                    if (!validateField(input)) {
+                        isValid = false;
+                    }
+                });
+
+                if (!isValid) {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>

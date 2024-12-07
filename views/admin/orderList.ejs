@@ -1,0 +1,331 @@
+<style>
+  *{
+    background: #171616;
+  }
+</style>
+<div class="bg-[#18191a] text-gray-200 m-0 p-0 flex flex-col md:flex-row min-h-screen">
+
+  <!-- Sidebar -->
+   <%- include('./sidebar.ejs') %>
+   <!-- Sidebar end -->
+
+   <!-- Main content -->
+    <div class="flex flex-col flex-grow w-full md:w-auto">
+      <!-- Navbar -->
+       <nav class="bg-[#18191a] h-11 shadow-md flex items-center justify-center px-6 sticky top-0 ">
+        <form action="/admin/orders" method="GET" class="relative w-2/5">
+          <input type="text" name="search" placeholder="Search orders" class="bg-[#242526] text-gray-200 text-sm px-4 py-2 rounded-full w-full pr-10 focus:outline-none focus:ring-2 focus:ring-gray-500">
+          <button class="absolute right-2 top-1/2 transform -translate-y-1/2" aria-label="Search">
+            <i class="fas fa-search text-gray-400"></i>
+          </button>
+        </form>
+       </nav>
+       <!-- Navbar end -->
+
+      
+       <div class="flex-grow p-6 overflow-y-auto" >
+        <div class="mt-8">
+          <h2 class="text-2xl font-bold text-white mb-6">Orders</h2>
+          <div class="bg-[#242526] rounded-lg shadow-lg overflow-x-auto">
+            <table class="min-w-full  text-sm text-left text-gray-300">
+              <!-- table  -->
+               <thead class="text-xs bg-[#1f1f1f] text-orange-500 text-center">
+                <tr>
+                  <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">SI</th>
+                  <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Customer Name</th>
+                  <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Order ID</th>
+                  <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Products</th>
+                  <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Order Date</th>
+                  <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Status</th>
+                  <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Modify Order Status</th>
+                  <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Order Details</th>
+                  <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Return</th>
+                </tr>
+               </thead>
+               <tbody>
+                <!-- body -->
+                <% let serialNumber = startIndex; %>
+                 <% orderlist.forEach(order => { %>
+                  <tr class="border-b border-[#3a3a3a] hover:bg-[#2a2a2a] transition-colors duration-200">
+                    <td class="px-6 py-4 whitespace-nowrap font-semibold text-lg text-gray-200"><%= serialNumber++ %></td>
+                    <td class="px-6 py-4 whitespace-nowrap font-semibold text-center text-md text-gray-200 truncate"><%= order.user ? order.user.name : 'Unknown User' %></td>
+                    <td class="px-6 py-4 whitespace-nowrap font-semibold text-center truncate text-gray-200 truncate"><%= order._id %></td>
+                    <td class="px-6 py-4 whitespace-nowrap font-semibold text-center text-gray-200">
+                      <% order.items.forEach(item => { %>
+                        <div class="mb-2 truncate text-md ">
+                          <span><%= item.product ? item.product.name : 'No product' %></span>
+                        </div>
+                      <% }) %>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap font-medium text-center text-gray-200"><%= order.orderedAt.toLocaleDateString() %></td>
+                    <td class="px-6 py-4 whitespace-nowrap font-medium text-center">
+                      <% order.items.forEach(item => { %>
+                        <div class="mb-2">
+                          <span class="<%= item.itemStatus === 'Pending' ? 'text-yellow-500' : 
+                                         item.itemStatus === 'Confirmed' ? 'text-lime-400' : 
+                                         item.itemStatus === 'Shipped' ? 'text-orange-500' : 
+                                         item.itemStatus === 'Delivered' ? 'text-green-500' : 
+                                         item.itemStatus === 'Returned' ? 'text-red-500' : 
+                                         item.itemStatus === 'Cancelled' ? 'text-red-500' : '' %>">
+                            <%= item.itemStatus %>
+                          </span>
+                        </div>
+                      <% }) %>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap font-medium text-center">
+                      <% order.items.forEach(item => { %>
+                        <div class="mb-2">
+                          <button class="bg-blue-700 hover:bg-blue-500 text-white px-2 py-1 rounded-lg change-status-btn" data-order-id="<%= order._id %>" data-item-id="<%= item._id %>">Status</button>
+                        </div>
+                      <% }) %>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap font-medium text-center">
+                      <button class="bg-green-700 hover:bg-green-400 text-white px-2 py-2 rounded-lg view-details-btn " data-order-id="<%= order._id %>">View</button>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap font-medium text-center">
+                      <% order.items.forEach(item => { %>
+                        <% if(item.returnRequested) { %>
+                          <div class="mb-2">
+                            <button class="bg-red-700 hover:bg-red-400 text-white px-1 py-1 rounded-lg return-details-btn" data-order-id="<%= order._id %>" data-item-id="<%= item._id %>">Return requested</button>
+                          </div>
+                        <% } else { %>
+                          <div class="mb-2">
+                           <p class="text-red-500">No return Requested</p>
+                          </div>
+                        <% } %>
+                      <% }) %>
+                    </td>
+                  </tr>
+                 <% }) %>
+                 <!-- body ended -->
+               </tbody>
+               <!-- table ended -->
+            </table>
+            <!-- 3rd div -->
+          </div>
+          <!-- 2nd div -->
+        </div>
+        <!-- Pagination -->
+        <div class="flex justify-center items-center space-x-2 mt-6">
+          <% for(let i =1; i<=totalPages; i++) { %> 
+            <a href="?page=<%= i %>" class="px-4 py-2 <%=currentPage === i ?  'bg-blue-500 text-white' : 'bg-[#1f1f1f] text-gray-300' %> rounded-md hover: bg-[#2f2f2f] transition duration-200"><%= i %></a>
+          <% } %>
+        </div>
+        <!-- Pagination end -->
+        <!-- first div -->
+       </div>
+      <!-- 2nd div ended -->
+    </div>
+  <!-- last body div ended -->
+</div>
+<!-- Modal for order details -->
+ <div id="orderDetailsModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 hidden">
+  <div class="bg-[#1f1f1f] text-white p-4 rounded-lg relative w-3/4 max-w-2xl h-auto overflow-hidden">
+    <button class="absolute top-2 right-2 text-white text-2xl hover:text-gray-300" id="closeModal">&times;</button>
+    <!-- <div id="orderDetailsContent"> -->
+      <div id="orderDetailsContent" style="overflow-y: scroll; max-height: 70vh; -ms-overflow-style: none; scrollbar-width: none;">
+
+    </div>
+  </div>
+ </div>
+ <!-- modal ended -->
+
+
+  <!-- Modal for return request details -->
+<div id="returnRequestModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 hidden">
+  <div class="bg-[#1f1f1f] text-white p-6 rounded-lg relative w-3/4 max-w-2xl h-auto overflow-hidden">
+    <button class="absolute top-2 right-2 text-white text-2xl hover:text-gray-300" id="closeReturnModal">&times;</button>
+    
+    <h3 class="text-lg font-bold text-center mb-4">Return Request Details</h3>
+    
+    <div id="returnRequestContent" class="mb-4" style="overflow-y: scroll; max-height: 70vh; -ms-overflow-style: none; scrollbar-width: none;">
+      <!-- Return request details will be populated here -->
+    </div>
+    
+    <div class="mt-4 text-center">
+      <p class="block text-sm font-medium">Change Return Status:</p>
+      <div class="mt-4 flex justify-center space-x-4">
+        <button id="approveReturnBtn" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">Approve</button>
+        <button id="rejectReturnBtn" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg">Reject</button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+ <script>
+  // //  //  //   //  //          CHANGE ITEM STATUS button click handler   //  //  //  //  //  //  //
+  const changeStatusButtons = document.querySelectorAll('.change-status-btn');
+  changeStatusButtons.forEach(button => {
+    button.addEventListener('click', async (e) => {
+      const orderId = e.target.getAttribute('data-order-id')
+      const itemId = e.target.getAttribute('data-item-id')
+
+      
+      const { value: confirmed } = await Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you want to change the status of this item?",
+        iconHtml: '   <i class="fas fa-sync text-yellow-500"></i>',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, change it!',
+        customClass: {
+          popup: 'bg-gray-900 text-white rounded-lg shadow-lg p-6',
+          title: 'text-2xl font-bold text-yellow-500 mb-2',
+          content: 'text-base mb-4',
+          confirmButton: 'bg-green-600 text-white rounded-lg px-4 py-2 hover:bg-green-700 transition duration-200 ease-in-out',
+          cancelButton: 'bg-red-600 text-white rounded-lg px-4 py-2 hover:bg-red-700 transition duration-200 ease-in-out'
+        }
+      });
+
+      if (confirmed) {
+        try {
+          const response = await fetch(`/admin/orders/${orderId}/${itemId}/change-status`, {
+            method: 'POST',
+            headers: {
+              'Content-Type' : 'application/json',
+            }
+          });
+
+          const result = await response.json()
+          if(result.success) {
+            // Toast notification for success
+            Toastify({
+              text: `Status changed to ${result.newStatus}!`,
+              duration: 3000,
+              gravity: "top",
+              position: 'right',
+              backgroundColor: "green",
+            }).showToast();
+
+            // Delay before reloading the page
+            setTimeout(() => {
+              location.reload();
+            }, 1000); // Adjust the delay as needed
+          } else {
+            // Toast notification for failure
+            Toastify({
+              text: `${result.message}`,
+              duration: 3000,
+              gravity: "top",
+              position: 'right',
+              backgroundColor: "red",
+            }).showToast();
+          }
+        } catch (error) {
+          console.log("Error changing item status :",error);
+        }
+      }
+    });
+  });
+
+
+  // //  //  //   //  //          VIEW ORDER DETAILS button click handler   //  //  //  //  //  //  //
+  const viewDetailsButtons = document.querySelectorAll('.view-details-btn');
+  viewDetailsButtons.forEach(button => {
+    button.addEventListener('click', async (e) => {
+      const orderId = e.target.getAttribute('data-order-id')
+      try {
+        const response = await fetch(`/admin/orders/${orderId}/details`)
+        const result = await response.text()
+        document.getElementById('orderDetailsContent').innerHTML = result
+        document.getElementById('orderDetailsModal').classList.remove('hidden')
+      } catch (error) {
+        console.log("Error fetching order details :",error);
+      }
+    })
+  })
+  // Close modal
+  document.getElementById('closeModal').addEventListener('click', () => {
+    document.getElementById('orderDetailsModal').classList.add('hidden')
+  })
+
+  // //  //  //   //  //          RETURN REQUEST button click handler   //  //  //  //  //  //  //
+
+  // Return request details button click handler
+const returnDetailsButtons = document.querySelectorAll('.return-details-btn');
+returnDetailsButtons.forEach(button => {
+    button.addEventListener('click', async (e) => {
+        const orderId = e.target.getAttribute('data-order-id');
+        const itemId = e.target.getAttribute('data-item-id');
+
+        try {
+            const response = await fetch(`/admin/orders/${orderId}/${itemId}/return-details`);
+            const result = await response.json();
+
+            // Populate the modal with return request details
+            document.getElementById('returnRequestContent').innerHTML = `
+                <p><strong>User:</strong> ${result.user.name}</p>
+                <p><strong>Product:</strong> ${result.product.name}</p>
+                <img src="${result.product.image[1]}" alt="${result.product.name}" class="w-32 h-32 object-cover mb-2">
+                <p><strong>Return Reason:</strong> ${result.returnReason}</p>
+                <p><strong>Current Status:</strong> ${result.returnStatus}</p>
+            `;
+
+            // Show the modal
+            document.getElementById('returnRequestModal').classList.remove('hidden');
+
+            // Approve button click handler
+            document.getElementById('approveReturnBtn').onclick = async () => {
+                await changeReturnStatus(orderId, itemId, 'Approved');
+            };
+
+            // Reject button click handler
+            document.getElementById('rejectReturnBtn').onclick = async () => {
+                await changeReturnStatus(orderId, itemId, 'Rejected');
+            };
+
+        } catch (error) {
+            console.log("Error fetching return request details:", error);
+        }
+    });
+});
+
+// Function to change return status
+async function changeReturnStatus(orderId, itemId, status) {
+    try {
+        const response = await fetch(`/admin/orders/${orderId}/${itemId}/change-return-status`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ returnStatus: status })
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            Toastify({
+                text: `Return status changed to: ${result.newStatus}`,
+                duration: 3000,
+                gravity: "top",
+                position: 'right',
+                backgroundColor: "green",
+            }).showToast();       
+            document.getElementById('returnRequestModal').classList.add('hidden');
+        } else {
+            Toastify({
+                text: `${result.message}`,
+                duration: 3000,
+                gravity: "top",
+                position: 'right',
+                backgroundColor: "red",
+            }).showToast();
+        }
+    } catch (error) {
+        console.log("Error changing return status:", error);
+        Toastify({
+            text: "An error occurred while changing the return status.",
+            duration: 3000,
+            gravity: "top",
+            position: 'right',
+            backgroundColor: "red",
+        }).showToast();
+    }
+}
+
+// Close modal
+document.getElementById('closeReturnModal').addEventListener('click', () => {
+    document.getElementById('returnRequestModal').classList.add('hidden');
+});
+</script>

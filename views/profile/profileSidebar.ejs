@@ -1,0 +1,50 @@
+<div class="bg-[#121213] text-white flex flex-col items-center p-6 w-80 h-full sticky top-0">
+    <div class="w-full space-y-6">
+        <h2 class="text-lg font-bold">My Account</h2>
+        <nav class="flex flex-col w-full">
+            <a href="/profile/personal-info" class="sidebar-link">Personal Information</a>
+            <a href="/profile/address" class="sidebar-link">Address</a>
+            <a href="/profile/orders" class="sidebar-link">Orders</a>
+            <a href="/profile/wallet" class="sidebar-link">Wallet</a>
+            <a href="/profile/change-password" class="sidebar-link">Change Password</a>
+            <a href="/logout" id="logoutLink" class="sidebar-link">Logout</a>
+        </nav>
+    </div>
+  </div>
+
+  <!-- CSS Styles -->
+<style>
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      background-color: #1f1f1f;
+      color: #b0b0b0;
+      padding: 12px 16px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease, color 0.3s ease, background 0.5s linear;
+    }
+  
+    .sidebar-link:hover {
+      background: linear-gradient(90deg, #ff0000, #ff7f50);
+      color: white;
+    }
+  </style>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const logoutLink = document.getElementById('logoutLink');
+      const logoutModal = document.getElementById('logoutModal');
+      const cancelLogout = document.getElementById('cancelLogout');
+      const confirmLogout = document.getElementById('confirmLogout');
+  
+      logoutLink.addEventListener('click', function(event) {
+        event.preventDefault();
+        logoutModal.classList.remove('hidden');
+      });
+  
+      cancelLogout.addEventListener('click', function() {
+        logoutModal.classList.add('hidden');
+      });
+  
+    });
+  </script>

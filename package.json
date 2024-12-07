@@ -1,0 +1,57 @@
+{
+  "name": "phoenix-watches",
+  "version": "1.0.0",
+  "description": "PHOENIX WATCHES",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon server.js",
+    "dev": "concurrently \"nodemon server.js\" \"npx tailwindcss -i ./src/styles.css -o ./public/css/output.css --watch\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "watchapp"
+  },
+  "author": "Ancy Peter",
+  "license": "ISC",
+  "dependencies": {
+    "autoprefixer": "^10.4.20",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.3",
+    "cloudinary": "^2.5.1",
+    "connect-flash": "^0.1.1",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "exceljs": "^4.4.0",
+    "express": "^4.21.1",
+    "express-ejs-layouts": "^2.5.1",
+    "express-session": "^1.18.1",
+    "express-validator": "^7.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
+    "mongoose": "^8.7.3",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "nocache": "^4.0.0",
+    "nodemailer": "^6.9.15",
+    "nodemon": "^3.1.7",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "path": "^0.12.7",
+    "pdfkit": "^0.15.1",
+    "postcss": "^8.4.47",
+    "razorpay": "^2.9.5",
+    "sharp": "^0.33.5",
+    "tailwind": "^4.0.0",
+    "tailwind-scrollbar-hide": "^1.1.7",
+    "tailwindcss": "^3.4.14",
+    "uuid": "^10.0.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}

@@ -1,0 +1,148 @@
+<body class="bg-gray-900 text-gray-200">
+    <div class="bg-[#18191a] text-gray-200 m-0 p-0 flex flex-col md:flex-row min-h-screen">
+      <!-- Sidebar -->
+      <%- include("./sidebar.ejs") %>
+      <!-- Sidebar end -->
+  
+      <!-- Products Adding forms -->
+      <div class="container mx-auto py-6">
+        <h1 class="text-2xl font-semibold mb-4 text-gray-200">Edit Product</h1>
+  
+        <form action="/admin/editProducts/<%= product.id %>" method="POST" enctype="multipart/form-data" id="product-form" class="bg-[#242526] p-6 rounded shadow-md" onsubmit="return validateForm()">
+          <div class="mb-4">
+              <label class="block text-gray-300">Product Name</label>
+              <input type="text" id="productName" name="productName" value="<%= product.name %>" required class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" />
+              <p id="productNameError" class="text-red-500 text-sm" aria-live="assertive"></p>
+          </div>
+          <div class="mb-4">
+              <label class="block text-gray-300">Description</label>
+              <textarea id="description" name="description" required class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4"><%= product.description %></textarea>
+              <p id="descriptionError" class="text-red-500 text-sm" aria-live="assertive"></p>
+          </div>
+          <div class="mb-4">
+              <label class="block text-gray-300">Category</label>
+              <select id="category" name="category" class="input w-full bg-[#1f1f1f] text-white border border-gray-600 rounded-md p-2 mb-4">
+                  <option value="">Select Category</option>
+                  <% categorylist.forEach((category) => { %>
+                  <option value="<%= category._id %>" <%= category._id.toString() === product.category._id.toString() ? 'selected' : '' %>><%= category.name %></option>
+                  <% }); %>
+              </select>
+              <p id="categoryError" class="text-red-500 text-sm" aria-live="assertive"></p>
+          </div>
+          <div class="mb-4">
+              <label class="block text-gray-300">Stock</label>
+              <input type="text" id="stock" name="stock" value="<%= product.stock %>" required class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" />
+              <p id="stockError" class="text-red-500 text-sm" aria-live="assertive"></p>
+          </div>
+          <div class="mb-4">
+              <label class="block text-gray-300">SKU</label>
+              <input type="text" id="SKU" name="SKU" value="<%= product.SKU %>" required class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" oninput="validateSKU()" />
+              <p id="SKUError" class="text-red-500 text-sm" aria-live="assertive"></p>
+          </div>
+          <!-- Price and Discount -->
+          <div class="mb-4">
+            <label class="block text-gray-300">Price</label>
+            <input type="text" id="price" name="price" value="<%= product.price %>" required class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" oninput="calculateDiscountedPrice()" />
+            <p id="priceError" class="text-red-500 text-sm" aria-live="assertive"></p>
+          </div>
+  
+          <div class="mb-4">
+            <label class="block text-gray-300">Discount (%)</label>
+            <input type="text" id="discount" name="discount" value="<%= product.discount %>" required class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" oninput="calculateDiscountedPrice()" />
+            <p id="discountError" class="text-red-500 text-sm" aria-live="assertive"></p>
+          </div>
+  
+          <div class="mb-4">
+            <label class="block text-gray-300">Discounted Price</label>
+            <input type="text" id="discountedPrice" name="discountedPrice" value="<%= product.discountedPrice %>" readonly class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" />
+          </div>
+  
+          <div class="mb-4">
+            <label class="block text-gray-300">Images</label>
+            <input type="file" id="imageInput" name="image" accept="image/*" multiple
+                class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4"
+                onchange="previewImages(event)" />
+            <div class="mt-2 flex flex-wrap" id="imagePreviewContainer">
+              <% product.image.forEach((img, index) => { %>
+                <div class="relative m-2">
+                  <img src="<%= img %>" alt="Product Image" class="w-48 h-48 object-cover rounded">
+                  <input type="hidden" name="existingImages" value="<%= img %>">
+                  <button type="button" onclick="removeImage(this)" class="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              <% }) %>
+            </div>
+            <p id="imageError" class="text-red-500 text-sm" aria-live="assertive"></p>
+        </div>
+
+        <!-- Cropper modal -->
+        <div id="cropperModal"
+            class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+            <div class="bg-white p-4 rounded">
+                <div class="w-full h-96">
+                    <img id="croppingImage" src="" alt="Image to Crop" class="w-full h-full object-cover" />
+                </div>
+                <button id="cropConfirm" class="bg-green-500 text-white px-4 py-2 mt-2 rounded"type="button"
+                    onclick="cropImage()">
+                    Confirm Crop
+                </button>
+                <button id="cropCancel" class="bg-red-500 text-white px-4 py-2 mt-2 rounded"
+                    onclick="closeCropModal()">
+                    Cancel
+                </button>
+            </div>
+        </div>         
+
+        <button type="submit" onclick="sweet()" class="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition">            Edit Product
+        </button>
+    </form>
+</div>
+</div>
+<script>
+//  showing images
+function previewImages(event) {
+  const container = document.getElementById('imagePreviewContainer');
+  const files = event.target.files;
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+      const div = document.createElement('div');
+      div.className = 'relative m-2';
+      div.innerHTML = `
+        <img src="${e.target.result}" alt="Image preview" class="w-24 h-24 object-cover rounded">
+        <button type="button" onclick="removeImage(this)" class="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1">
+          <i class="fas fa-times"></i>
+        </button>
+      `;
+      container.appendChild(div);
+    }
+
+    reader.readAsDataURL(file);
+  }
+}
+
+function removeImage(button) {
+  const container = button.closest('div');
+  const input = container.querySelector('input[name="existingImages"]');
+  if (input) {
+    input.remove(); 
+  }
+  container.remove(); // Remove the image preview
+}
+    
+    function sweet() {
+    Swal.fire({
+      title: 'Product Edited!',
+      text: 'Your product has been successfully edited.',
+      icon: 'success',
+      confirmButtonText: 'Okay'
+    });
+  }
+
+  </script>
+  </body>
+  

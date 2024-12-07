@@ -1,0 +1,73 @@
+<%- include('../patch/topper.ejs') %>
+<div class="bg-black text-white flex">
+  <%- include('profileSidebar.ejs') %>
+  <div class="flex flex-col items-center justify-center flex-grow py-6">
+    <% if (addresses.length === 0) { %>
+      <h2 class="text-lg font-bold">No Address Found in your account</h2>
+      <p>Please add your address to continue</p>
+      <a href="/profile/add-address" class="mt-2 flex items-center bg-blue-500 text-white px-8 py-3 rounded-lg hover:bg-blue-600 transform duration-200">
+        Add Address
+      </a>
+    <% } else { %>
+      <h1 class="text-4xl text-gray-200 font-serif font-bold mb-4">Manage Addresses</h1>
+
+      <!-- flash message  -->
+      <%- include('../patch/messages.ejs') %>
+      
+      <div class="mt-4">
+        <a href="/profile/add-address" class="flex items-center bg-green-600 text-white px-6 py-4 rounded-lg hover:bg-green-700 transform duration-200">
+          New Address
+        </a>
+      </div>
+      
+      <div class="w-full space-y-4 mt-6">
+        <% addresses.forEach(address => { %>
+          <div class="bg-[#1f1f1f] p-4 rounded-lg shadow-md max-w-md mx-auto">
+            <div class="flex justify-between items-start mb-2">
+              <div>
+                    <% if (address.isDefault) { %>
+                      <div>
+                        <span class="font-bold text-lg text-yellow-400 font-serif">Default Address</span>
+                      </div>
+                    <% } %>
+                  <div class="font-bold text-lg"><%= address.name %></div>
+                  <div class="text-sm"><%= address.mobile %></div>
+                </div>
+                <div class="flex items-center" style="gap: 1cm;">
+                <a href="/profile/edit-address/<%= address._id %>" class="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 transition">Edit</a>
+                <form action="/profile/delete-address/<%= address._id %>" method="POST" onsubmit="confirmDelete(event)">
+                  <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-md">Delete</button>
+                </form>
+                </div>
+            </div>
+            <p class="text-sm">
+              <%= address.buildingName %>, <%= address.street %>, <%= address.city %>, <%= address.state %>, <%= address.country %> <%= address.pincode %>
+            </p>
+            </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../patch/bottom.ejs') %>
+
+<script>
+  function confirmDelete(e) {     
+        e.preventDefault();   
+          // Success
+          Swal.fire({
+              icon: 'warning',
+              title: 'are you sure',
+              text: 'Do you really want to delete the address',
+              showConfirmButton: true,
+              showCancelButton:true,
+              confirmButtonText:'yes',
+              cancelButtonText:'Cancel',      
+          }).then((result) => {
+              if(result.isConfirmed){
+                 e.target.submit()
+              }
+          });
+      }
+</script>

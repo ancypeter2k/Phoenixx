@@ -1,0 +1,70 @@
+<!-- Sidebar -->
+<div class="sidebar bg-[#181818] flex flex-col items-center border-r border-[#3a3a3a] shadow-lg h-screen w-[280px] p-6 sticky top-0">
+  <img src="/images/Mylogo11.png" alt="Logo" class="w-11/12 h-auto -mt-6 mb-4">
+  
+  <div class="w-full space-y-2">
+    <!-- Navigation Links -->
+    <nav class="flex flex-col w-full">
+      <a href="/admin/dashboard" class="sidebar-link">Dashboard</a>
+      <a href="/admin/users" class="sidebar-link">User management</a>
+      <a href="/admin/category" class="sidebar-link">Category management</a>
+      <a href="/admin/products" class="sidebar-link">Product management</a>
+      <a href="/admin/orders" class="sidebar-link">Order management</a>
+      <a href="/admin/offers" class="sidebar-link">Offer management</a>
+      <a href="/admin/coupons" class="sidebar-link">Coupon management</a>
+      <a href="#" class="sidebar-link">Banner</a>
+      <a href="/admin/salesReport" class="sidebar-link">Sales Report</a>
+      <a href="#" id="logoutLink" class="sidebar-link">Logout</a>
+    </nav>
+  </div>
+</div>
+
+<!--------------------------------- Logout Modal ------------------------------>
+<div id="logoutModal" class="fixed inset-0 bg-[#181818] bg-opacity-90 flex items-center justify-center hidden">
+  <div class="bg-[#242424] p-6 rounded-lg shadow-lg max-w-sm w-full mx-4">
+    <h4 class="text-xl font-semibold mb-4 text-gray-300">Confirm Logout</h4>
+    <p class="mb-4 text-gray-200">Are you sure you want to log out?</p>
+    <div class="flex justify-end space-x-2">
+      <button id="cancelLogout" class="bg-gray-600 text-white py-2 px-4 rounded-lg shadow-md hover:bg-gray-700 transition">Cancel</button>
+      <a href="/admin/logout" id="confirmLogout" class="bg-red-600 text-white py-2 px-4 rounded-lg shadow-md hover:bg-red-700 transition">Log Out</a>
+    </div>
+  </div>
+</div>
+
+<!-- CSS Styles -->
+<style>
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    background-color: #1f1f1f;
+    color: #b0b0b0;
+    padding: 12px 16px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, color 0.3s ease, background 0.5s linear;
+  }
+
+  .sidebar-link:hover {
+    background: linear-gradient(90deg, #ff0000, #ff7f50);
+    color: white;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const logoutLink = document.getElementById('logoutLink');
+    const logoutModal = document.getElementById('logoutModal');
+    const cancelLogout = document.getElementById('cancelLogout');
+    const confirmLogout = document.getElementById('confirmLogout');
+
+    logoutLink.addEventListener('click', function(event) {
+      event.preventDefault();
+      logoutModal.classList.remove('hidden');
+    });
+
+    cancelLogout.addEventListener('click', function() {
+      logoutModal.classList.add('hidden');
+    });
+
+  });
+</script>
+

@@ -1,0 +1,90 @@
+<!-- main Container/body -->
+<div class="bg-[#18191a] text-gray-200 m-0 p-0 flex flex-col md:flex-row min-h-screen">
+    <!-- Sidebar -->
+    <%- include("./sidebar.ejs") %>
+    <!-- Sidebar end -->
+
+    <!-- Main Content -->
+    <div class="flex-grow flex flex-col w-full md:w-auto">
+        <!-- Navbar -->
+        <nav class="bg-[#18191a] h-11 shadow-md flex items-center justify-center px-6 sticky top-0 z-10">
+            <div class="relative w-2/5">
+                <input type="text" placeholder="Search Offers" 
+                       class="bg-[#242526] text-gray-200 text-sm px-4 py-2 rounded-full w-full pr-10 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                <button class="absolute right-2 top-1/2 transform -translate-y-1/2" aria-label="Search">
+                    <i class="fas fa-search text-gray-400"></i>
+                </button>
+            </div>
+        </nav>
+        <!-- Navbar end -->
+
+        <!-- Table -->
+        <div class="flex-grow p-4 overflow-y-auto">
+            <!-- Add New Offer Button -->
+            <div class="flex justify-end items-center mb-4">
+                <a href="/admin/addOffers" 
+                   class="bg-blue-600 text-white py-2 px-4 rounded-xl hover:bg-blue-700 transition ease-in-out transform hover:-translate-y-1 hover:scale-110">
+                    Add New Offer
+                </a>
+            </div>
+
+            <!-- Offer Table -->
+            <div class="bg-[#242526] rounded-lg shadow-lg overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-300">
+                    <thead class="text-xs bg-[#1f1f1f] text-orange-500 text-center">
+                        <tr>
+                            <th scope="col" class="px-6 py-4 font-medium text-xl">SI.no</th>
+                            <th scope="col" class="px-6 py-4 font-medium text-xl">Category Name</th>
+                            <th scope="col" class="px-6 py-4 font-medium text-xl">Offer Name</th>
+                            <th scope="col" class="px-6 py-4 font-medium text-xl">Discount %</th>
+                            <th scope="col" class="px-6 py-4 font-medium text-xl">Status</th>
+                            <th scope="col" class="px-6 py-4 font-medium text-xl">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% offers.forEach((offer, index) => { %>
+                            <tr class="border-b border-[#3a3a3a] hover:bg-[#2a2a2a] transition-colors duration-200">
+                              <td class="px-6 py-4 font-medium text-lg text-center"><%= index + 1 %></td>
+                              <!-- Accessing the offerCategory's name after populate -->
+                              <td class="px-6 py-4 text-lg text-center"><%= offer.offerCategory.name %></td> <!-- Assuming offerCategory has a 'name' field -->
+                              <td class="px-6 py-4 text-lg text-center"><%= offer.offerName %></td>
+                              <td class="px-6 py-4 text-lg text-center"><%= offer.offerDiscount %>%</td>
+                              <td class="px-6 py-4 text-lg text-center">
+                                <% if (offer.isActive) { %>
+                                  <span class="px-2 inline-flex text-xl font-semibold rounded-full bg-green-100 text-green-800">
+                                    ACTIVE
+                                  </span>
+                                <% } else { %>
+                                  <span class="px-2 inline-flex text-xl font-semibold rounded-full bg-red-100 text-red-500">
+                                    INACTIVE
+                                  </span>
+                                <% } %>
+                              </td>
+                              <td class="px-6 py-4">
+                                  <div class="flex items-center justify-center space-x-2">
+                                      <a href="/admin/editOffers/<%= offer._id %>">
+                                          <button class="min-w-[80px] px-4 py-2 font-medium text-white bg-gradient-to-r from-green-800 to-green-500 hover:from-green-500 hover:to-green-800 rounded-lg transition duration-200">
+                                              Edit
+                                          </button>
+                                      </a>
+                                  </div>
+                              </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+
+         <!-- Pagination -->
+         <div class="flex justify-center items-center space-x-2 mt-6">
+            <% for (let i = 1; i <= totalPages; i++) { %>
+                <a href="?page=<%= i %>" class="px-4 py-2 <%= currentPage === i ? 'bg-blue-500 text-white' : 'bg-[#1f1f1f] text-gray-300' %> rounded-md hover:bg-[#2f2f2f] transition duration-200">
+                    <%= i %>
+                </a>
+            <% } %>
+        </div>
+        <!-- Pagination end -->
+      </div>
+    </div>
+  </div>
+</body>

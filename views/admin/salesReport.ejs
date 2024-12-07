@@ -1,0 +1,264 @@
+
+<!-- main Container/body -->
+<div class="bg-[#18191a] text-gray-200 m-0 p-0 flex h-screen">
+  <!-- Sidebar -->
+  <%- include("./sidebar.ejs") %>
+  <!-- Sidebar end -->
+
+ <!-- main Content -->
+ <div class="flex flex-col flex-grow overflow-hidden">
+  <!-- Navbar -->
+  <nav class="bg-[#18191a] h-11 shadow-md flex items-center justify-center px-6">
+    <div class="relative w-2/5">
+      <input type="text" placeholder="Search" class="bg-[#242526] text-gray-200 text-sm px-4 py-2 rounded-full w-full pr-10 focus:outline-none focus:ring-2 focus:ring-gray-500">
+      <button class="absolute right-2 top-1/2 transform -translate-y-1/2" aria-label="Search">
+        <i class="fas fa-search text-gray-400"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Sales Report Content -->
+  <div class="flex-grow p-6 overflow-y-auto">
+    <h1 class="text-xl font-bold text-white mb-4 hover:text-gray-400">Sales Report</h1>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-32">
+      <!-- Card 1 -->
+      <div class="bg-[#242526] rounded-lg shadow-md p-4 flex flex-col justify-between">
+        <h2 class="text-lg font-bold text-green-700 mb-2 text-center">Total Revenue</h2>
+        <p class="text-2xl font-bold text-center">₹<%= Math.floor(reportData.totalRevenue) %></p>
+      </div>
+      <!-- Card 2 -->
+      <div class="bg-[#242526] rounded-lg shadow-md p-4 flex flex-col justify-between">
+        <h2 class="text-lg font-bold text-green-700 mb-2 text-center">Total Discount</h2>
+        <p class="text-2xl font-bold text-center">₹<%= Math.floor(reportData.totalDiscount) %></p>
+      </div>
+      <!-- Card 3 -->
+      <div class="bg-[#242526] rounded-lg shadow-md p-4 flex flex-col justify-between">
+        <h2 class="text-lg font-bold text-green-700 mb-2 text-center">Sales Count</h2>
+        <p class="text-2xl font-bold text-center"><%= Math.floor(reportData.salesCount) %></p>
+      </div>
+    </div>
+
+    <!-- Filter and Export Section -->
+    <div class="flex justify-between items-center mt-6">
+      <div class="flex items-center">
+        <label for="filter" class="text-white mr-2">Filter:</label>
+        <select id="filter" class="bg-[#242526] text-gray-200 rounded-md p-2"onchange="applyFilter()">
+          <option value="daily" <%= filterType === 'daily' ? 'selected' : '' %>>Daily</option>
+          <option value="weekly" <%= filterType === 'weekly' ? 'selected' : '' %>>Weekly</option>
+          <option value="monthly" <%= filterType === 'monthly' ? 'selected' : '' %>>Monthly</option>
+          <option value="custom" <%= filterType === 'custom' ? 'selected' : '' %>>Custom Date Range</option>
+        </select>
+      </div>
+      <div>
+        <button class="bg-blue-700 text-white px-4 py-2 rounded-md mr-2" onclick="downloadReport('pdf')">Export as PDF</button>
+        <button class="bg-green-700 text-white px-4 py-2 rounded-md" onclick="downloadReport('excel')">Export as Excel</button>
+      </div>
+    </div>
+
+    <!-- Custom Date Range Inputs -->
+    <div id="customDateRange" class="<%= filterType === 'custom' ? '' : 'hidden' %> mt-4">
+      <label class="text-white">Start Date:</label>
+      <input type="date" class="bg-[#242526] text-gray-200 rounded-md p-2 mr-4" id="startDate" onchange="enableEndDate()" value="<%= startDate %>" max="">
+      <label class="text-white">End Date:</label>
+      <input type="date" class="bg-[#242526] text-gray-200 rounded-md p-2" id="endDate" value="<%= endDate %>" disabled>
+      <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4" onclick="applyDateRange()">Apply</button>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-[#242526] rounded-lg shadow-lg mt-6 overflow-x-auto">
+      <table class="min-w-full text-sm text-left text-gray-300">
+        <thead class="text-xs bg-[#1f1f1f] text-orange-500 text-center">
+          <tr>
+            <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">SI</th>
+            <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">User</th>
+            <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Order ID</th>
+            <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Products</th>
+            <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Quantity</th>
+            <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Product Discount</th>
+            <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Coupon Discount</th>
+            <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Total Amount</th>
+            <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Payment Status</th>
+            <th scope="col" class="px-6 py-3 font-medium text-xs uppercase tracking-wider">Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Example Row -->
+          <% let serialNumber = startIndex; %>
+          <% orders.forEach((order, index) => { %>
+            <% order.items.forEach(item => { %>
+              <% if (item.itemStatus === 'Delivered') { %>
+                <tr class="border-b border-[#3a3a3a] hover:bg-[#2a2a2a] transition-colors duration-200">
+                  <td class="px-6 py-4 whitespace-nowrap font-semibold text-lg text-white"><%= serialNumber++ %></td>
+                  <td class="px-6 py-4 whitespace-nowrap font-semibold text-center text-md text-white truncate"><%= order.user.name %></td>
+                  <td class="px-6 py-4 whitespace-nowrap font-semibold text-center text-md text-white truncate"><%= order._id %></td>
+                  <td class="px-6 py-4 whitespace-nowrap font-semibold text-center text-md text-white truncate">
+                    <div class="mb-2 truncate text-md ">
+                      <span><%= item.product.name %></span>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap font-semibold text-center text-md text-white truncate">
+                    <div class="mb-2 truncate text-md ">
+                      <span><%= Math.floor(item.quantity) %></span>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap font-semibold text-center text-md text-white truncate">
+                    <div class="mb-2 truncate text-md ">
+                      <span>₹<%= Math.floor(item.discountAmount) %></span>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap font-semibold text-center text-md text-white truncate">
+                    <div class="mb-2 truncate text-md ">
+                      <span>₹<%= (Number(item.couponDiscountAmount) || 0) %></span>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap font-semibold text-center text-md text-white truncate">
+                    <div class="mb-2 truncate text-md ">
+                      <span>₹<%= Math.floor(item.itemTotal) %></span>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap font-semibold text-center text-md text-blue-500 truncate">
+                    <div class="mb-2 truncate text-md ">
+                      <span><%= order.paymentStatus %></span>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap font-semibold text-center text-md text-white truncate"><%= order.orderedAt.toISOString().split('T')[0] %></td>
+                </tr>
+              <% } %>
+            <% }) %>
+          <% }) %>
+          <!-- row ended -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex justify-center items-center space-x-2 mt-6">
+      <% for(let i = 1; i <= totalPages; i++) { %>
+        <a href="?page=<%= i %>&filterType=<%= filterType %>&startDate=<%= startDate %>&endDate=<%= endDate %>" class="px-4 py-2 <%= currentPage === i ? 'bg-blue-500 text-white' : 'bg-[#242526] text-gray-200' %> rounded-md hover:bg-[#2a2a2a] transition-colors duration-200"><%= i %></a>
+      <% } %>
+    </div>
+  </div>
+  <!-- Main container body ended -->
+</div>
+</div>
+<script>
+
+function applyFilter() {
+  const filterType = document.getElementById('filter').value;
+  
+  // Get the current page from the URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const currentPage = urlParams.get('page') || 1; 
+
+  if (filterType === 'custom') {
+    toggleDateRange(true);  
+  } else {
+    toggleDateRange(false); 
+    window.location.href = `?page=${currentPage}&filterType=${filterType}`; 
+  }
+}
+
+// Toggle visibility of the custom date range inputs
+function toggleDateRange(show) {
+  const customDateRange = document.getElementById('customDateRange');
+  if (show) {
+    customDateRange.classList.remove('hidden');
+    setMaxStartDate();
+  } else {
+    customDateRange.classList.add('hidden');
+  }
+}
+
+// Set today's date as the max date for the start date input
+function setMaxStartDate() {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('startDate').max = today;
+}
+
+// Enable end date and set its minimum date to start date
+function enableEndDate() {
+  const startDate = document.getElementById('startDate').value;
+  const endDateInput = document.getElementById('endDate');
+  
+  if (startDate) {
+    endDateInput.disabled = false;
+    endDateInput.min = startDate;
+  } else {
+    endDateInput.disabled = true;
+  }
+}
+
+// Apply the custom date range filter
+function applyDateRange() {
+  const filterType = document.getElementById('filter').value;
+  const startDate = document.getElementById('startDate').value;
+  const endDate = document.getElementById('endDate').value;
+  
+  if (filterType === 'custom' && startDate && endDate) {
+    let url = `?page=1&filterType=${filterType}&startDate=${startDate}&endDate=${endDate}`;
+    window.location.href = url;
+  } else {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Please select both start and end dates for the custom range.',
+      confirmButtonText: 'OK',
+      customClass: {
+        confirmButton: 'bg-blue-500 text-white',
+      },
+    })
+  }
+}
+
+// Download Report
+function downloadReport(format) {
+  const filterType = document.getElementById('filter').value;
+  const startDate = document.getElementById('startDate').value;
+  const endDate = document.getElementById('endDate').value;
+
+  let url = `/admin/salesReport/generate-${format}?filterType=${filterType}`;
+
+  if(filterType === 'custom') {
+    url += `&startDate=${startDate}&endDate=${endDate}`;
+  }
+
+  axios({
+    url: url,
+    method: 'GET',
+    responseType: 'blob',
+  }).then((response) => {
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    
+    // Get the filename from the Content-Disposition header if available
+    const contentDisposition = response.headers['content-disposition'];
+    let filename;
+    
+    if (contentDisposition) {
+      const filenameMatch = contentDisposition.match(/filename=(.*)/);
+      filename = filenameMatch ? filenameMatch[1] : `sales_report_${Date.now()}.${format === 'excel' ? 'xlsx' : 'pdf'}`;
+    } else {
+      filename = `sales_report_${Date.now()}.${format === 'excel' ? 'xlsx' : 'pdf'}`;
+    }
+    
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    
+    // Clean up
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  }).catch((error) => {
+    console.log("Error in downloadReport", error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Download Failed',
+      text: 'Failed to download the report. Please try again.',
+      confirmButtonText: 'OK',
+      customClass: {
+        confirmButton: 'bg-blue-500 text-white',
+      },
+    });
+  });
+}
+</script>

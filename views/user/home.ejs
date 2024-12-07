@@ -1,0 +1,264 @@
+<style>
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    @keyframes shine {
+      to {
+        background-position: 200% center;
+      }
+    }
+
+    .animate-float {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .shine-text {
+      background: linear-gradient(90deg, #ffffff 0%, #919191 50%, #ffffff 100%);
+      background-size: 200% auto;
+      animation: shine 3s linear infinite;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .product-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    }
+  </style>
+  <body class="bg-black text-white overflow-x-hidden">
+
+  <%- include('../patch/topper.ejs') %>
+
+  <!-- Video Section -->
+  <section class="relative h-screen overflow-hidden">
+    <video autoplay muted loop class="absolute w-full h-full object-cover">
+      <source src="/images/vd0.mp4" type="video/mp4">
+    </video>
+    
+    <!-- Gradient Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black"></div>
+    
+    <!-- Hero Content -->
+    <div class="relative h-full flex items-center justify-center px-6">
+      <div class="max-w-5xl text-center space-y-8 animate-float">
+        <h1 class="shine-text font-['Cinzel'] text-4xl md:text-6xl lg:text-7xl font-bold tracking-wider">
+          Timeless Elegance
+        </h1>
+        <p class="text-gray-300 text-xl md:text-2xl font-['Playfair_Display'] tracking-wide">
+          Where Luxury Meets Precision
+        </p>
+        <div class="flex justify-center gap-6 pt-8">
+          <a href="/shop/allProducts" class="bg-white/10 backdrop-blur-sm text-white px-8 py-3 rounded-full border border-white/20 hover:bg-white/20 transition-all duration-300">
+            Explore Collection
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories Section -->
+  <section class="py-20 px-6">
+    <h2 class="text-center font-['Cinzel'] text-4xl md:text-5xl mb-16 shine-text">Our Collections</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-5 max-w-7xl mx-auto">
+      <% categorylist.forEach(Category => { %>
+        <div class="group relative overflow-hidden rounded-2xl bg-gradient-to-b from-gray-900 to-black p-6 transition-all duration-500 hover:scale-105">
+          <div class="aspect-square overflow-hidden rounded-xl">
+            <a href="/Category/<%= Category._id %>">
+              <img src="<%= Category.image %>" alt="<%= Category.name %>" 
+                   class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
+            </a>
+          </div>
+          <h3 class="mt-6 text-center font-['Playfair_Display'] text-xl font-semibold"><%= Category.name %></h3>
+          <div class="mt-4 text-center">
+            <a href="/Category/<%= Category._id %>" 
+               class="inline-block px-6 py-2 rounded-full text-sm border border-white/20 hover:bg-white/10 transition-all duration-300">
+              Discover
+            </a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </section>
+
+  <!-- Latest Products Section -->
+  <section class="py-20 px-6 bg-gradient-to-b from-black via-gray-900 to-black">
+    <h2 class="text-center font-['Cinzel'] text-4xl md:text-5xl mb-16 shine-text">Latest Arrivals</h2>
+    <div class="overflow-hidden">
+      <div class="flex gap-8 snap-x snap-mandatory overflow-x-auto pb-8 scrollbar-hide">
+        <% latestproduct.forEach(products => { %>
+          <div class="product-card flex-none w-80 bg-gray-900 rounded-2xl overflow-hidden backdrop-blur-sm border border-white/10">
+            <a href="/product/<%= products._id %>">
+              <img src="<%= products.image[0] %>" alt="<%= products.name %>" 
+                   class="h-80 w-full object-cover hover:opacity-90 transition-opacity duration-300">
+            </a>
+            <div class="p-6 space-y-4">
+              <span class="text-gray-400 text-xs uppercase tracking-wider"><%= products&&products.category?products.category.name:"N/A" %></span>
+              <h3 class="font-['Playfair_Display'] text-xl font-semibold truncate"><%= products.name %></h3>
+              <div class="flex items-center justify-between">
+                <div class="space-y-1">
+                  <% if(products.discountedPrice < products.price) { %>
+                    <div class="flex items-center gap-2">
+                      <span class="text-xl font-bold">₹<%= products.discountedPrice.toFixed(0) %></span>
+                      <span class="text-sm text-gray-400 line-through">₹<%= products.price %></span>
+                    </div>
+                    <span class="text-yellow-500 text-sm font-semibold">
+                      <%= Math.round(((products.price - products.discountedPrice) / products.price) * 100) %>% OFF
+                    </span>
+                  <% } else { %>
+                    <span class="text-xl font-bold">₹<%= products.price %></span>
+                  <% } %>
+                </div>
+                <button 
+                  type="wishbutton" 
+                  id="addToWishlistButton" 
+                  data-product-ids='<%= products._id %>'
+                  class="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors duration-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                    <path 
+                      d="M12.001 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54l-1.45 1.31z" />
+                  </svg>
+                </button>              
+                <button type="button" 
+                id="addToCartButton" 
+                data-product-id='<%= products._id %>'
+                        class="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors duration-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+
+  </section>
+
+  <script>
+    // Initialize GSAP ScrollTrigger
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Animate categories on scroll
+    gsap.utils.toArray('.group').forEach((card, i) => {
+      gsap.from(card, {
+        scrollTrigger: {
+          trigger: card,
+          start: 'top bottom-=100',
+          toggleActions: 'play none none reverse'
+        },
+        opacity: 0,
+        y: 50,
+        duration: 0.6,
+        delay: i * 0.1
+      });
+    });
+
+    // Animate product cards on scroll
+    gsap.utils.toArray('.product-card').forEach((card, i) => {
+      gsap.from(card, {
+        scrollTrigger: {
+          trigger: card,
+          start: 'top bottom-=100',
+          toggleActions: 'play none none reverse'
+        },
+        opacity: 0,
+        x: 50,
+        duration: 0.6,
+        delay: i * 0.1
+      });
+    });
+
+    document.querySelectorAll('[data-product-id]').forEach(button => {
+    button.addEventListener('click', async function () {
+        const productId = this.getAttribute('data-product-id'); // Get the product ID from the button's attribute
+        
+        try {
+            const response = await fetch('/cart/:productId/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ productId }), // Send productId as JSON
+            });
+
+            if (response.ok) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Product added to cart!',
+                    text: 'The product was successfully added to your cart.',
+                });
+                // Optional: Redirect or update the UI here
+            } else {
+                const errorData = await response.json();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: `Error: ${errorData.message}`,
+                });
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Something went wrong!',
+                text: 'Please try again later.',
+            });
+        }
+    });
+});
+
+    document.querySelectorAll('[data-product-ids]').forEach(wishbutton => {
+      wishbutton.addEventListener('click', async function () {
+        const productId = this.getAttribute('data-product-ids'); // Get the product ID from the button's attribute
+        
+        try {
+            const response = await fetch('/wishlist/:productId/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ productId }), // Send productId as JSON
+            });
+
+            if (response.ok) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Product added to Wishlist!',
+                    text: 'The product was successfully added to your wishlist.',
+                });
+                // Optional: Redirect or update the UI here
+            } else {
+                const errorData = await response.json();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: `Error: ${errorData.message}`,
+                });
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Something went wrong!',
+                text: 'Please try again later.',
+            });
+        }
+    });
+});
+
+  </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<%- include('../patch/bottom.ejs') %>
+
+</body>
+

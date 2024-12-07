@@ -1,0 +1,25 @@
+<% if(success.length > 0){ %>
+    <p class="text-green-500 text-sm mb-2" id="flash-success"><%= success %></p>
+  <% } %>
+  
+  
+  <% if (error.length > 0) { %>
+    <p class="text-red-500 text-sm mb-2" id="flash-error"><%= error %></p>
+  <% } %>
+  
+
+  
+  <script>
+    setTimeout(()=> {
+      const successMessage = document.getElementById('flash-success')
+      const errorMessage = document.getElementById('flash-error')
+  
+      if(successMessage){
+        successMessage.style.display = 'none'
+      }
+      if(errorMessage){
+        errorMessage.style.display = 'none'
+      }
+    }, 6000)
+  
+  </script>

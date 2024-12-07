@@ -1,0 +1,115 @@
+<!-- main Container/body -->
+<div class="bg-[#18191a] text-gray-200 m-0 p-0 flex flex-col md:flex-row min-h-screen">
+
+    <!-- Sidebar -->
+    <%- include("./sidebar.ejs") %>
+    <!-- Sidebar end -->
+  
+    <!-- Main Content -->
+    <div class="flex flex-col flex-grow w-full md:w-auto">
+      <!-- Navbar -->
+      <nav class="bg-[#18191a] h-11 shadow-md flex items-center justify-center px-6">
+        <form action="/admin/searchUser" method="GET" class="relative w-2/5">
+          <input type="text" name="search" placeholder="Search" class="bg-[#242526] text-gray-200 text-sm px-4 py-2 rounded-full w-full pr-10 focus:outline-none focus:ring-2 focus:ring-gray-500">
+          <button class="absolute right-2 top-1/2 transform -translate-y-1/2" aria-label="Search">
+            <i class="fas fa-search text-gray-400"></i>
+          </button>
+        </form>
+      </nav>
+      <!-- Navbar end -->
+  
+      <!-- Table -->
+      <div class="flex-grow p-6 overflow-y-auto">
+        <div class="mt-8">
+          <h2 class="text-2xl font-bold text-white mb-6">Customers</h2>
+          <div class="bg-[#242526] rounded-lg shadow-lg overflow-x-auto">
+            <table class="w-full text-sm text-left text-gray-300">
+              <thead class="text-xs bg-[#1f1f1f] text-orange-500 text-center">
+                <tr>
+                  <th scope="col" class="px-6 py-4 font-medium text-xl">SI.no</th>
+                  <th scope="col" class="px-6 py-4 font-medium text-xl">Name</th>
+                  <th scope="col" class="px-6 py-4 font-medium text-xl">Email</th>
+                  <th scope="col" class="px-6 py-4 font-medium text-xl">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% usersdata.forEach((user, index) => { %>
+                  <tr class="border-b border-[#3a3a3a] hover:bg-[#2a2a2a] transition-colors duration-200">
+                    <td class="px-6 py-4 font-medium text-lg text-center"><%= startIndex + index %></td>
+                    <td class="px-6 py-4 text-lg text-center"><%= user.name %></td>
+                    <td class="px-6 py-4 text-lg text-center"><%= user.email %></td>
+                    <td class="px-6 py-4 text-center">
+                      <form action="/admin/block/<%= user._id %>" method="POST">
+                        <button type="submit" class="min-w-[80px] px-4 py-2 font-semibold text-white <%= user.isBlocked ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600' %> rounded-lg transition duration-200">
+                          <%= user.isBlocked ? 'Unblock' : 'Block' %>
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <!-- Pagination -->
+       <div class="flex justify-center items-center space-x-2 mt-6">
+        <% for(let i =1; i<=totalPages; i++) { %> 
+          <a href="?page=<%= i %>" class="px-4 py-2 <%=currentPage === i ?  'bg-blue-500 text-white' : 'bg-[#1f1f1f] text-gray-300' %> rounded-md hover: bg-[#2f2f2f] transition duration-200"><%= i %></a>
+  
+        <% } %>
+       </div>
+       
+        <!-- Pagination end -->
+      </div>
+      <!-- Table end -->
+    </div>
+  </div>
+  
+  <!-- Block/Unblock Confirmation Modal -->
+  <div id="blockModal" class="fixed inset-0 bg-[#121212] bg-opacity-90 flex items-center justify-center hidden">
+    <div class="bg-[#1f1f1f] p-6 rounded-lg shadow-lg max-w-sm w-full mx-4" role="document">
+      <h4 id="blockModalTitle" class="text-xl font-semibold mb-4 text-gray-300">Confirm Action</h4>
+      <p id="blockModalDesc" class="mb-4 text-gray-200">Are you sure you want to block/unblock this user?</p>
+      <div class="flex justify-end space-x-2">
+        <button id="cancelBlock" class="bg-gray-600 text-white py-2 px-4 rounded-lg shadow-md hover:bg-gray-700 transition">Cancel</button>
+        <button id="confirmBlock" class="bg-red-600 text-white py-2 px-4 rounded-lg shadow-md hover:bg-red-700 transition">Confirm</button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const blockButtons = document.querySelectorAll('form[action^="/admin/block/"]');
+      const blockModal = document.getElementById('blockModal');
+      const cancelBlock = document.getElementById('cancelBlock');
+      const confirmBlock = document.getElementById('confirmBlock');
+      const blockModalTitle = document.getElementById('blockModalTitle');
+      const blockModalDesc = document.getElementById('blockModalDesc');
+      let currentForm;
+  
+      blockButtons.forEach(button => {
+        button.addEventListener('submit', function(event) {
+          event.preventDefault(); // Prevent form submission
+          currentForm = this; // Store the current form
+  
+          // Determine if the action is to block or unblock
+          const isBlocking = this.querySelector('button').textContent.trim() === 'Block';
+          
+          // Update modal content based on action
+          blockModalTitle.textContent = isBlocking ? 'Confirm Block' : 'Confirm Unblock';
+          blockModalDesc.textContent = isBlocking ? 'Are you sure you want to block this user?' : 'Are you sure you want to unblock this user?';
+  
+          blockModal.classList.remove('hidden'); // Show the modal
+        });
+      });
+  
+      cancelBlock.addEventListener('click', function() {
+        blockModal.classList.add('hidden'); // Hide the modal
+      });
+  
+      confirmBlock.addEventListener('click', function() {
+        currentForm.submit(); // Submit the form
+      });
+    });
+  </script>
