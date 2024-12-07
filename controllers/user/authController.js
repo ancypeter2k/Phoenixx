@@ -5,7 +5,7 @@ import categoryModel from '../../models/category.models.js';
 import productModel from '../../models/product.models.js';
 
 
-// // GET Login Page
+// // GET Login Pagess
 export const getLogin = async (req, res) => {
   if (req.session.userID) {
     return res.redirect('/home');
