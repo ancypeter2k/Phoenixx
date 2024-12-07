@@ -56,7 +56,6 @@ export const postOrder = async (req, res) => {
   try {
     const userId = req.session.userID;
     const { addressId, paymentMethod } = req.body;
-    console.log('in post order', addressId);
     const razorpay = new Razorpay({
       key_id: process.env.RAZORPAY_KEY_ID,
       key_secret: process.env.RAZORPAY_KEY_SECRET
@@ -126,10 +125,10 @@ export const postOrder = async (req, res) => {
 
       if (!wallet || wallet.balance < cart.total) {
         return res.status(400).json({ success: false, message: "Insufficient balance in wallet" });
-      }
+      } 
 
-      wallet.balance -= cart.total;
-      wallet.transaction.push({
+        wallet.balance -= cart.total;
+        wallet.transaction.push({
         walletAmount: cart.total,
         transactionType: 'Debited',
         order_id: newOrder._id,
@@ -141,6 +140,7 @@ export const postOrder = async (req, res) => {
       await newOrder.save();
       await updateStock(items);
       await clearCart(userId);
+
 
       // if coupon is applied then update the used count of the coupon
       if(cart.couponCode) {
@@ -201,8 +201,6 @@ export const verifyPayment = async (req,res) => {
     res.status(500).send("Internal server error in verify payment");
   }
 }
-  
-
 
 //^ //  //  //   //  //         Add New Address     //  //  //  //  //  //  //
 export const addNewAddress = async (req, res) => {
@@ -228,8 +226,6 @@ export const addNewAddress = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
-
-
 
 // //^ //  //  //   //  //         Apply Coupon     //  //  //  //  //  //  //
 
