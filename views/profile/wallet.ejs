@@ -47,7 +47,7 @@
                 <td class="py-2 px-4"><%= new Date(transaction.transactionDate).toLocaleDateString() %></td>
                 <td class="py-2 px-4"><%= transaction.transactionType %></td>
                 <td class="py-2 px-4">₹<%= transaction.walletAmount.toFixed(2) %></td>
-                <td class="py-2 px-4"><%= transaction.order_id || 'N/A' %></td>
+                <td class="py-2 px-4"><%= transaction.order_id || 'N/A' || order_id%></td>
               </tr>
             <% }); %>
           <% } else { %>

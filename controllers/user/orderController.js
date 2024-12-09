@@ -119,7 +119,7 @@ export const orderCancel = async (req,res) => {
  
     const product = await productModel.findById(cancelledItem.product._id)
 
-// updating stock
+    // updating stock
     if(product) {
       product.stock += cancelledItem.quantity;
       product.sold -= cancelledItem.quantity;
@@ -134,7 +134,7 @@ export const orderCancel = async (req,res) => {
     // finding the refund amount by using the itemTotal of the cancelled item
     const refundAmount =cancelledItem.itemTotal
 
- 
+
     if (order.paymentMethod === 'Razorpay' || order.paymentMethod === 'Wallet') {
       // if the wallet is not found then create a new wallet for the user with the refund amount
       if (!wallet) {
@@ -150,22 +150,25 @@ export const orderCancel = async (req,res) => {
         });
       } else {        
         // if the wallet is found then update the balance of the wallet by adding the refund amount
-        wallet.balance += refundAmount;
-        wallet.transaction.push({
+          wallet.balance += refundAmount;
+          wallet.transaction.push({
           walletAmount: refundAmount,
           transactionType: 'Credited',
-          orderId: orderId,
+          order_id: orderId,
           transactionDate: Date.now()
         });
       }
     }
+  console.log('orderId:',orderId)
+  console.log("Wallet:",wallet)
     await wallet.save();
     res.status(200).json({message: 'Order cancelled successfully'})
-  } catch (error) {
+    } catch (error) {
     console.log("order cancel error :",error);
     res.status(500).send('Internal Server Error');
+    }
   }
-}
+
 
 //^  //  //   //  //         RETURN ORDER   //  //  //  //  //  //  //
 export const requestReturn = async (req, res) => {
