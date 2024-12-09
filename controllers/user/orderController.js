@@ -144,7 +144,7 @@ export const orderCancel = async (req,res) => {
           transaction: [{
             walletAmount: refundAmount,
             transactionType: 'Credited',
-            orderId: orderId,
+            order_id: orderId,
             transactionDate: Date.now()
           }]
         });
