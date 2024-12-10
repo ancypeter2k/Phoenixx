@@ -289,14 +289,14 @@ const postEditProduct = async (req, res) => {
     }
 
     const updateData = {
-      name: productName,
-      description: description,
+      name: productName||req.body.name||product.name,
+      description: description||req.body.description||product.description,
       image:updatedImages,
-      price: priceValue,
+      price: priceValue||req.body.price||product.price,
       discount:req.body.discount,
-      stock: Stocks,
-      category: category,
-      SKU: SKU,
+      stock: Stocks||req.body.stock,
+      category: category||req.body.category||product.category,
+      SKU: SKU||req.body.SKU,
     };
 
     console.log('updateData:***',updateData)
@@ -333,37 +333,6 @@ const postEditProduct = async (req, res) => {
     });
   }
 };
-
-  // const postEditProduct = async (req, res) => {
-  // try {
-    
-  //   const productId  = req.params.id;
-
-  //   console.log(`productId:`,productId);
-
-  //   let product = await productModel.findById(productId)
-
-  //   console.log(`product = ${product}`);
-  //   if (!product) {
-  //     return res.status(404).send('Product not found');
-  // }
-  // product.name = req.body.name||product.name;
-  // product.description = req.body.description||product.description;
-  // product.price = req.body.price||product.price;
-  // product.category =req.body.category||product.category;
-  // product.stock=req.body.stock;
-  // product.SKU = req.body.SKU;
-  // product.discount = req.body.discount;
-  // product.discountedPrice = req.body.discountedPrice;
-
-  // await product.save();
-  // res.redirect('/admin/products')
-
-    
-  // } catch (error) {
-  //   console.log(`error from postEditProduct ${error}`)
-  // }
-  // }
 
 export default {
   getProduct,

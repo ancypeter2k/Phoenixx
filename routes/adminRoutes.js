@@ -64,7 +64,6 @@ router.get('/addOffers', adminMiddleware.isAdmin, offerController.getAddOffer);
 router.post('/addOffers',adminMiddleware.isAdmin,offerController.postAddOffer);
 router.get('/editOffers/:id', adminMiddleware.isAdmin, offerController.getEditOffer);
 router.post('/editOffers/:id', adminMiddleware.isAdmin, offerController.postEditOffer);
-// router.post("/deleteOffer/:id",adminMiddleware.isAdmin,offerController.removeOffer)
 
 //^  //  //  //  //  //  //                 Coupon routes                    //  //  //  //  //  //  //
 

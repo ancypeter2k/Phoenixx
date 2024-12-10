@@ -4,7 +4,9 @@
   <!-- Login Form Container on the Right -->
   <div class="w-full max-w-md bg-gray-800 text-white p-8 rounded-lg backdrop-blur-md shadow-lg bg-opacity-10 mr-8 mt-32">
     <h2 class="text-2xl font-semibold text-center mb-6">Login to Your Account</h2>
-    
+        <!-- flash message -->
+        <%- include('../patch/messages.ejs') %>
+
     <form action="/login" method="POST">
       <!-- Username/Email Field -->
       <div class="mb-4">

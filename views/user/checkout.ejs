@@ -16,12 +16,12 @@
                 <div>
                   <p class="text-lg font-semibold text-yellow-500"><%= item.product.name %></p>
                   <p class="text-md text-gray-400"><%= item.product.category.name %></p>
-                  <p class="text-red-400 ">Price: <span class="line-through">₹<%= item.price %></span></p>
-                  <p class="text-green-400">Discounted Price: ₹<%= item.discountPrice %> x <%= item.quantity %></p>
+                  <p class="text-red-400 ">Price: <span class="line-through">₹<%= Math.floor(item.price) %></span></p>
+                  <p class="text-green-400">Discounted Price: ₹<%= Math.floor(item.discountPrice) %> x <%= item.quantity %></p>
                  
                 </div>
               </div>
-              <p class="text-lg">₹<%= item.discountPrice * item.quantity %></p>
+              <p class="text-lg">₹<%= Math.floor(item.discountPrice * item.quantity) %></p>
             </div>
           <% }) %>
         </div>

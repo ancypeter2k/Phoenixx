@@ -22,7 +22,7 @@ const postAdminLogin =  (req,res)=>{
   if(email===process.env.admin_Email && password === process.env.admin_Password){                   //if email and password are correct
     req.session.adminID=email                                                                      //set admin id in session  
     res.redirect('/admin/dashboard')                                                                //redirect to dashboard
-  }else{                                                                                            //if email and password are incorrect
+  }else{
     res.render('admin/adminLogin',{message:"Invalid Email or Password"})
   }
 }

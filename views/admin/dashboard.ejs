@@ -1,7 +1,7 @@
 <!-- Main Container/Body -->
-<div class="bg-[#18191a] text-gray-200 m-0 p-0 flex max-h-screen">
+<div class="bg-[#18191a] text-gray-200 m-0 p-0 flex max-h-screen ">
     <!-- Sidebar -->
-    <%- include("./sidebar.ejs") %>
+   <div class="h-[2568px]"><%- include("./sidebar.ejs") %></div> 
     <!-- Sidebar end -->
   
   <!-- Main Content -->
@@ -35,7 +35,7 @@
         <!-- Card 1 -->
         <div class="bg-[#242526] rounded-lg shadow-md p-6">
           <h2 class="text-xl font-bold text-white mb-4">Total Revenue</h2>
-          <p class="text-3xl font-bold">₹<%= totalRevenue %></p>
+          <p class="text-3xl font-bold">₹<%= Math.floor(totalRevenue) %></p>
           <p class="text-sm text-gray-400">Last <%= filterType %></p>
         </div>
         <!-- Card 2 -->
@@ -90,7 +90,7 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
         <% bestSellingProducts.forEach(product => { %>
           <div class="bg-[#2a2a2a] rounded-lg p-4">
-            <img src="<%= product.productImage[1] %>" alt="<%= product.productName %>" 
+            <img src="<%= product.productImage[0] %>" alt="<%= product.productName %>" 
                 class="w-full h-48 object-cover rounded-lg mb-3">
             <div class="space-y-2">
               <h3 class="text-lg font-semibold text-white line-clamp-2"><%= product.productName %></h3>

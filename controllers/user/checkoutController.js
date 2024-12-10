@@ -83,10 +83,10 @@ export const postOrder = async (req, res) => {
       return {
         product: item.product._id, 
         quantity: item.quantity, 
-        price: item.product.price, 
-        discountPrice: item.discountPrice, 
-        itemTotal: itemTotal, 
-        discountAmount: discountAmount, 
+        price: (Number(item.product.price)), 
+        discountPrice: (Number(item.discountPrice)), 
+        itemTotal: (Number(itemTotal)), 
+        discountAmount: (Number(discountAmount)), 
         couponCode: item.couponCode || null, 
         couponDiscountAmount: item.couponDiscountAmount || 0, 
         totalDiscount: totalDiscount > 0 ? totalDiscount : 0 

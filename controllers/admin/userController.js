@@ -7,7 +7,7 @@ export const getUserList=async (req,res)=> {
     const page=parseInt(req.query.page) || 1
     const limit=5
     const skip=(page -1) * limit
-    const usersdata=await userModel.find({}).skip(skip).limit(limit)                                               //get all users from database
+    const usersdata=await userModel.find({}).skip(skip).limit(limit)         //get all users from database
 
     const totalproducts=await userModel.countDocuments({})
     const totalPages=Math.ceil(totalproducts / limit)
