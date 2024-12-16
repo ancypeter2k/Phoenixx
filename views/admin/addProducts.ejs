@@ -94,9 +94,7 @@
                     </button>
                 </div>
             </div>
-
             
-
             <button type="submit" onclick="sweet()" class="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition">
                 Add Product
             </button>
@@ -123,12 +121,12 @@
               const files = event.target.files;
               const previewContainer = document.getElementById('imagePreviewContainer');
               previewContainer.innerHTML = ''; // Clear previous previews
-              const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp', 'image/svg+xml'];
+              const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
               const maxSize = 10 * 1024 * 1024; // 10 MB
   
               for (let file of files) {
                   if (!allowedTypes.includes(file.type)) {
-                      document.getElementById('imageError').textContent = `Invalid file type ${file.name}. Only jpeg, png, jpg, gif, webp, and svg are allowed.`;
+                      document.getElementById('imageError').textContent = `Invalid file type ${file.name}. Only jpeg, png, jpg are allowed.`;
                       return;
                   }
   

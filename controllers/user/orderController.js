@@ -11,7 +11,7 @@ export const getOrderHistoryPage = async (req,res) => {
   try {
 
     const page = parseInt(req.query.page) || 1;
-    const limit = 2;
+    const limit = 5;
     const skip = (page - 1) * limit;
 
 

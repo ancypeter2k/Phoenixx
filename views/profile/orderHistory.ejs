@@ -123,7 +123,7 @@
             </div>
             <% }) %>
           </div>
-          <% if (order.items.every(item => item.itemStatus !== 'Cancelled')) { %>
+          <% if (order.paymentStatus != 'Pending') { %>
           <div class="flex justify-between mt-2">
             <button class="bg-gradient-to-r from-red-600 to-yellow-400 text-black px-2 py-1 text-sm rounded-lg hover:bg-blue-600" onclick="downloadInvoice(`<%= order._id %>`)">
               Download Invoice

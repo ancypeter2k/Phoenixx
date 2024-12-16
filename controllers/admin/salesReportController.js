@@ -27,7 +27,7 @@ export const getSalesReportPage = async (req,res) => {
       if (startDate && endDate) {
         matchCriteria.orderedAt = {
           $gte: new Date(startDate),
-          $lte: new Date(endDate)
+          $lt: new Date(new Date(endDate).setHours(23, 59, 59, 999))
         }
       }
       break;
@@ -51,7 +51,7 @@ export const getSalesReportPage = async (req,res) => {
    const orders = await orderModel.find(matchCriteria)
         .populate('user', 'name')
         .populate('items.product', 'name')
-        .sort({createdAt: 1})
+        .sort({createdAt: -1})
         .skip(skip)
         .limit(limit)
 
@@ -104,7 +104,7 @@ export const getSalesReportPage = async (req,res) => {
       if (startDate && endDate) {
         matchCriteria.orderedAt = {
           $gte: new Date(startDate),
-          $lte: new Date(endDate)
+          $lt: new Date(new Date(endDate).setHours(23, 59, 59, 999))
         }
       }
       break;
@@ -162,42 +162,48 @@ export const generatePDFReport = async (req, res) => {
     res.setHeader('Content-Type', 'application/pdf');
     doc.pipe(res);
 
+    // Clean the amounts to remove any unwanted superscript characters
+    const cleanAmount = (amount) => {
+      return amount.toString().replace(/[^\d.-]/g, ''); // Remove any non-numeric characters except '.' and '-'
+    };
+
+    // Report Title
     doc.fontSize(20).font('Helvetica-Bold').fillColor('#333')
       .text('Phoenix Sales Report', { align: 'center' });
     doc.moveDown(0.5);
     doc.fontSize(12).font('Helvetica').fillColor('#666')
       .text(`Generated on: ${new Date().toLocaleDateString()}`, { align: 'center' });
 
+    // Summary Section
     doc.moveDown(1);
     doc.fontSize(12).font('Helvetica-Bold').fillColor('#333')
       .text('Summary', { underline: true });
     doc.moveDown(0.5);
     doc.fontSize(12).font('Helvetica').fillColor('#444')
-    .text(`Total Revenue: ₹${Math.floor(reportData.totalRevenue)}`)
-    .text(`Total Discount: ₹${Math.floor(reportData.totalDiscount)}`)
-    .text(`Total Sales Count: ${Math.floor(reportData.salesCount)}`);
-    doc.moveDown(1);
+      .text(`Total Revenue: ₹${cleanAmount(reportData.totalRevenue.toFixed(2))}`)
+      .text(`Total Discount: ₹${cleanAmount(reportData.totalDiscount.toFixed(2))}`)
+      .text(`Total Sales Count: ${Math.floor(reportData.salesCount)}`);
 
+    // Table Headers
     const headers = [
-      { label: 'User', width: 80 },
-      { label: 'Order ID', width: 80 },
-      { label: 'Product', width: 80 },
-      { label: 'Qty', width: 40 },
-      { label: 'Order Date', width: 60 },
-      { label: 'Item Total', width: 60 }
+      { label: 'User', width: 80, align: 'left' },
+      { label: 'Order ID', width: 120, align: 'left' },
+      { label: 'Product', width: 110, align: 'left' },
+      { label: 'Qty', width: 40, align: 'center' },
+      { label: 'Order Date', width: 80, align: 'center' },
+      { label: 'Item Total', width: 80, align: 'right' }
     ];
 
-    let x = doc.x, y = doc.y;
+    let x = doc.page.margins.left, y = doc.y + 20; // Use margin for x position
     doc.fontSize(10).font('Helvetica-Bold').fillColor('#007acc')
       .rect(x, y, doc.page.width - doc.page.margins.left - doc.page.margins.right, 18).fill('#007acc');
     headers.forEach((header) => {
-      doc.fillColor('#ffffff').text(header.label, x + 5, y + 4, { width: header.width, align: 'center' });
+      doc.fillColor('#ffffff').text(header.label, x + 5, y + 4, { width: header.width, align: header.align });
       x += header.width;
     });
     y += 18;
 
-    const truncate = (str, len) => (str.length > len ? `${str.slice(0, len - 3)}...` : str);
-
+    // Table Content
     const orders = await orderModel.find(matchCriteria)
       .populate('user', 'name')
       .populate('items.product', 'name');
@@ -206,21 +212,32 @@ export const generatePDFReport = async (req, res) => {
     orders.forEach(order => {
       order.items.forEach(item => {
         if (item.itemStatus === 'Delivered') {
-          x = doc.page.margins.left;
+          x = doc.page.margins.left; // Reset x to left margin
           y += 15;
+
+          const capitalize = (str) => {
+            return str
+              .split(' ')
+              .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+              .join(' ');
+          };
 
           const rowData = [
             order.user.name,
-            truncate(order._id.toString(), 16),
-            truncate(item.product.name, 10),
+            order._id.toString().substring(0, 20),
+            capitalize(item.product.name).substring(0, 20),  // Capitalize product name
             item.quantity,
             new Date(order.orderedAt).toLocaleDateString(),
-            `₹${item.itemTotal}`
+            `₹${cleanAmount(item.itemTotal.toFixed(2))}`  // Clean amount before adding to the report
           ];
 
           rowData.forEach((text, i) => {
-            // doc.rect(x, y, headers[i].width, 15).stroke();//boarder
-            doc.text(text, x + 3, y + 3, { width: headers[i].width, align: 'center' });
+            const align = headers[i].align; // Align based on header definition
+            doc.text(text, x + 3, y + 3, {
+              width: headers[i].width - 6,
+              align: align, // Apply the correct alignment
+              ellipsis: true  // Add ellipsis for overflow
+            });
             x += headers[i].width;
           });
 
@@ -239,7 +256,8 @@ export const generatePDFReport = async (req, res) => {
   }
 };
 
- //^ //  //  //   //  //         GENERATE EXCEL REPORT     //  //  //  //  //  //  //
+
+//^ //  //  //   //  //         GENERATE EXCEL REPORT     //  //  //  //  //  //  //
 
 export const generateExcelReport = async (req, res) => {
   try {

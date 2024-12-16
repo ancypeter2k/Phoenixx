@@ -89,10 +89,10 @@ const result=await cloudinary.uploader.upload(req.file.path,{
 
 const getEditCategory = async(req,res)=>{ 
   try{
-    const id = req.params.id              //Extract the category ID from the request parameters
+    const id = req.params.id;
 
-    const category = await categoryModel.findById(id)     //find the category by id
-    res.render('admin/editCategory',{category})      //render the edit category page with the  found category
+    const category = await categoryModel.findById(id)  
+    res.render('admin/editCategory',{category}) 
   }catch(error){
     console.log(error);
     res.status(500).send("Internal Server Error"); 
@@ -103,7 +103,7 @@ const getEditCategory = async(req,res)=>{
 // //  //  //   //  //          POST EDIT CATEGORY     //  //  //  //  //  //  //
 
 const postEditCategory = async (req, res) => {
-  const file = req.file;
+  const file = req.file; 
   try {
     const id = req.params.id.trim();
     const { name, existingImage } = req.body;
@@ -129,8 +129,9 @@ const postEditCategory = async (req, res) => {
     }
 
     if(!file && !existingImage) {
-      errors.push("Please upload atleast one image");
+      errors.push("Please upload at least one image");
     } else {
+      if (file) {
       const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp', 'image/svg+xml'];
       if (!allowedTypes.includes(file.mimetype)) {
         errors.push('Invalid file Type.please upload a valid image file');
@@ -139,6 +140,7 @@ const postEditCategory = async (req, res) => {
       if (file.size > maxSize) {
         errors.push('File size exceeds the limit of 10 MB');
       }
+    }
     }
 
     if (errors.length > 0) {
@@ -155,7 +157,7 @@ const postEditCategory = async (req, res) => {
     if (file) {
       // New image uploaded
       const result = await cloudinary.uploader.upload(file.path, {
-        folder: "Category", //^ cloudinary folder for category
+        folder: "Category Image",
         use_filename: true
       });
       categoryData.image = result.secure_url;

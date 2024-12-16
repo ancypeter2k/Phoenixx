@@ -389,7 +389,7 @@ export const orderConfirmation = async (req,res) => {
     if(!newOrder) {
       return res.status(400).json({message:"No orders found"})
     }
-    res.render('user/orderConfirmation', {order:newOrder,title:"Order Confirmation"})
+    res.render('user/orderconfirmation', {order:newOrder,title:"Order Confirmation"})
   }catch (error) {
     console.error('Error loading order confirmation:', error);
     res.status(500).send('Server Error');

@@ -203,7 +203,6 @@ const getEditProduct = async (req, res) => {
 };
 
 // //  //  //   //  //          POST EDIT PRODUCT   //  //  //  //  //  //  //
-
 const postEditProduct = async (req, res) => {
   const files = req.files || [];
   try {

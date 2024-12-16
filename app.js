@@ -26,7 +26,7 @@ import adminRoutes from './routes/adminRoutes.js';
 import userRouter from './routes/userRoutes.js'
 import googleAuthRouter from './routes/googleAuthRoutes.js'
 
-// // directory name
+// // // // directory name // // // //
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -79,13 +79,13 @@ app.use('/',userRouter);
 app.use('/',googleAuthRouter);
 
 // // // // 404 Error // // // //
-app.use('*',(req,res)=>{
+app.use('*', (req, res)=>{
   res.render('user/404');
 });
 
 // // // // 500 Error // // // //
-app.use('*',(req,res)=>{
-  res.render('user/500');
+app.use('./500', (req, res) => {
+  res.status(500).render('user/500');// Catch-all for unmatched routes
 });
 
 export default app

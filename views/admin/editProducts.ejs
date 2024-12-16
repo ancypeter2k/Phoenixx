@@ -1,3 +1,12 @@
+<style>
+.hidden {
+  display: none;
+}
+
+.visible {
+  display: flex;
+}
+</style>
 <body class="bg-gray-900 text-gray-200">
     <div class="bg-[#18191a] text-gray-200 m-0 p-0 flex flex-col md:flex-row min-h-screen">
       <!-- Sidebar -->
@@ -7,7 +16,7 @@
       <!-- Products Adding forms -->
       <div class="container mx-auto py-6">
         <h1 class="text-2xl font-semibold mb-4 text-gray-200">Edit Product</h1>
-  
+          <%- include('../patch/messages.ejs') %>
         <form action="/admin/editProducts/<%= product.id %>" method="POST" enctype="multipart/form-data" id="product-form" class="bg-[#242526] p-6 rounded shadow-md" onsubmit="return validateForm()">
           <div class="mb-4">
               <label class="block text-gray-300">Product Name</label>
@@ -56,7 +65,8 @@
             <label class="block text-gray-300">Discounted Price</label>
             <input type="text" id="discountedPrice" name="discountedPrice" value="<%= product.discountedPrice %>" readonly class="input w-full bg-[#1f1f1f] text-gray-200 border border-gray-600 rounded-md p-2 mb-4" />
           </div>
-  
+
+          <!-- Image modal -->
           <div class="mb-4">
             <label class="block text-gray-300">Images</label>
             <input type="file" id="imageInput" name="image" accept="image/*" multiple
@@ -92,6 +102,16 @@
                     Cancel
                 </button>
             </div>
+        </div>
+
+        <!-- Modal Structure -->
+        <div id="validationModal" class="hidden fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50">
+          <div class="bg-white p-4 rounded shadow-md w-1/3">
+              <p id="modalMessage" class="text-center text-gray-800"></p>
+              <div class="text-center mt-4">
+                  <button onclick="closeModal()" class="bg-blue-500 text-white px-4 py-2 rounded">OK</button>
+              </div>
+          </div>
         </div>         
 
         <button type="submit" onclick="sweet()" class="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition">            Edit Product
@@ -100,31 +120,46 @@
 </div>
 </div>
 <script>
-//  showing images
-function previewImages(event) {
-  const container = document.getElementById('imagePreviewContainer');
-  const files = event.target.files;
 
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-    const reader = new FileReader();
+// Preview Images
+        // Function to validate and show the crop modal
+        function validateAndShowModal(input) {
+            const file = input.files[0];
+            const validExtensions = ["image/png", "image/jpeg", "image/jpg"];
 
-    reader.onload = function(e) {
-      const div = document.createElement('div');
-      div.className = 'relative m-2';
-      div.innerHTML = `
-        <img src="${e.target.result}" alt="Image preview" class="w-24 h-24 object-cover rounded">
-        <button type="button" onclick="removeImage(this)" class="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1">
-          <i class="fas fa-times"></i>
-        </button>
-      `;
-      container.appendChild(div);
-    }
+            // Check if file type is valid
+            if (file && validExtensions.includes(file.type)) {
+                // Show the crop modal with the selected image
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById("croppingImage").src = e.target.result;
+                    document.getElementById("cropperModal").classList.remove("hidden");
+                };
+                reader.readAsDataURL(file);
+            } else {
+                // Show SweetAlert error
+                Swal.fire({
+                    icon: "error",
+                    title: "Invalid File Type",
+                    text: "Please upload a PNG, JPG, or JPEG file.",
+                    confirmButtonText: "OK",
+                });
 
-    reader.readAsDataURL(file);
-  }
-}
+                // Clear the input value
+                input.value = "";
+            }
+        }
 
+        // Function to close the crop modal
+        function closeCropModal() {
+            document.getElementById("cropperModal").classList.add("hidden");
+        }
+
+        // Function to crop the image (Placeholder)
+        function cropImage() {
+            alert("Crop logic to be implemented.");
+            closeCropModal();
+        }
 function removeImage(button) {
   const container = button.closest('div');
   const input = container.querySelector('input[name="existingImages"]');
@@ -133,7 +168,68 @@ function removeImage(button) {
   }
   container.remove(); // Remove the image preview
 }
-    
+   
+    // Calculate Discounted Price
+    function calculateDiscountedPrice() {
+        const price = parseFloat(document.getElementById('price').value);
+        const discount = parseFloat(document.getElementById('discount').value);
+        const discountedPriceField = document.getElementById('discountedPrice');
+  
+        if (!isNaN(price) && !isNaN(discount) && price > 0 && discount >= 0 && discount <= 100) {
+            const discountedPrice = price - (price * discount / 100);
+            discountedPriceField.value = discountedPrice.toFixed(2);
+        } else {
+            discountedPriceField.value = '';
+        }
+    }
+  
+    // Validate Form before submission
+    function validateForm() {
+        let isValid = true;
+  
+        // Check if the price is a valid number
+        const price = document.getElementById('price');
+        const priceError = document.getElementById('priceError');
+        if (isNaN(price.value) || parseFloat(price.value) <= 0) {
+            priceError.textContent = 'Please enter a valid price.';
+            isValid = false;
+        } else {
+            priceError.textContent = '';
+        }
+  
+        // Check if the discount is a valid number
+        const discount = document.getElementById('discount');
+        const discountError = document.getElementById('discountError');
+        if (isNaN(discount.value) || parseFloat(discount.value) < 0 || parseFloat(discount.value) > 100) {
+            discountError.textContent = 'Please enter a valid discount between 0 and 100.';
+            isValid = false;
+        } else {
+            discountError.textContent = '';
+        }
+  
+        // Check if the SKU format is valid
+        const skuError = document.getElementById('SKUError');
+        const skuValue = document.getElementById('SKU').value;
+        const skuRegex = /^[a-zA-Z0-9\-]+$/;
+        if (!skuRegex.test(skuValue)) {
+            skuError.textContent = 'Invalid SKU format. Only letters, numbers, and dashes are allowed.';
+            isValid = false;
+        } else {
+            skuError.textContent = '';
+        }
+  
+        return isValid;
+    }
+
+    function sweet() {
+    Swal.fire({
+      title: 'Product Added!',
+      text: 'Your product has been successfully added.',
+      icon: 'success',
+      confirmButtonText: 'Okay'
+    });
+  }
+
     function sweet() {
     Swal.fire({
       title: 'Product Edited!',
