@@ -1,31 +1,31 @@
-<nav class="bg-black p-2 flex flex-col w-full">
-  <h2 class="text-lg font-bold mb-2 text-center">My Account</h2>
-  <div class="flex flex-wrap justify-around">
-      <a href="/profile/personal-info" class="flex items-center transition duration-200 py-2 px-3 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black <%= locals.title === 'Personal Information' ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-black' : '' %>">
-          <i class="fas fa-user mr-1"></i>
-          <span class="text-sm md:text-base">Personal Information</span>
-      </a>
-      <a href="/profile/address" class="flex items-center transition duration-200 py-2 px-3 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black <%= locals.title === 'Address' || locals.title === 'Add Address' || locals.title === 'Edit Address' ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-black' : '' %>">
-          <i class="fas fa-map-marker-alt mr-1"></i>
-          <span class="text-sm md:text-base">Address</span>
-      </a>
-      <a href="/profile/orders" class="flex items-center transition duration-200 py-2 px-3 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black <%= locals.title === 'Orders' ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-black' : '' %>">
-          <i class="fas fa-box mr-1"></i>
-          <span class="text-sm md:text-base">Orders</span>
-      </a>
-      <a href="/profile/wallet" class="flex items-center transition duration-200 py-2 px-3 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black <%= locals.title === 'Wallet' ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-black' : '' %>">
-          <i class="fas fa-wallet mr-1"></i>
-          <span class="text-sm md:text-base">Wallet</span>
-      </a>
-      <a href="/profile/coupons" class="flex items-center transition duration-200 py-2 px-3 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black <%= locals.title === 'Coupons' ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-black' : '' %>">
-          <i class="fas fa-ticket-alt mr-1"></i>
-          <span class="text-sm md:text-base">Coupons</span>
-      </a>
-      <% if (user && user.password && user.password.length > 0) { %>
-      <a href="/profile/change-password" class="flex items-center transition duration-200 py-2 px-3 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-yellow-400 hover:text-black <%= locals.title === 'Change Password' ? 'bg-gradient-to-r from-red-600 to-yellow-400 text-black' : '' %>">
-          <i class="fas fa-key mr-1"></i>
-          <span class="text-sm md:text-base">Change Password</span>
-      </a>
-      <% } %>
+<div class="bg-[#121213] text-white flex flex-col items-center p-6 w-80 h-full sticky top-0">
+    <div class="w-full space-y-6">
+        <h2 class="text-lg font-bold">My Account</h2>
+        <nav class="flex flex-col w-full">
+            <a href="/profile/personal-info" class="sidebar-link">Personal Information</a>
+            <a href="/profile/address" class="sidebar-link">Address</a>
+            <a href="/profile/orders" class="sidebar-link">Orders</a>
+            <a href="/profile/wallet" class="sidebar-link">Wallet</a>
+            <a href="/profile/change-password" class="sidebar-link">Change Password</a>
+        </nav>
+    </div>
   </div>
-</nav>
+
+  <!-- CSS Styles -->
+<style>
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      background-color: #1f1f1f;
+      color: #b0b0b0;
+      padding: 12px 16px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease, color 0.3s ease, background 0.5s linear;
+    }
+  
+    .sidebar-link:hover {
+      background: linear-gradient(90deg, #ff0000, #ff7f50);
+      color: white;
+    }
+  </style>
+  
