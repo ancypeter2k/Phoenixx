@@ -1,20 +1,45 @@
-<div class="bg-[#121213] text-white flex flex-col items-center p-6 w-80 h-full sticky top-0">
-    <div class="w-full space-y-6">
-        <h2 class="text-lg font-bold">My Account</h2>
-        <nav class="flex flex-col w-full">
-            <a href="/profile/personal-info" class="sidebar-link">Personal Information</a>
-            <a href="/profile/address" class="sidebar-link">Address</a>
-            <a href="/profile/orders" class="sidebar-link">Orders</a>
-            <a href="/profile/wallet" class="sidebar-link">Wallet</a>
-            <a href="/profile/change-password" class="sidebar-link">Change Password</a>
-            <a href="/logout" id="logoutLink" class="sidebar-link">Logout</a>
-        </nav>
-    </div>
+<div class="bg-[#121213] text-white flex flex-col items-center p-6 w-80 h-full sticky top-0 md:w-80 hidden md:flex">
+  <div class="w-full space-y-6">
+      <h2 class="text-lg font-bold">My Account</h2>
+      <nav class="flex flex-col w-full">
+          <a href="/profile/personal-info" class="sidebar-link">Personal Information</a>
+          <a href="/profile/address" class="sidebar-link">Address</a>
+          <a href="/profile/orders" class="sidebar-link">Orders</a>
+          <a href="/profile/wallet" class="sidebar-link">Wallet</a>
+          <a href="/profile/change-password" class="sidebar-link">Change Password</a>
+          <a href="/logout" id="logoutLink" class="sidebar-link">Logout</a>
+      </nav>
   </div>
+</div>
 
-  <!-- CSS Styles -->
+<!-- Mobile Menu Button -->
+<div class="bg-[#121213] text-white flex justify-between items-center p-4 md:hidden sticky top-0 w-full z-50">
+  <h2 class="text-lg font-bold">My Account</h2>
+  <button id="menuButton" class="text-white">
+      <i class="fas fa-bars text-2xl"></i>
+  </button>
+</div>
+
+<!-- Mobile Menu -->
+<div id="mobileMenu" class="bg-[#121213] text-white fixed top-0 left-0 w-80 h-full transform -translate-x-full transition-transform duration-300 md:hidden z-50">
+  <div class="p-6">
+      <button id="closeMenuButton" class="text-white text-xl mb-4">
+          <i class="fas fa-times"></i>
+      </button>
+      <nav class="flex flex-col w-full space-y-4">
+          <a href="/profile/personal-info" class="sidebar-link">Personal Information</a>
+          <a href="/profile/address" class="sidebar-link">Address</a>
+          <a href="/profile/orders" class="sidebar-link">Orders</a>
+          <a href="/profile/wallet" class="sidebar-link">Wallet</a>
+          <a href="/profile/change-password" class="sidebar-link">Change Password</a>
+          <a href="/logout" id="logoutLinkMobile" class="sidebar-link">Logout</a>
+      </nav>
+  </div>
+</div>
+
+<!-- CSS Styles -->
 <style>
-    .sidebar-link {
+  .sidebar-link {
       display: flex;
       align-items: center;
       background-color: #1f1f1f;
@@ -22,29 +47,42 @@
       padding: 12px 16px;
       border-radius: 8px;
       transition: background-color 0.3s ease, color 0.3s ease, background 0.5s linear;
-    }
-  
-    .sidebar-link:hover {
+  }
+
+  .sidebar-link:hover {
       background: linear-gradient(90deg, #ff0000, #ff7f50);
       color: white;
-    }
-  </style>
-  
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const logoutLink = document.getElementById('logoutLink');
+  }
+</style>
+
+<!-- JavaScript -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const menuButton = document.getElementById('menuButton');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const closeMenuButton = document.getElementById('closeMenuButton');
+      const logoutLink = document.getElementById('logoutLinkMobile');
       const logoutModal = document.getElementById('logoutModal');
       const cancelLogout = document.getElementById('cancelLogout');
       const confirmLogout = document.getElementById('confirmLogout');
-  
+
+      // Toggle mobile menu
+      menuButton.addEventListener('click', function() {
+          mobileMenu.classList.remove('-translate-x-full');
+      });
+
+      closeMenuButton.addEventListener('click', function() {
+          mobileMenu.classList.add('-translate-x-full');
+      });
+
+      // Logout modal functionality
       logoutLink.addEventListener('click', function(event) {
-        event.preventDefault();
-        logoutModal.classList.remove('hidden');
+          event.preventDefault();
+          logoutModal.classList.remove('hidden');
       });
-  
+
       cancelLogout.addEventListener('click', function() {
-        logoutModal.classList.add('hidden');
+          logoutModal.classList.add('hidden');
       });
-  
-    });
-  </script>
+  });
+</script>
