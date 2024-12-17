@@ -124,6 +124,7 @@ export const postresendOTP =async (req,res) => {
     const {email} = tempForgotPassword
 
     const newOTP = generateOTP()
+    console.log("resent otp",newOTP)
     const otpExpiresAt = new Date(Date.now() + 2 * 60 * 1000)
 
     req.session.tempForgotPassword = {
@@ -198,6 +199,7 @@ export const postResetPassword =async (req,res) => {
 
   
     // Redirect to the login page with a success message
+    console.log("hello from reset password")
     req.flash('success','Password reset successfully. Please login with your new password')
     res.redirect('/login')
 

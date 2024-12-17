@@ -47,6 +47,8 @@ router.route('/resetPassword')
     .get(passwordControl.getResetPassword)
     .post(passwordControl.postResetPassword)
 
+router.get("/resetPassword",passwordControl.getResetPassword)
+router.post("/resetPassword",passwordControl.postResetPassword)
 
 //^  //  //  //  //  //  //               Landing page Routes              //  //  //  //  //  //  //
 
