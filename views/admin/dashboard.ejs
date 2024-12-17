@@ -1,14 +1,13 @@
-<!-- Main Container/Body -->
-<div class="bg-[#18191a] text-gray-200 m-0 p-0 flex max-h-screen ">
-    <!-- Sidebar -->
-   <div class="h-[2568px]"><%- include("./sidebar.ejs") %></div> 
-    <!-- Sidebar end -->
-  
+<!-- main Container/body -->
+<div class="flex h-screen bg-[radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]">
+  <!-- Sidebar -->
+  <%- include("./sidebar.ejs") %>
+  <!-- Sidebar end -->
+
   <!-- Main Content -->
-  <div class="bg-[#18191a] text-gray-200 m-0 p-0 flex flex-col min-h-screen">
-    <div class="flex-grow flex-shrink-0 overflow-hidden">
+  <div class="flex flex-col flex-grow overflow-hidden">
     <!-- Navbar -->
-    <nav class="bg-[#18191a] h-11 shadow-md flex items-center justify-center px-6">
+    <nav class="bg-black  h-11 shadow-md flex items-center justify-center px-6">
       <div class="relative w-2/5">
         <input type="text" placeholder="Search" class="bg-[#242526] text-gray-200 text-sm px-4 py-2 rounded-full w-full pr-10 focus:outline-none focus:ring-2 focus:ring-gray-500">
         <button class="absolute right-2 top-1/2 transform -translate-y-1/2" aria-label="Search">
