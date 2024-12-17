@@ -8,6 +8,57 @@
     z-index: 50;
   }
 </style>
+<!-- Mobile Menu Toggle -->
+<div class="md:hidden">
+  <button id="menu-toggle" aria-label="Toggle Menu" class="p-2 text-white focus:outline-none">
+    <i class="fas fa-bars w-6 h-6"></i>
+  </button>
+  
+  <!-- Mobile Dropdown -->
+  <div id="mobile-nav" class="hidden absolute top-12 right-0 w-56 bg-black text-white rounded-md shadow-lg z-50">
+    <!-- Mobile Category -->
+    <div>
+      <button id="mobile-category-btn" class="block w-full text-left px-4 py-2 hover:text-orange-500 focus:outline-none">
+        <i class="fas fa-bars"></i> Categories
+      </button>
+      <div id="mobile-category-dropdown" class="hidden bg-gray-800 rounded-md">
+        <a href="/shop/allProducts?category=Men&sort=latest" class="block px-4 py-2 hover:text-orange-500">Men</a>
+        <a href="/shop/allProducts?category=Women&sort=latest" class="block px-4 py-2 hover:text-orange-500">Women</a>
+        <a href="/shop/allProducts?category=Couples&sort=latest" class="block px-4 py-2 hover:text-orange-500">Couples</a>
+        <a href="/shop/allProducts?category=Sales&sort=latest" class="block px-4 py-2 hover:text-orange-500">Sale</a>
+      </div>
+    </div>
+
+    <!-- Mobile Search -->
+    <div>
+      <button id="mobile-search-btn" class="block w-full text-left px-4 py-2 hover:text-orange-500 focus:outline-none">
+        <i class="fas fa-search"></i> Search
+      </button>
+      <div id="mobile-search-dropdown" class="hidden p-2 bg-gray-800">
+        <form action="/shop/allProducts" method="GET">
+          <input type="text" name="search" placeholder="Search" class="w-full px-4 py-2 rounded-full bg-gray-700 text-white" />
+        </form>
+      </div>
+    </div>
+
+    <!-- Mobile User Section -->
+    <% if (name) { %>
+    <div>
+      <button id="mobile-user-btn" class="block w-full text-left px-4 py-2 hover:text-orange-500 focus:outline-none">
+        <i class="fas fa-user"></i> <%= name %>
+      </button>
+      <div id="mobile-user-dropdown" class="hidden bg-gray-800 rounded-md">
+        <a href="/profile/personal-info" class="block px-4 py-2 hover:text-orange-500">Profile</a>
+        <button id="logout-button-mobile" class="block w-full text-left px-4 py-2 hover:text-orange-500">Logout</button>
+      </div>
+    </div>
+    <% } else { %>
+    <a href="/login" class="block px-4 py-2 hover:text-orange-500">
+      <i class="fas fa-sign-in-alt"></i> Login
+    </a>
+    <% } %>
+  </div>
+</div>
 
 <nav class="nav-container flex items-center justify-between py-2 px-4 bg-black text-white">
   <!-- Left Side - Category Menu -->
@@ -150,3 +201,50 @@ document.addEventListener('click', (event) => {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
+<script>
+  const menuToggle = document.getElementById('menu-toggle');
+  const mobileNav = document.getElementById('mobile-nav');
+  const mobileCategoryBtn = document.getElementById('mobile-category-btn');
+  const mobileCategoryDropdown = document.getElementById('mobile-category-dropdown');
+  const mobileSearchBtn = document.getElementById('mobile-search-btn');
+  const mobileSearchDropdown = document.getElementById('mobile-search-dropdown');
+  const mobileUserBtn = document.getElementById('mobile-user-btn');
+  const mobileUserDropdown = document.getElementById('mobile-user-dropdown');
+  
+  // Mobile menu toggle
+  menuToggle.addEventListener('click', () => {
+    mobileNav.classList.toggle('hidden');
+  });
+  
+  // Toggle Category Dropdown
+  mobileCategoryBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    mobileCategoryDropdown.classList.toggle('hidden');
+  });
+  
+  // Toggle Search Dropdown
+  mobileSearchBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    mobileSearchDropdown.classList.toggle('hidden');
+  });
+  
+  // Toggle User Dropdown
+  mobileUserBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    mobileUserDropdown.classList.toggle('hidden');
+  });
+  
+  // Hide Dropdowns when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!mobileCategoryBtn.contains(e.target)) {
+      mobileCategoryDropdown.classList.add('hidden');
+    }
+    if (!mobileSearchBtn.contains(e.target)) {
+      mobileSearchDropdown.classList.add('hidden');
+    }
+    if (!mobileUserBtn?.contains(e.target)) {
+      mobileUserDropdown.classList.add('hidden');
+    }
+  });
+  </script>
+  
