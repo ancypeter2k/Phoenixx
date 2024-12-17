@@ -26,7 +26,6 @@
 </style>
 
 <!-- Desktop Navigation (hidden on mobile) -->
-<!-- Desktop Navigation (hidden on mobile) -->
 <nav id="desktop-nav" class="nav-container flex items-center justify-between py-2 px-4 bg-black text-white md:hidden">
   <!-- Left Side - Category Menu -->
   <div class="relative">
@@ -163,113 +162,60 @@
 
     <!-- Center - Logo and Name -->
     <div class="flex flex-col items-center justify-center space-y-1" style="padding-left: 10%;">
-      <img src="/images/mylogo1.png" alt="Phoenix watches Logo" class="nav-logo w-10 max-h-5">
-      <p class="text-white text-xl font-bold styled-text">Phoenix</p>
+      <img src="/images/mylogo1.png" alt="Phoenix watches Logo" class="nav-logo w-10 max-h-10 text-white text-lg font-bold styled-text">Phoenix
     </div>
     
 </div>
 
+
+<!-- JavaScript for Toggle Menu and Modal -->
 <script>
-  // Desktop Dropdowns (for category, search, and user menu)
-  const categoryBtn = document.getElementById('category-menu-btn');
-  const categoryDropdown = document.getElementById('category-dropdown');
-  const searchIcon = document.getElementById('search-icon');
-  const searchDropdown = document.getElementById('search-dropdown');
-  const userIcon = document.getElementById('user-icon');
-  const userMenu = document.getElementById('user-menu');
-  const logoutButton = document.getElementById('logout-button');
-  const logoutModal = document.getElementById('logout-modal');
-  const cancelLogout = document.getElementById('cancel-logout');
-
-  // Toggle Dropdowns on Desktop
-  categoryBtn?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    categoryDropdown.classList.toggle('hidden');
+  // Toggle mobile menu
+  document.getElementById('menu-toggle').addEventListener('click', function () {
+    const menu = document.getElementById('mobile-menu');
+    menu.classList.toggle('hidden');
   });
 
-  searchIcon?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    searchDropdown.classList.toggle('hidden');
-  });
-
-  userIcon?.addEventListener('click', (e) => {
-    e.stopPropagation();
+  // Toggle user menu
+  document.getElementById('user-icon').addEventListener('click', function () {
+    const userMenu = document.getElementById('user-menu');
     userMenu.classList.toggle('hidden');
   });
 
-  // Show Logout Modal
-  logoutButton?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    logoutModal.classList.remove('hidden');
+  // Show logout modal
+  document.getElementById('logout-button').addEventListener('click', function () {
+    document.getElementById('logout-modal').classList.remove('hidden');
   });
 
-  // Hide Logout Modal
-  cancelLogout?.addEventListener('click', () => {
-    logoutModal.classList.add('hidden');
+  // Close modal on cancel
+  document.getElementById('cancel-logout').addEventListener('click', function () {
+    document.getElementById('logout-modal').classList.add('hidden');
   });
 
-  // Close dropdowns when clicking outside on desktop
-  document.addEventListener('click', (event) => {
-    if (!categoryBtn.contains(event.target) && !categoryDropdown.contains(event.target)) {
-      categoryDropdown.classList.add('hidden');
-    }
-    
-    if (!searchIcon.contains(event.target) && !searchDropdown.contains(event.target)) {
-      searchDropdown.classList.add('hidden');
-    }
-    
-    if (!userIcon.contains(event.target) && !userMenu.contains(event.target)) {
+  // Close the dropdown if clicked outside (optional)
+  document.addEventListener('click', function (event) {
+    const userMenu = document.getElementById('user-menu');
+    if (!userMenu.contains(event.target) && !document.getElementById('user-icon').contains(event.target)) {
       userMenu.classList.add('hidden');
     }
   });
 
-  // Mobile Menu Toggle
-  const menuToggle = document.getElementById('menu-toggle');
-  const mobileNav = document.getElementById('mobile-nav');
-  const mobileCategoryBtn = document.getElementById('mobile-category-btn');
-  const mobileCategoryDropdown = document.getElementById('mobile-category-dropdown');
-  const mobileSearchBtn = document.getElementById('mobile-search-btn');
-  const mobileSearchDropdown = document.getElementById('mobile-search-dropdown');
-  const mobileUserBtn = document.getElementById('mobile-user-btn');
-  const mobileUserDropdown = document.getElementById('mobile-user-dropdown');
-
-  // Mobile menu toggle
-  menuToggle.addEventListener('click', () => {
-    mobileNav.classList.toggle('hidden');
+  // Toggle mobile user menu
+  document.getElementById('mobile-user-icon').addEventListener('click', function () {
+    const userMenu = document.getElementById('mobile-user-menu');
+    userMenu.classList.toggle('hidden');
   });
 
-  // Toggle Category Dropdown on Mobile
-  mobileCategoryBtn.addEventListener('click', (e) => {
-    e.stopPropagation();  // Prevent click from closing the menu
-    mobileCategoryDropdown.classList.toggle('hidden');
+  // Show logout modal for mobile
+  document.getElementById('logout-button-mobile').addEventListener('click', function () {
+    document.getElementById('logout-modal').classList.remove('hidden');
   });
 
-  // Toggle Search Dropdown on Mobile
-  mobileSearchBtn.addEventListener('click', (e) => {
-    e.stopPropagation();  // Prevent click from closing the menu
-    mobileSearchDropdown.classList.toggle('hidden');
-  });
-
-  // Toggle User Dropdown on Mobile
-  mobileUserBtn?.addEventListener('click', (e) => {
-    e.stopPropagation();  // Prevent click from closing the menu
-    mobileUserDropdown.classList.toggle('hidden');
-  });
-
-  // Hide Dropdowns when clicking outside on mobile
-  document.addEventListener('click', (e) => {
-    // Close mobile category dropdown if clicked outside
-    if (!mobileCategoryBtn.contains(e.target)) {
-      mobileCategoryDropdown.classList.add('hidden');
-    }
-    // Close mobile search dropdown if clicked outside
-    if (!mobileSearchBtn.contains(e.target)) {
-      mobileSearchDropdown.classList.add('hidden');
-    }
-    // Close mobile user dropdown if clicked outside
-    if (!mobileUserBtn?.contains(e.target)) {
-      mobileUserDropdown.classList.add('hidden');
+  // Close the dropdown if clicked outside
+  document.addEventListener('click', function (event) {
+    const menu = document.getElementById('mobile-menu');
+    if (!menu.contains(event.target) && !document.getElementById('menu-toggle').contains(event.target)) {
+      menu.classList.add('hidden');
     }
   });
 </script>
-
