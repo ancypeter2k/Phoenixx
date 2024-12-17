@@ -1,8 +1,4 @@
 <style>
-  #mobile-nav {
-    z-index: 50;
-  }
-
   #category-dropdown,
   #search-dropdown,
   #user-menu {
@@ -10,6 +6,10 @@
   }
 
   #logout-modal {
+    z-index: 50;
+  }
+
+  #mobile-nav {
     z-index: 50;
   }
 
@@ -40,9 +40,7 @@
   }
 </style>
 
-
-<!-- Desktop Navigation (hidden on mobile) -->
-<nav id="desktop-nav" class="nav-container flex items-center justify-between py-2 px-4 bg-black text-white md:hidden">
+<nav class="nav-container flex items-center justify-between py-2 px-4 bg-black text-white">
   <!-- Left Side - Category Menu -->
   <div class="relative">
     <button id="category-menu-btn" class="hover:text-orange-500 p-3">
@@ -78,40 +76,37 @@
     </a>
 
     <!-- Search Icon with Dropdown -->
-        <div class="relative">
-            <button id="search-icon" class="hover:text-orange-500 p-3">
-                <i class="fas fa-search"></i>
-              </button>
-            <div id="search-dropdown" class="hidden absolute right-0 mt-2 w-72 rounded-lg p-2 shadow-lg bg-gray-800">
-                <form action="/shop/allProducts" method="GET" class="flex items-center">
-                    <input type="text" name="search" placeholder="Search"                  
-             class="bg-gray-800 text-white text-sm px-4 py-2 rounded-full w-full" />
-                  </form>
-              </div>
-          </div>
-      
-        <% if (name) { %>
-          <!-- User Icon and Menu -->
-          <div class="relative">
-              <button id="user-icon" class="hover:text-orange-500 p-3">
-                  <i class="fas fa-user"></i>
-                </button>
-              <div id="user-menu"
-          class="hidden absolute right-0 mt-2 w-48 bg-black text-white rounded-md p-2 shadow-lg">
-                  <a href="/profile/personal-info" class="block hover:text-orange-500 py-1">Profile</a>
-                  <button type="button" id="logout-button"
-            class="block w-full text-left hover:text-orange-500 py-1">Logout</button>
-                </div>
-            </div>
-          <% } else { %>
-            <!-- Login Icon -->
-            <a href="/login" class="hover:text-orange-500 p-3">
-                <i class="fas fa-sign-in-alt"></i>
-              </a>
-            <% } %>
-           
-</nav>
+    <div class="relative">
+      <button id="search-icon" class="hover:text-orange-500 p-3">
+        <i class="fas fa-search"></i>
+      </button>
+      <div id="search-dropdown" class="hidden absolute right-0 mt-2 w-72 rounded-lg p-2 shadow-lg bg-gray-800">
+        <form action="/shop/allProducts" method="GET" class="flex items-center">
+          <input type="text" name="search" placeholder="Search"
+            class="bg-gray-800 text-white text-sm px-4 py-2 rounded-full w-full" />
+        </form>
+      </div>
+    </div>
 
+    <% if (name) { %>
+      <!-- User Icon and Menu -->
+      <div class="relative">
+        <button id="user-icon" class="hover:text-orange-500 p-3">
+          <i class="fas fa-user"></i>
+        </button>
+        <div id="user-menu" class="hidden absolute right-0 mt-2 w-48 bg-black text-white rounded-md p-2 shadow-lg">
+          <a href="/profile/personal-info" class="block hover:text-orange-500 py-1">Profile</a>
+          <button type="button" id="logout-button"
+            class="block w-full text-left hover:text-orange-500 py-1">Logout</button>
+        </div>
+      </div>
+      <% } else { %>
+        <!-- Login Icon -->
+        <a href="/login" class="hover:text-orange-500 p-3">
+          <i class="fas fa-sign-in-alt"></i>
+        </a>
+        <% } %>
+</nav>
 
 <!-- Mobile Menu Toggle (Visible on mobile only) -->
 <div class="md:hidden">
@@ -186,75 +181,144 @@
         <% } %>
   </div>
 
-  <!-- Center - Logo and Name -->
-  <div class="flex flex-col items-center justify-center space-y-1">
-    <img src="/images/mylogo1.png" alt="Phoenix watches Logo" class="nav-logo w-15 max-h-10">
-    <p class="text-white text-xl font-bold styled-text">Phoenix</p>
+    <!-- Center - Logo and Name -->
+    <div class="flex flex-col items-center justify-center space-y-1">
+      <img src="/images/mylogo1.png" alt="Phoenix watches Logo" class="nav-logo w-15 max-h-10">
+      <p class="text-white text-xl font-bold styled-text">Phoenix</p>
+    </div>
+
   </div>
 
+
+  <!-- Logout Modal -->
+  <div id="logout-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+    <div class="bg-gray-600 text-white p-6 rounded-lg items-center" style="width: 20%; height:3cm;">
+      <p class="text-lg font-semibold mb-4 text-center">Confirm Logout?</p>
+      <div class="flex justify-center space-x-4">
+        <form action="/logout" method="post" id="logoutForm" class="flex-none">
+          <button id="confirm-logout" class="bg-orange-500 px-4 py-2 rounded text-white hover:bg-orange-600">
+            Logout
+          </button>
+        </form>
+      <button id="cancel-logout" class="bg-gray-400 px-4 py-2 rounded text-white hover:bg-gray-500">
+        Cancel
+      </button>
+    </div>
+  </div>
 </div>
 
 <script>
+  const categoryBtn = document.getElementById('category-menu-btn');
+  const categoryDropdown = document.getElementById('category-dropdown');
+  const searchIcon = document.getElementById('search-icon');
+  const searchDropdown = document.getElementById('search-dropdown');
+  const userIcon = document.getElementById('user-icon');
+  const userMenu = document.getElementById('user-menu');
+  const logoutButton = document.getElementById('logout-button');
+  const logoutModal = document.getElementById('logout-modal');
+  const cancelLogout = document.getElementById('cancel-logout');
+
+  // Toggle Dropdowns
+  categoryBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    categoryDropdown.classList.toggle('hidden');
+  });
+
+  searchIcon?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    searchDropdown.classList.toggle('hidden');
+  });
+
+  userIcon?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    userMenu.classList.toggle('hidden');
+  });
+
+  // Show Logout Modal
+  logoutButton?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    logoutModal.classList.remove('hidden');
+  });
+
+  // Hide Logout Modal
+  cancelLogout?.addEventListener('click', () => {
+    logoutModal.classList.add('hidden');
+  });
+
+  // Close dropdowns when clicking outside
+  document.addEventListener('click', (event) => {
+    if (!categoryBtn.contains(event.target) && !categoryDropdown.contains(event.target)) {
+      categoryDropdown.classList.add('hidden');
+    }
+
+    if (!searchIcon.contains(event.target) && !searchDropdown.contains(event.target)) {
+      searchDropdown.classList.add('hidden');
+    }
+
+    if (!userIcon.contains(event.target) && !userMenu.contains(event.target)) {
+      userMenu.classList.add('hidden');
+    }
+  });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+  // Get references to the mobile elements
+  const mobileMenuToggle = document.getElementById('menu-toggle');
+  const mobileNav = document.getElementById('mobile-nav');
+  const mobileCategoryBtn = document.getElementById('mobile-category-btn');
+  const mobileCategoryDropdown = document.getElementById('mobile-category-dropdown');
+  const mobileSearchBtn = document.getElementById('mobile-search-btn');
+  const mobileSearchDropdown = document.getElementById('mobile-search-dropdown');
+  const mobileUserBtn = document.getElementById('mobile-user-btn');
+  const mobileUserDropdown = document.getElementById('mobile-user-dropdown');
+
   // Toggle mobile navigation menu visibility
-  document.getElementById("menu-toggle").addEventListener("click", function () {
-    const mobileNav = document.getElementById("mobile-nav");
-    // Toggle the visibility of the mobile navigation menu
-    mobileNav.classList.toggle("hidden");
+  mobileMenuToggle?.addEventListener('click', function() {
+    mobileNav.classList.toggle('hidden');
   });
 
   // Toggle mobile category dropdown visibility
-  document.getElementById("mobile-category-btn").addEventListener("click", function () {
-    const mobileCategoryDropdown = document.getElementById("mobile-category-dropdown");
-    // Toggle the visibility of the category dropdown
-    mobileCategoryDropdown.classList.toggle("hidden");
+  mobileCategoryBtn?.addEventListener('click', function(e) {
+    e.stopPropagation(); // Prevent event propagation to close the menu
+    mobileCategoryDropdown.classList.toggle('hidden');
   });
 
   // Toggle mobile search dropdown visibility
-  document.getElementById("mobile-search-btn").addEventListener("click", function () {
-    const mobileSearchDropdown = document.getElementById("mobile-search-dropdown");
-    // Toggle the visibility of the search dropdown
-    mobileSearchDropdown.classList.toggle("hidden");
+  mobileSearchBtn?.addEventListener('click', function(e) {
+    e.stopPropagation(); // Prevent event propagation to close the menu
+    mobileSearchDropdown.classList.toggle('hidden');
   });
 
   // Toggle mobile user dropdown visibility
-  document.getElementById("mobile-user-btn").addEventListener("click", function () {
-    const mobileUserDropdown = document.getElementById("mobile-user-dropdown");
-    // Toggle the visibility of the user dropdown
-    mobileUserDropdown.classList.toggle("hidden");
+  mobileUserBtn?.addEventListener('click', function(e) {
+    e.stopPropagation(); // Prevent event propagation to close the menu
+    mobileUserDropdown.classList.toggle('hidden');
   });
 
-  // Close the mobile navigation and dropdowns when clicking outside of them
-  window.addEventListener("click", function (event) {
-    // Close mobile menu when clicking outside the mobile menu toggle button
-    if (!event.target.closest("#mobile-nav") && !event.target.closest("#menu-toggle")) {
-      const mobileNav = document.getElementById("mobile-nav");
-      if (!mobileNav.classList.contains("hidden")) {
-        mobileNav.classList.add("hidden");
-      }
+  // Close mobile navigation and dropdowns when clicking outside
+  window.addEventListener('click', function(event) {
+    // Close mobile menu if clicked outside
+    if (!event.target.closest('#mobile-nav') && !event.target.closest('#menu-toggle')) {
+      mobileNav.classList.add('hidden');
     }
 
-    // Close mobile category dropdown when clicking outside of the dropdown
-    if (!event.target.closest("#mobile-category-btn") && !event.target.closest("#mobile-category-dropdown")) {
-      const mobileCategoryDropdown = document.getElementById("mobile-category-dropdown");
-      if (!mobileCategoryDropdown.classList.contains("hidden")) {
-        mobileCategoryDropdown.classList.add("hidden");
-      }
+    // Close mobile category dropdown if clicked outside
+    if (!event.target.closest('#mobile-category-btn') && !event.target.closest('#mobile-category-dropdown')) {
+      mobileCategoryDropdown.classList.add('hidden');
     }
 
-    // Close mobile search dropdown when clicking outside of the dropdown
-    if (!event.target.closest("#mobile-search-btn") && !event.target.closest("#mobile-search-dropdown")) {
-      const mobileSearchDropdown = document.getElementById("mobile-search-dropdown");
-      if (!mobileSearchDropdown.classList.contains("hidden")) {
-        mobileSearchDropdown.classList.add("hidden");
-      }
+    // Close mobile search dropdown if clicked outside
+    if (!event.target.closest('#mobile-search-btn') && !event.target.closest('#mobile-search-dropdown')) {
+      mobileSearchDropdown.classList.add('hidden');
     }
 
-    // Close mobile user dropdown when clicking outside of the dropdown
-    if (!event.target.closest("#mobile-user-btn") && !event.target.closest("#mobile-user-dropdown")) {
-      const mobileUserDropdown = document.getElementById("mobile-user-dropdown");
-      if (!mobileUserDropdown.classList.contains("hidden")) {
-        mobileUserDropdown.classList.add("hidden");
-      }
+    // Close mobile user dropdown if clicked outside
+    if (!event.target.closest('#mobile-user-btn') && !event.target.closest('#mobile-user-dropdown')) {
+      mobileUserDropdown.classList.add('hidden');
     }
   });
 </script>
