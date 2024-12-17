@@ -1,28 +1,38 @@
 <style>
-    /* Ensure mobile dropdowns are properly above other elements */
+  /* Ensure mobile dropdowns are properly above other elements */
+  #mobile-nav {
+    z-index: 50; /* Ensure the mobile navigation is above other content */
+  }
+
+  #category-dropdown,
+  #search-dropdown,
+  #user-menu {
+    z-index: 40; /* Ensure these dropdowns have a higher z-index */
+  }
+
+  /* Hide desktop navigation on mobile */
+  @media (max-width: 767px) {
+    #desktop-nav {
+      display: none !important; /* Hide desktop navigation */
+    }
+  
     #mobile-nav {
-      z-index: 50; /* Ensure the mobile navigation is always above other content */
+      display: flex !important; /* Ensure the mobile navigation is shown */
+    }
+  }
+
+  /* Hide dropdowns on desktop */
+  @media (min-width: 768px) {
+    #mobile-nav {
+      display: none !important; /* Hide mobile navigation */
     }
 
-    #category-dropdown,
-    #search-dropdown,
-    #user-menu {
-      z-index: 40; /* Ensure these dropdowns have a higher z-index */
+    #mobile-category-dropdown,
+    #mobile-search-dropdown,
+    #mobile-user-dropdown {
+      display: none !important; /* Hide dropdowns on desktop */
     }
-
-    /* Hide dropdowns on desktop */
-    @media (min-width: 768px) {
-      #mobile-nav {
-        display: none !important; /* Hide mobile navigation */
-      }
-
-      #mobile-category-dropdown,
-      #mobile-search-dropdown,
-      #mobile-user-dropdown {
-        display: none !important; /* Hide dropdowns on desktop */
-      }
-    }
-
+  }
 </style>
 
 <!-- Desktop Navigation (hidden on mobile) -->
@@ -159,63 +169,59 @@
     </a>
     <% } %>
   </div>
-
-    <!-- Center - Logo and Name -->
-    <div class="flex flex-col items-center justify-center space-y-1" style="padding-left: 10%;">
-      <img src="/images/mylogo1.png" alt="Phoenix watches Logo" class="nav-logo w-10 max-h-10 text-white text-lg font-bold styled-text">Phoenix
-    </div>
-    
 </div>
 
 
-<!-- JavaScript for Toggle Menu and Modal -->
 <script>
-  // Toggle mobile menu
-  document.getElementById('menu-toggle').addEventListener('click', function () {
-    const menu = document.getElementById('mobile-menu');
-    menu.classList.toggle('hidden');
+  // Mobile Menu Toggle
+  const menuToggle = document.getElementById('menu-toggle');
+  const mobileNav = document.getElementById('mobile-nav');
+  menuToggle.addEventListener('click', () => {
+    mobileNav.classList.toggle('hidden');
   });
 
-  // Toggle user menu
-  document.getElementById('user-icon').addEventListener('click', function () {
-    const userMenu = document.getElementById('user-menu');
+  // Category Dropdown Toggle (Mobile)
+  const categoryBtn = document.getElementById('mobile-category-btn');
+  const categoryDropdown = document.getElementById('mobile-category-dropdown');
+  categoryBtn.addEventListener('click', () => {
+    categoryDropdown.classList.toggle('hidden');
+  });
+
+  // Search Dropdown Toggle (Mobile)
+  const searchBtn = document.getElementById('mobile-search-btn');
+  const searchDropdown = document.getElementById('mobile-search-dropdown');
+  searchBtn.addEventListener('click', () => {
+    searchDropdown.classList.toggle('hidden');
+  });
+
+  // User Menu Toggle (Mobile)
+  const userBtn = document.getElementById('mobile-user-btn');
+  const userMenu = document.getElementById('mobile-user-dropdown');
+  userBtn.addEventListener('click', () => {
     userMenu.classList.toggle('hidden');
   });
 
-  // Show logout modal
-  document.getElementById('logout-button').addEventListener('click', function () {
-    document.getElementById('logout-modal').classList.remove('hidden');
-  });
+  // Close dropdowns if clicking outside
+  document.addEventListener('click', (e) => {
+    // Close mobile nav if clicked outside
+    if (!mobileNav.contains(e.target) && !menuToggle.contains(e.target)) {
+      mobileNav.classList.add('hidden');
+    }
 
-  // Close modal on cancel
-  document.getElementById('cancel-logout').addEventListener('click', function () {
-    document.getElementById('logout-modal').classList.add('hidden');
-  });
+    // Close category dropdown if clicked outside
+    if (!categoryDropdown.contains(e.target) && !categoryBtn.contains(e.target)) {
+      categoryDropdown.classList.add('hidden');
+    }
 
-  // Close the dropdown if clicked outside (optional)
-  document.addEventListener('click', function (event) {
-    const userMenu = document.getElementById('user-menu');
-    if (!userMenu.contains(event.target) && !document.getElementById('user-icon').contains(event.target)) {
+    // Close search dropdown if clicked outside
+    if (!searchDropdown.contains(e.target) && !searchBtn.contains(e.target)) {
+      searchDropdown.classList.add('hidden');
+    }
+
+    // Close user menu if clicked outside
+    if (!userMenu.contains(e.target) && !userBtn.contains(e.target)) {
       userMenu.classList.add('hidden');
     }
   });
-
-  // Toggle mobile user menu
-  document.getElementById('mobile-user-icon').addEventListener('click', function () {
-    const userMenu = document.getElementById('mobile-user-menu');
-    userMenu.classList.toggle('hidden');
-  });
-
-  // Show logout modal for mobile
-  document.getElementById('logout-button-mobile').addEventListener('click', function () {
-    document.getElementById('logout-modal').classList.remove('hidden');
-  });
-
-  // Close the dropdown if clicked outside
-  document.addEventListener('click', function (event) {
-    const menu = document.getElementById('mobile-menu');
-    if (!menu.contains(event.target) && !document.getElementById('menu-toggle').contains(event.target)) {
-      menu.classList.add('hidden');
-    }
-  });
 </script>
+
