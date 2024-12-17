@@ -174,30 +174,41 @@
     </a>
     <% } %>
   </div>
+
+  <!-- Center - Logo and Name -->
+  <div class="flex flex-col items-center justify-center space-y-1">
+    <img src="/images/mylogo1.png" alt="Phoenix watches Logo" class="nav-logo w-15 max-h-10">
+    <p class="text-white text-xl font-bold styled-text">Phoenix</p>
+  </div>
+
 </div>
 
 <script>
   // Toggle mobile navigation menu visibility
   document.getElementById("menu-toggle").addEventListener("click", function() {
     const mobileNav = document.getElementById("mobile-nav");
+    // Toggle the visibility of the mobile navigation menu
     mobileNav.classList.toggle("hidden");
   });
 
   // Toggle mobile category dropdown visibility
   document.getElementById("mobile-category-btn").addEventListener("click", function() {
     const mobileCategoryDropdown = document.getElementById("mobile-category-dropdown");
+    // Toggle the visibility of the category dropdown
     mobileCategoryDropdown.classList.toggle("hidden");
   });
 
   // Toggle mobile search dropdown visibility
   document.getElementById("mobile-search-btn").addEventListener("click", function() {
     const mobileSearchDropdown = document.getElementById("mobile-search-dropdown");
+    // Toggle the visibility of the search dropdown
     mobileSearchDropdown.classList.toggle("hidden");
   });
 
   // Toggle mobile user dropdown visibility
   document.getElementById("mobile-user-btn").addEventListener("click", function() {
     const mobileUserDropdown = document.getElementById("mobile-user-dropdown");
+    // Toggle the visibility of the user dropdown
     mobileUserDropdown.classList.toggle("hidden");
   });
 
