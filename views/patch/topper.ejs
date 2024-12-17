@@ -1,23 +1,25 @@
 <style>
+  /* Ensure the dropdowns have appropriate z-index for mobile view */
   #category-dropdown,
   #search-dropdown,
   #user-menu {
     z-index: 20;
   }
-
   #logout-modal {
     z-index: 50;
   }
 
-  #mobile-nav {
-    z-index: 50;
+  /* Ensure mobile dropdowns are hidden on desktop and vice versa */
+  .md\\:hidden {
+    display: none !important;
   }
 
-  @media (min-width: 768px) {
-    #desktop-nav {
-      display: flex !important;
-    }
+  .hidden {
+    display: none !important;
+  }
 
+  /* Adjustments to make sure dropdowns don't show on desktop */
+  @media (min-width: 768px) {
     #mobile-nav {
       display: none !important;
     }
@@ -25,18 +27,6 @@
     #mobile-category-dropdown,
     #mobile-search-dropdown,
     #mobile-user-dropdown {
-      display: none !important;
-    }
-  }
-
-  /* Hide desktop view on mobile */
-  @media (max-width: 767px) {
-    #desktop-nav {
-      display: none !important;
-    }
-
-    /* Hide the mobile navigation by default */
-    #mobile-nav {
       display: none !important;
     }
   }
@@ -214,66 +204,102 @@
 <script src="https://cdn.tailwindcss.com"></script>
 
 <script>
-    // Toggle mobile navigation menu visibility
-    document.getElementById("menu-toggle").addEventListener("click", function () {
-      const mobileNav = document.getElementById("mobile-nav");
-      // Toggle the visibility of the mobile navigation menu
-      mobileNav.classList.toggle("hidden");
+  const categoryBtn = document.getElementById('category-menu-btn');
+  const categoryDropdown = document.getElementById('category-dropdown');
+  const searchIcon = document.getElementById('search-icon');
+  const searchDropdown = document.getElementById('search-dropdown');
+  const userIcon = document.getElementById('user-icon');
+  const userMenu = document.getElementById('user-menu');
+  const logoutButton = document.getElementById('logout-button');
+  const logoutModal = document.getElementById('logout-modal');
+  const cancelLogout = document.getElementById('cancel-logout');
+  
+  // Toggle Dropdowns
+  categoryBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    categoryDropdown.classList.toggle('hidden');
+  });
+  
+  searchIcon?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    searchDropdown.classList.toggle('hidden');
+  });
+  
+  userIcon?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    userMenu.classList.toggle('hidden');
+  });
+  
+  // Show Logout Modal
+  logoutButton?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    logoutModal.classList.remove('hidden');
+  });
+  
+  // Hide Logout Modal
+  cancelLogout?.addEventListener('click', () => {
+    logoutModal.classList.add('hidden');
+  });
+  
+  // Close dropdowns when clicking outside
+  document.addEventListener('click', (event) => {
+    if (!categoryBtn.contains(event.target) && !categoryDropdown.contains(event.target)) {
+      categoryDropdown.classList.add('hidden');
+    }
+    
+    if (!searchIcon.contains(event.target) && !searchDropdown.contains(event.target)) {
+      searchDropdown.classList.add('hidden');
+    }
+    
+    if (!userIcon.contains(event.target) && !userMenu.contains(event.target)) {
+      userMenu.classList.add('hidden');
+    }
+  });
+  </script>
+  
+  <script>
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileNav = document.getElementById('mobile-nav');
+    const mobileCategoryBtn = document.getElementById('mobile-category-btn');
+    const mobileCategoryDropdown = document.getElementById('mobile-category-dropdown');
+    const mobileSearchBtn = document.getElementById('mobile-search-btn');
+    const mobileSearchDropdown = document.getElementById('mobile-search-dropdown');
+    const mobileUserBtn = document.getElementById('mobile-user-btn');
+    const mobileUserDropdown = document.getElementById('mobile-user-dropdown');
+    
+    // Mobile menu toggle
+    menuToggle.addEventListener('click', () => {
+      mobileNav.classList.toggle('hidden');
     });
-
-    // Toggle mobile category dropdown visibility
-    document.getElementById("mobile-category-btn").addEventListener("click", function () {
-      const mobileCategoryDropdown = document.getElementById("mobile-category-dropdown");
-      // Toggle the visibility of the category dropdown
-      mobileCategoryDropdown.classList.toggle("hidden");
+    
+    // Toggle Category Dropdown
+    mobileCategoryBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      mobileCategoryDropdown.classList.toggle('hidden');
     });
-
-    // Toggle mobile search dropdown visibility
-    document.getElementById("mobile-search-btn").addEventListener("click", function () {
-      const mobileSearchDropdown = document.getElementById("mobile-search-dropdown");
-      // Toggle the visibility of the search dropdown
-      mobileSearchDropdown.classList.toggle("hidden");
+    
+    // Toggle Search Dropdown
+    mobileSearchBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      mobileSearchDropdown.classList.toggle('hidden');
     });
-
-    // Toggle mobile user dropdown visibility
-    document.getElementById("mobile-user-btn").addEventListener("click", function () {
-      const mobileUserDropdown = document.getElementById("mobile-user-dropdown");
-      // Toggle the visibility of the user dropdown
-      mobileUserDropdown.classList.toggle("hidden");
+    
+    // Toggle User Dropdown
+    mobileUserBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      mobileUserDropdown.classList.toggle('hidden');
     });
-
-    // Close the mobile navigation and dropdowns when clicking outside of them
-    window.addEventListener("click", function (event) {
-      // Close mobile menu when clicking outside the mobile menu toggle button
-      if (!event.target.closest("#mobile-nav") && !event.target.closest("#menu-toggle")) {
-        const mobileNav = document.getElementById("mobile-nav");
-        if (!mobileNav.classList.contains("hidden")) {
-          mobileNav.classList.add("hidden");
-        }
+    
+    // Hide Dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!mobileCategoryBtn.contains(e.target)) {
+        mobileCategoryDropdown.classList.add('hidden');
       }
-
-      // Close mobile category dropdown when clicking outside of the dropdown
-      if (!event.target.closest("#mobile-category-btn") && !event.target.closest("#mobile-category-dropdown")) {
-        const mobileCategoryDropdown = document.getElementById("mobile-category-dropdown");
-        if (!mobileCategoryDropdown.classList.contains("hidden")) {
-          mobileCategoryDropdown.classList.add("hidden");
-        }
+      if (!mobileSearchBtn.contains(e.target)) {
+        mobileSearchDropdown.classList.add('hidden');
       }
-
-      // Close mobile search dropdown when clicking outside of the dropdown
-      if (!event.target.closest("#mobile-search-btn") && !event.target.closest("#mobile-search-dropdown")) {
-        const mobileSearchDropdown = document.getElementById("mobile-search-dropdown");
-        if (!mobileSearchDropdown.classList.contains("hidden")) {
-          mobileSearchDropdown.classList.add("hidden");
-        }
-      }
-
-      // Close mobile user dropdown when clicking outside of the dropdown
-      if (!event.target.closest("#mobile-user-btn") && !event.target.closest("#mobile-user-dropdown")) {
-        const mobileUserDropdown = document.getElementById("mobile-user-dropdown");
-        if (!mobileUserDropdown.classList.contains("hidden")) {
-          mobileUserDropdown.classList.add("hidden");
-        }
+      if (!mobileUserBtn?.contains(e.target)) {
+        mobileUserDropdown.classList.add('hidden');
       }
     });
-</script>
+  </script>
