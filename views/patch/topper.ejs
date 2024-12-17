@@ -32,7 +32,7 @@
   }
 </style>
 
-<nav class="nav-container flex items-center justify-between py-2 px-4 bg-black text-white">
+<nav class="hidden nav-container flex items-center justify-between py-2 px-4 bg-black text-white">
   <!-- Left Side - Category Menu -->
   <div class="relative">
     <button id="category-menu-btn" class="hover:text-orange-500 p-3">
@@ -203,6 +203,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
 
+<!-- // Mobile View // -->
 <script>
   const categoryBtn = document.getElementById('category-menu-btn');
   const categoryDropdown = document.getElementById('category-dropdown');
@@ -256,7 +257,7 @@
     }
   });
   </script>
-  
+  <!-- // Mobile View //-->
   <script>
     const menuToggle = document.getElementById('menu-toggle');
     const mobileNav = document.getElementById('mobile-nav');
