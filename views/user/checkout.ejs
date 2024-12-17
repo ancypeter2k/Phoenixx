@@ -12,7 +12,7 @@
           <% cart.items.forEach(item => { %>
             <div class="flex justify-between border-b pb-4 mb-4">
               <div class="flex">
-                <img src="<%= item.product.image[1] %>" class="w-20 h-20 mr-4">
+                <img src="<%= item.product.image[0] %>" class="w-20 h-20 mr-4">
                 <div>
                   <p class="text-lg font-semibold text-yellow-500"><%= item.product.name %></p>
                   <p class="text-md text-gray-400"><%= item.product.category.name %></p>
