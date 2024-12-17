@@ -29,13 +29,15 @@
     }
   }
 
+  /* Hide desktop view on mobile */
   @media (max-width: 767px) {
     #desktop-nav {
       display: none !important;
     }
 
+    /* Hide the mobile navigation by default */
     #mobile-nav {
-      display: flex !important;
+      display: none !important;
     }
   }
 </style>
@@ -212,59 +214,66 @@
 <script src="https://cdn.tailwindcss.com"></script>
 
 <script>
-  // Get references to the mobile elements
-  const mobileMenuToggle = document.getElementById('menu-toggle');
-  const mobileNav = document.getElementById('mobile-nav');
-  const mobileCategoryBtn = document.getElementById('mobile-category-btn');
-  const mobileCategoryDropdown = document.getElementById('mobile-category-dropdown');
-  const mobileSearchBtn = document.getElementById('mobile-search-btn');
-  const mobileSearchDropdown = document.getElementById('mobile-search-dropdown');
-  const mobileUserBtn = document.getElementById('mobile-user-btn');
-  const mobileUserDropdown = document.getElementById('mobile-user-dropdown');
+    // Toggle mobile navigation menu visibility
+    document.getElementById("menu-toggle").addEventListener("click", function () {
+      const mobileNav = document.getElementById("mobile-nav");
+      // Toggle the visibility of the mobile navigation menu
+      mobileNav.classList.toggle("hidden");
+    });
 
-  // Toggle mobile navigation menu visibility
-  mobileMenuToggle?.addEventListener('click', function() {
-    mobileNav.classList.toggle('hidden');
-  });
+    // Toggle mobile category dropdown visibility
+    document.getElementById("mobile-category-btn").addEventListener("click", function () {
+      const mobileCategoryDropdown = document.getElementById("mobile-category-dropdown");
+      // Toggle the visibility of the category dropdown
+      mobileCategoryDropdown.classList.toggle("hidden");
+    });
 
-  // Toggle mobile category dropdown visibility
-  mobileCategoryBtn?.addEventListener('click', function(e) {
-    e.stopPropagation(); // Prevent event propagation to close the menu
-    mobileCategoryDropdown.classList.toggle('hidden');
-  });
+    // Toggle mobile search dropdown visibility
+    document.getElementById("mobile-search-btn").addEventListener("click", function () {
+      const mobileSearchDropdown = document.getElementById("mobile-search-dropdown");
+      // Toggle the visibility of the search dropdown
+      mobileSearchDropdown.classList.toggle("hidden");
+    });
 
-  // Toggle mobile search dropdown visibility
-  mobileSearchBtn?.addEventListener('click', function(e) {
-    e.stopPropagation(); // Prevent event propagation to close the menu
-    mobileSearchDropdown.classList.toggle('hidden');
-  });
+    // Toggle mobile user dropdown visibility
+    document.getElementById("mobile-user-btn").addEventListener("click", function () {
+      const mobileUserDropdown = document.getElementById("mobile-user-dropdown");
+      // Toggle the visibility of the user dropdown
+      mobileUserDropdown.classList.toggle("hidden");
+    });
 
-  // Toggle mobile user dropdown visibility
-  mobileUserBtn?.addEventListener('click', function(e) {
-    e.stopPropagation(); // Prevent event propagation to close the menu
-    mobileUserDropdown.classList.toggle('hidden');
-  });
+    // Close the mobile navigation and dropdowns when clicking outside of them
+    window.addEventListener("click", function (event) {
+      // Close mobile menu when clicking outside the mobile menu toggle button
+      if (!event.target.closest("#mobile-nav") && !event.target.closest("#menu-toggle")) {
+        const mobileNav = document.getElementById("mobile-nav");
+        if (!mobileNav.classList.contains("hidden")) {
+          mobileNav.classList.add("hidden");
+        }
+      }
 
-  // Close mobile navigation and dropdowns when clicking outside
-  window.addEventListener('click', function(event) {
-    // Close mobile menu if clicked outside
-    if (!event.target.closest('#mobile-nav') && !event.target.closest('#menu-toggle')) {
-      mobileNav.classList.add('hidden');
-    }
+      // Close mobile category dropdown when clicking outside of the dropdown
+      if (!event.target.closest("#mobile-category-btn") && !event.target.closest("#mobile-category-dropdown")) {
+        const mobileCategoryDropdown = document.getElementById("mobile-category-dropdown");
+        if (!mobileCategoryDropdown.classList.contains("hidden")) {
+          mobileCategoryDropdown.classList.add("hidden");
+        }
+      }
 
-    // Close mobile category dropdown if clicked outside
-    if (!event.target.closest('#mobile-category-btn') && !event.target.closest('#mobile-category-dropdown')) {
-      mobileCategoryDropdown.classList.add('hidden');
-    }
+      // Close mobile search dropdown when clicking outside of the dropdown
+      if (!event.target.closest("#mobile-search-btn") && !event.target.closest("#mobile-search-dropdown")) {
+        const mobileSearchDropdown = document.getElementById("mobile-search-dropdown");
+        if (!mobileSearchDropdown.classList.contains("hidden")) {
+          mobileSearchDropdown.classList.add("hidden");
+        }
+      }
 
-    // Close mobile search dropdown if clicked outside
-    if (!event.target.closest('#mobile-search-btn') && !event.target.closest('#mobile-search-dropdown')) {
-      mobileSearchDropdown.classList.add('hidden');
-    }
-
-    // Close mobile user dropdown if clicked outside
-    if (!event.target.closest('#mobile-user-btn') && !event.target.closest('#mobile-user-dropdown')) {
-      mobileUserDropdown.classList.add('hidden');
-    }
-  });
+      // Close mobile user dropdown when clicking outside of the dropdown
+      if (!event.target.closest("#mobile-user-btn") && !event.target.closest("#mobile-user-dropdown")) {
+        const mobileUserDropdown = document.getElementById("mobile-user-dropdown");
+        if (!mobileUserDropdown.classList.contains("hidden")) {
+          mobileUserDropdown.classList.add("hidden");
+        }
+      }
+    });
 </script>
