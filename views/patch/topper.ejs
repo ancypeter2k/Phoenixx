@@ -1,38 +1,50 @@
 <style>
-  /* Ensure the dropdowns have appropriate z-index for mobile view */
-  #category-dropdown,
-  #search-dropdown,
-  #user-menu {
-    z-index: 20;
-  }
-  #logout-modal {
-    z-index: 50;
-  }
+    /* Ensure the dropdowns have appropriate z-index for mobile view */
+    #category-dropdown,
+    #search-dropdown,
+    #user-menu {
+      z-index: 20;
+    }
+    #logout-modal {
+      z-index: 50;
+    }
 
-  /* Ensure mobile dropdowns are hidden on desktop and vice versa */
-  .md\\:hidden {
-    display: none !important;
-  }
-
-  .hidden {
-    display: none !important;
-  }
-
-  /* Adjustments to make sure dropdowns don't show on desktop */
-  @media (min-width: 768px) {
-    #mobile-nav {
+    /* Ensure mobile dropdowns are hidden on desktop and vice versa */
+    .md\\:hidden {
       display: none !important;
     }
 
-    #mobile-category-dropdown,
-    #mobile-search-dropdown,
-    #mobile-user-dropdown {
+    .hidden {
       display: none !important;
     }
-  }
+
+    /* Adjustments to make sure dropdowns don't show on desktop */
+    @media (min-width: 768px) {
+      #mobile-nav {
+        display: none !important;
+      }
+
+      #mobile-category-dropdown,
+      #mobile-search-dropdown,
+      #mobile-user-dropdown {
+        display: none !important;
+      }
+
+      /* Hide the desktop navigation on mobile */
+      #desktop-nav {
+        display: none;
+      }
+
+      /* Ensure the mobile navigation is displayed */
+      #mobile-nav {
+        display: block;
+      }
+    }
 </style>
+
 <!-- Desktop Navigation (hidden on mobile) -->
-<nav class="nav-container flex items-center justify-between py-2 px-4 bg-black text-white md:hidden">
+<!-- Desktop Navigation (hidden on mobile) -->
+<nav id="desktop-nav" class="nav-container flex items-center justify-between py-2 px-4 bg-black text-white md:hidden">
   <!-- Left Side - Category Menu -->
   <div class="relative">
     <button id="category-menu-btn" class="hover:text-orange-500 p-3">
@@ -165,6 +177,13 @@
     </a>
     <% } %>
   </div>
+
+    <!-- Center - Logo and Name -->
+    <div class="flex flex-col items-center justify-center space-y-1" style="padding-left: 10%;">
+      <img src="/images/mylogo1.png" alt="Phoenix watches Logo" class="nav-logo w-15 max-h-10">
+      <p class="text-white text-xl font-bold styled-text">Phoenix</p>
+    </div>
+    
 </div>
 
 <script>
