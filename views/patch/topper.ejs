@@ -10,19 +10,12 @@
     z-index: 40; /* Ensure these dropdowns have a higher z-index */
   }
 
-  /* Hide desktop navigation on mobile */
-  @media (max-width: 767px) {
+  /* Desktop Navigation (Visible on desktop, hidden on mobile) */
+  @media (min-width: 768px) {
     #desktop-nav {
-      display: none !important; /* Hide desktop navigation */
+      display: flex !important; /* Show desktop navigation */
     }
   
-    #mobile-nav {
-      display: flex !important; /* Ensure the mobile navigation is shown */
-    }
-  }
-
-  /* Hide dropdowns on desktop */
-  @media (min-width: 768px) {
     #mobile-nav {
       display: none !important; /* Hide mobile navigation */
     }
@@ -33,7 +26,19 @@
       display: none !important; /* Hide dropdowns on desktop */
     }
   }
+
+  /* Mobile Navigation (Visible on mobile, hidden on desktop) */
+  @media (max-width: 767px) {
+    #desktop-nav {
+      display: none !important; /* Hide desktop navigation */
+    }
+  
+    #mobile-nav {
+      display: flex !important; /* Ensure the mobile navigation is shown */
+    }
+  }
 </style>
+
 
 <!-- Desktop Navigation (hidden on mobile) -->
 <nav id="desktop-nav" class="nav-container flex items-center justify-between py-2 px-4 bg-black text-white md:hidden">
@@ -170,58 +175,4 @@
     <% } %>
   </div>
 </div>
-
-
-<script>
-  // Mobile Menu Toggle
-  const menuToggle = document.getElementById('menu-toggle');
-  const mobileNav = document.getElementById('mobile-nav');
-  menuToggle.addEventListener('click', () => {
-    mobileNav.classList.toggle('hidden');
-  });
-
-  // Category Dropdown Toggle (Mobile)
-  const categoryBtn = document.getElementById('mobile-category-btn');
-  const categoryDropdown = document.getElementById('mobile-category-dropdown');
-  categoryBtn.addEventListener('click', () => {
-    categoryDropdown.classList.toggle('hidden');
-  });
-
-  // Search Dropdown Toggle (Mobile)
-  const searchBtn = document.getElementById('mobile-search-btn');
-  const searchDropdown = document.getElementById('mobile-search-dropdown');
-  searchBtn.addEventListener('click', () => {
-    searchDropdown.classList.toggle('hidden');
-  });
-
-  // User Menu Toggle (Mobile)
-  const userBtn = document.getElementById('mobile-user-btn');
-  const userMenu = document.getElementById('mobile-user-dropdown');
-  userBtn.addEventListener('click', () => {
-    userMenu.classList.toggle('hidden');
-  });
-
-  // Close dropdowns if clicking outside
-  document.addEventListener('click', (e) => {
-    // Close mobile nav if clicked outside
-    if (!mobileNav.contains(e.target) && !menuToggle.contains(e.target)) {
-      mobileNav.classList.add('hidden');
-    }
-
-    // Close category dropdown if clicked outside
-    if (!categoryDropdown.contains(e.target) && !categoryBtn.contains(e.target)) {
-      categoryDropdown.classList.add('hidden');
-    }
-
-    // Close search dropdown if clicked outside
-    if (!searchDropdown.contains(e.target) && !searchBtn.contains(e.target)) {
-      searchDropdown.classList.add('hidden');
-    }
-
-    // Close user menu if clicked outside
-    if (!userMenu.contains(e.target) && !userBtn.contains(e.target)) {
-      userMenu.classList.add('hidden');
-    }
-  });
-</script>
 
