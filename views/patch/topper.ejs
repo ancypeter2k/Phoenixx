@@ -1,40 +1,41 @@
+
 <style>
-  /* Ensure mobile dropdowns are properly above other elements */
   #mobile-nav {
-    z-index: 50; /* Ensure the mobile navigation is above other content */
+    z-index: 50;
   }
 
   #category-dropdown,
   #search-dropdown,
   #user-menu {
-    z-index: 40; /* Ensure these dropdowns have a higher z-index */
-  }
+    z-index: 20;
+    } 
+  #logout-modal {
+    z-index: 50;
+    }
 
-  /* Desktop Navigation (Visible on desktop, hidden on mobile) */
   @media (min-width: 768px) {
     #desktop-nav {
-      display: flex !important; /* Show desktop navigation */
+      display: flex !important; 
     }
   
     #mobile-nav {
-      display: none !important; /* Hide mobile navigation */
+      display: none !important;
     }
 
     #mobile-category-dropdown,
     #mobile-search-dropdown,
     #mobile-user-dropdown {
-      display: none !important; /* Hide dropdowns on desktop */
+      display: none !important; 
     }
   }
 
-  /* Mobile Navigation (Visible on mobile, hidden on desktop) */
   @media (max-width: 767px) {
     #desktop-nav {
-      display: none !important; /* Hide desktop navigation */
+      display: none !important; 
     }
   
     #mobile-nav {
-      display: flex !important; /* Ensure the mobile navigation is shown */
+      display: flex !important; 
     }
   }
 </style>
