@@ -14,10 +14,8 @@
   <button id="menu-toggle" aria-label="Toggle Menu" class="p-2 text-white focus:outline-none">
     <i class="fas fa-bars w-6 h-6"></i>
   </button>
-  
-  <!-- Mobile Dropdown -->
+
   <div id="mobile-nav" class="hidden absolute top-12 right-0 w-56 bg-black text-white rounded-md shadow-lg z-50">
-    <!-- Mobile Category -->
     <div>
       <button id="mobile-category-btn" class="block w-full text-left px-4 py-2 hover:text-orange-500 focus:outline-none">
         <i class="fas fa-bars"></i> Categories
@@ -30,7 +28,6 @@
       </div>
     </div>
 
-    <!-- Right Side - Navigation Icons -->
     <div class="flex items-center">
       <a href="/" class="block px-4 py-2 hover:text-orange-500">
         <i class="fas fa-home"></i>
@@ -45,32 +42,30 @@
         <i class="fas fa-heart"></i>
       </a>
 
-    <!-- Mobile Search -->
-    <div>
-      <button id="mobile-search-btn" class="block px-4 py-2 hover:text-orange-500">
-        <i class="fas fa-search"></i> Search
-      </button>
-      <div id="mobile-search-dropdown" class="hidden p-2 bg-gray-800">
-        <form action="/shop/allProducts" method="GET">
-          <input type="text" name="search" placeholder="Search" class="w-full px-4 py-2 rounded-full bg-gray-700 text-white" />
-        </form>
+      <div>
+        <button id="mobile-search-btn" class="block px-4 py-2 hover:text-orange-500">
+          <i class="fas fa-search"></i> Search
+        </button>
+        <div id="mobile-search-dropdown" class="hidden p-2 bg-gray-800">
+          <form action="/shop/allProducts" method="GET">
+            <input type="text" name="search" placeholder="Search" class="w-full px-4 py-2 rounded-full bg-gray-700 text-white" />
+          </form>
+        </div>
       </div>
-    </div>
 
-    <!-- Mobile User Section -->
-    <% if (name) { %>
-    <div>
-      <button id="mobile-user-btn" class="block w-full text-left px-4 py-2 hover:text-orange-500 focus:outline-none">
-        <i class="fas fa-user"></i> <%= name %>
-      </button>
-      <div id="mobile-user-dropdown" class="hidden bg-gray-800 rounded-md">
-        <a href="/profile/personal-info" class="block px-4 py-2 hover:text-orange-500">Profile</a>
-        <button id="logout-button-mobile" class="block w-full text-left px-4 py-2 hover:text-orange-500">Logout</button>
+      <% if (name) { %>
+      <div>
+        <button id="mobile-user-btn" class="block w-full text-left px-4 py-2 hover:text-orange-500 focus:outline-none">
+          <i class="fas fa-user"></i> <%= name %>
+        </button>
+        <div id="mobile-user-dropdown" class="hidden bg-gray-800 rounded-md">
+          <a href="/profile/personal-info" class="block px-4 py-2 hover:text-orange-500">Profile</a>
+          <button id="logout-button-mobile" class="block w-full text-left px-4 py-2 hover:text-orange-500">Logout</button>
+        </div>
       </div>
-    </div>
-    <% } else { %>
-    <a href="/login" class="block px-4 py-2 hover:text-orange-500">
-      <i class="fas fa-sign-in-alt"></i> Login
+      <% } else { %>
+      <a href="/login" class="block px-4 py-2 hover:text-orange-500">
+        <i class="fas fa-sign-in-alt"></i> Login
     </a>
     <% } %>
   </div>
