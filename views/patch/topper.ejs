@@ -1,45 +1,28 @@
 <style>
-    /* Ensure the dropdowns have appropriate z-index for mobile view */
+    /* Ensure mobile dropdowns are properly above other elements */
+    #mobile-nav {
+      z-index: 50; /* Ensure the mobile navigation is always above other content */
+    }
+
     #category-dropdown,
     #search-dropdown,
     #user-menu {
-      z-index: 20;
-    }
-    #logout-modal {
-      z-index: 50;
+      z-index: 40; /* Ensure these dropdowns have a higher z-index */
     }
 
-    /* Ensure mobile dropdowns are hidden on desktop and vice versa */
-    .md\\:hidden {
-      display: none !important;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    /* Adjustments to make sure dropdowns don't show on desktop */
+    /* Hide dropdowns on desktop */
     @media (min-width: 768px) {
       #mobile-nav {
-        display: none !important;
+        display: none !important; /* Hide mobile navigation */
       }
 
       #mobile-category-dropdown,
       #mobile-search-dropdown,
       #mobile-user-dropdown {
-        display: none !important;
-      }
-
-      /* Hide the desktop navigation on mobile */
-      #desktop-nav {
-        display: none;
-      }
-
-      /* Ensure the mobile navigation is displayed */
-      #mobile-nav {
-        display: block;
+        display: none !important; /* Hide dropdowns on desktop */
       }
     }
+
 </style>
 
 <!-- Desktop Navigation (hidden on mobile) -->
@@ -180,7 +163,7 @@
 
     <!-- Center - Logo and Name -->
     <div class="flex flex-col items-center justify-center space-y-1" style="padding-left: 10%;">
-      <img src="/images/mylogo1.png" alt="Phoenix watches Logo" class="nav-logo w-15 max-h-10">
+      <img src="/images/mylogo1.png" alt="Phoenix watches Logo" class="nav-logo w-10 max-h-5">
       <p class="text-white text-xl font-bold styled-text">Phoenix</p>
     </div>
     
@@ -257,30 +240,33 @@
 
   // Toggle Category Dropdown on Mobile
   mobileCategoryBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
+    e.stopPropagation();  // Prevent click from closing the menu
     mobileCategoryDropdown.classList.toggle('hidden');
   });
 
   // Toggle Search Dropdown on Mobile
   mobileSearchBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
+    e.stopPropagation();  // Prevent click from closing the menu
     mobileSearchDropdown.classList.toggle('hidden');
   });
 
   // Toggle User Dropdown on Mobile
   mobileUserBtn?.addEventListener('click', (e) => {
-    e.stopPropagation();
+    e.stopPropagation();  // Prevent click from closing the menu
     mobileUserDropdown.classList.toggle('hidden');
   });
 
   // Hide Dropdowns when clicking outside on mobile
   document.addEventListener('click', (e) => {
+    // Close mobile category dropdown if clicked outside
     if (!mobileCategoryBtn.contains(e.target)) {
       mobileCategoryDropdown.classList.add('hidden');
     }
+    // Close mobile search dropdown if clicked outside
     if (!mobileSearchBtn.contains(e.target)) {
       mobileSearchDropdown.classList.add('hidden');
     }
+    // Close mobile user dropdown if clicked outside
     if (!mobileUserBtn?.contains(e.target)) {
       mobileUserDropdown.classList.add('hidden');
     }
