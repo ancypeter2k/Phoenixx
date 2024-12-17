@@ -31,6 +31,141 @@
     }
   }
 </style>
+<!-- Desktop Navigation (hidden on mobile) -->
+<nav class="nav-container flex items-center justify-between py-2 px-4 bg-black text-white md:hidden">
+  <!-- Left Side - Category Menu -->
+  <div class="relative">
+    <button id="category-menu-btn" class="hover:text-orange-500 p-3">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div id="category-dropdown" class="hidden absolute left-0 mt-2 w-48 bg-black rounded-lg shadow-lg">
+      <a href="/shop/allProducts?category=Men&sort=latest" class="block p-3 hover:text-orange-500">Men</a>
+      <a href="/shop/allProducts?category=Women&sort=latest" class="block p-3 hover:text-orange-500">Women</a>
+      <a href="/shop/allProducts?category=Couples&sort=latest" class="block p-3 hover:text-orange-500">Couple</a>
+      <a href="/shop/allProducts?category=Sales&sort=latest" class="block p-3 hover:text-orange-500">Sale</a>
+    </div>
+  </div>
+
+  <!-- Center - Logo and Name -->
+  <div class="flex flex-col items-center justify-center space-y-1" style="padding-left: 10%;">
+    <img src="/images/mylogo1.png" alt="Phoenix watches Logo" class="nav-logo w-15 max-h-10">
+    <p class="text-white text-xl font-bold styled-text">Phoenix</p>
+  </div>
+
+  <!-- Right Side - Navigation Icons -->
+  <div class="flex items-center">
+    <a href="/" class="hover:text-orange-500 p-3">
+      <i class="fas fa-home"></i>
+    </a>
+    <a href="/shop/allProducts" class="hover:text-orange-500 p-3">
+      <i class="fas fa-store"></i>
+    </a>
+    <a href="/cart" class="hover:text-orange-500 p-3">
+      <i class="fas fa-shopping-cart"></i>
+    </a>
+    <a href="/wishlist" class="hover:text-orange-500 p-3">
+      <i class="fas fa-heart"></i>
+    </a>
+    
+    <!-- Search Icon with Dropdown -->
+    <div class="relative">
+      <button id="search-icon" class="hover:text-orange-500 p-3">
+        <i class="fas fa-search"></i>
+      </button>
+      <div id="search-dropdown" class="hidden absolute right-0 mt-2 w-72 rounded-lg p-2 shadow-lg bg-gray-800">
+        <form action="/shop/allProducts" method="GET" class="flex items-center">
+          <input type="text" name="search" placeholder="Search" 
+                 class="bg-gray-800 text-white text-sm px-4 py-2 rounded-full w-full" />
+        </form>
+      </div>
+    </div>
+  
+    <% if (name) { %>
+    <!-- User Icon and Menu -->
+    <div class="relative">
+      <button id="user-icon" class="hover:text-orange-500 p-3">
+        <i class="fas fa-user"></i>
+      </button>
+      <div id="user-menu" class="hidden absolute right-0 mt-2 w-48 bg-black text-white rounded-md p-2 shadow-lg">
+        <a href="/profile/personal-info" class="block hover:text-orange-500 py-1">Profile</a>
+        <button type="button" id="logout-button" class="block w-full text-left hover:text-orange-500 py-1">Logout</button>
+      </div>
+    </div>
+    <% } else { %>
+    <!-- Login Icon -->
+    <a href="/login" class="hover:text-orange-500 p-3">
+      <i class="fas fa-sign-in-alt"></i>
+    </a>
+    <% } %>
+</nav>
+
+<!-- Mobile Menu Toggle (Visible on mobile only) -->
+<div class="md:hidden">
+  <button id="menu-toggle" aria-label="Toggle Menu" class="p-2 text-white focus:outline-none">
+    <i class="fas fa-bars w-6 h-6"></i>
+  </button>
+  
+  <!-- Mobile Dropdown -->
+  <div id="mobile-nav" class="hidden absolute top-12 left-12 right-0 w-56 bg-black text-white rounded-md shadow-lg z-50 flex flex-col space-y-2">
+    <!-- Mobile Category -->
+    <div>
+      <button id="mobile-category-btn" class="block w-full text-left px-4 py-2 hover:text-orange-500 focus:outline-none">
+        <i class="fas fa-bars"></i> Categories
+      </button>
+      <div id="mobile-category-dropdown" class="hidden bg-gray-800 rounded-md">
+        <a href="/shop/allProducts?category=Men&sort=latest" class="block px-4 py-2 hover:text-orange-500">Men</a>
+        <a href="/shop/allProducts?category=Women&sort=latest" class="block px-4 py-2 hover:text-orange-500">Women</a>
+        <a href="/shop/allProducts?category=Couples&sort=latest" class="block px-4 py-2 hover:text-orange-500">Couples</a>
+        <a href="/shop/allProducts?category=Sales&sort=latest" class="block px-4 py-2 hover:text-orange-500">Sale</a>
+      </div>
+    </div>
+
+    <!-- Right Side - Navigation Icons -->
+    <div class="flex flex-col items-start space-y-2">
+      <a href="/" class="block px-4 py-2 hover:text-orange-500">
+        <i class="fas fa-home"></i> Home
+      </a>
+      <a href="/shop/allProducts" class="block px-4 py-2 hover:text-orange-500">
+        <i class="fas fa-store"></i> Shop
+      </a>
+      <a href="/cart" class="block px-4 py-2 hover:text-orange-500">
+        <i class="fas fa-shopping-cart"></i> Cart
+      </a>
+      <a href="/wishlist" class="block px-4 py-2 hover:text-orange-500">
+        <i class="fas fa-heart"></i> Wishlist
+      </a>
+    </div>
+
+    <!-- Mobile Search -->
+    <div class="flex flex-col space-y-2">
+      <button id="mobile-search-btn" class="block w-full text-left px-4 py-2 hover:text-orange-500 focus:outline-none">
+        <i class="fas fa-search"></i> Search
+      </button>
+      <div id="mobile-search-dropdown" class="hidden p-2 bg-gray-800">
+        <form action="/shop/allProducts" method="GET">
+          <input type="text" name="search" placeholder="Search" class="w-full px-4 py-2 rounded-full bg-gray-700 text-white" />
+        </form>
+      </div>
+    </div>
+
+    <!-- Mobile User Section -->
+    <% if (name) { %>
+    <div class="flex flex-col space-y-2">
+      <button id="mobile-user-btn" class="block w-full text-left px-4 py-2 hover:text-orange-500 focus:outline-none">
+        <i class="fas fa-user"></i> <%= name %>
+      </button>
+      <div id="mobile-user-dropdown" class="hidden bg-gray-800 rounded-md">
+        <a href="/profile/personal-info" class="block px-4 py-2 hover:text-orange-500">Profile</a>
+        <button id="logout-button-mobile" class="block w-full text-left px-4 py-2 hover:text-orange-500">Logout</button>
+      </div>
+    </div>
+    <% } else { %>
+    <a href="/login" class="block px-4 py-2 hover:text-orange-500">
+      <i class="fas fa-sign-in-alt"></i> Login
+    </a>
+    <% } %>
+  </div>
+</div>
 
 <script>
   // Desktop Dropdowns (for category, search, and user menu)
