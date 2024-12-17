@@ -637,6 +637,10 @@ video {
   right: 0.25rem;
 }
 
+.right-10 {
+  right: 2.5rem;
+}
+
 .right-2 {
   right: 0.5rem;
 }
@@ -663,10 +667,6 @@ video {
 
 .top-\[60\%\] {
   top: 60%;
-}
-
-.right-10 {
-  right: 2.5rem;
 }
 
 .z-10 {
