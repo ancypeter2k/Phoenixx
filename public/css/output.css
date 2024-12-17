@@ -625,6 +625,10 @@ video {
   left: 0px;
 }
 
+.left-12 {
+  left: 3rem;
+}
+
 .left-2 {
   left: 0.5rem;
 }
@@ -671,10 +675,6 @@ video {
 
 .left-1 {
   left: 0.25rem;
-}
-
-.left-12 {
-  left: 3rem;
 }
 
 .z-10 {
