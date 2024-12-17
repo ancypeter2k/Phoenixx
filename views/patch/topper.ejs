@@ -39,7 +39,7 @@
   </button>
   
   <!-- Mobile Dropdown -->
-  <div id="mobile-nav" class="hidden absolute top-12 right-0 w-56 bg-black text-white rounded-md shadow-lg z-50">
+  <div id="mobile-nav" class="hidden absolute top-12 right-0 w-56 bg-black text-white rounded-md shadow-lg z-50 flex flex-col space-y-2">
     <!-- Mobile Category -->
     <div>
       <button id="mobile-category-btn" class="block w-full text-left px-4 py-2 hover:text-orange-500 focus:outline-none">
@@ -54,22 +54,23 @@
     </div>
 
     <!-- Right Side - Navigation Icons -->
-    <div class="flex items-center">
+    <div class="flex flex-col items-start space-y-2">
       <a href="/" class="block px-4 py-2 hover:text-orange-500">
-        <i class="fas fa-home"></i>
+        <i class="fas fa-home"></i> Home
       </a>
       <a href="/shop/allProducts" class="block px-4 py-2 hover:text-orange-500">
-        <i class="fas fa-store"></i>
+        <i class="fas fa-store"></i> Shop
       </a>
       <a href="/cart" class="block px-4 py-2 hover:text-orange-500">
-        <i class="fas fa-shopping-cart"></i>
+        <i class="fas fa-shopping-cart"></i> Cart
       </a>
       <a href="/wishlist" class="block px-4 py-2 hover:text-orange-500">
-        <i class="fas fa-heart"></i>
+        <i class="fas fa-heart"></i> Wishlist
       </a>
+    </div>
 
     <!-- Mobile Search -->
-    <div>
+    <div class="flex flex-col space-y-2">
       <button id="mobile-search-btn" class="block px-4 py-2 hover:text-orange-500">
         <i class="fas fa-search"></i> Search
       </button>
@@ -82,7 +83,7 @@
 
     <!-- Mobile User Section -->
     <% if (name) { %>
-    <div>
+    <div class="flex flex-col space-y-2">
       <button id="mobile-user-btn" class="block w-full text-left px-4 py-2 hover:text-orange-500 focus:outline-none">
         <i class="fas fa-user"></i> <%= name %>
       </button>
@@ -98,6 +99,7 @@
     <% } %>
   </div>
 </div>
+`
 
 <!-- Desktop Navigation -->
 <nav class="nav-container flex items-center justify-between py-2 px-4 bg-black text-white">
